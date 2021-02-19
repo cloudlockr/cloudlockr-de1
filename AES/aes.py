@@ -3,27 +3,63 @@ This module is a test implementation of the AES algorithm in python in
 preparation for the implementation in verilog.
 """
 import numpy as np
+from sbox import SBOX, REVERSE_SBOX
 
 
 class AES:
     def __init__(self, key):
-        self.key = self.turn_text_to_mat(key)[0]
+        key_length = len(key) * 8
+        if key_length == 128:
+            self.rounds = 10
+        elif key_length == 192:
+            self.rounds = 12
+        else:
+            self.rounds = 14
 
-    def add_padding(self, text):
+        # helper functions to efficiently apply function to numpy arrays element wise
+        self.sub_bytes = np.vectorize(lambda x : SBOX[x//16, x%16])
+        self.reverse_sub_bytes = np.vectorize(lambda x : REVERSE_SBOX[x//16, x%16])
+        self.vmult = np.vectorize(self.mult2)
+
+        # essential elements for AES algorithm
+        self.key = np.zeros((self.rounds + 1, 4, 4), dtype=np.uint8)
+        self.key[0] = self.turn_text_to_mat(key)[0]
+        self.key_expansion()
+
+    def key_expansion(self):
+        rcon = np.array([1, 0, 0, 0], dtype=np.uint8)
+
+        for i in range(1, self.rounds + 1):
+            prev_key = self.key[i-1]
+            shifted = np.roll(prev_key.T[3], -1)
+            subbed = self.sub_bytes(shifted)
+            self.key[i].T[0] = prev_key.T[0] ^ subbed ^ rcon
+
+            for j in range(1, 4):
+                self.key[i].T[j] = prev_key.T[j] ^ self.key[i].T[j-1]
+
+            if rcon[0] < 80:
+                rcon[0] = rcon[0] * 2
+            else:
+                rcon[0] = (rcon[0] * 2) ^ 0x11b
+
+    @staticmethod
+    def add_padding(text):
         # If text is not multiple of 16 bytes, need to pad it
         pad_bytes = 16 - len(text) % 16
         if pad_bytes % 16 == 0:
             return text
 
         for _ in range(pad_bytes):
-            text += str(pad_bytes)
+            text += hex(pad_bytes)[-1]
         return text
 
-    def remove_padding(self, text):
+    @staticmethod
+    def remove_padding(text):
         try:
-            pad_bytes = int(text[-1])
+            pad_bytes = int(text[-1], 16)
             # Confirm that last byte was a padding
-            if int(text[-pad_bytes]) == pad_bytes:
+            if int(int(text[-pad_bytes], 16)) == pad_bytes:
                 return text[:-pad_bytes]
 
             return text
@@ -35,11 +71,11 @@ class AES:
         num_blocks = len(padded_text) // 16
 
         # Both text and key are represented with 4x4 matrix in AES, construct matrix grid
-        blocks = np.zeros((num_blocks, 4, 4), dtype=int)
+        blocks = np.zeros((num_blocks, 4, 4), dtype=np.uint8)
         for num in range(num_blocks):
             for col_index in range(4):
                 for row_index in range(4):
-                    blocks[num, row_index, col_index] = ord(padded_text[num * 16 + col_index * 4 + row_index])
+                    blocks[num, row_index, col_index] = np.uint8(ord(padded_text[num * 16 + col_index * 4 + row_index]))
 
         return blocks
 
@@ -54,18 +90,115 @@ class AES:
         text = self.remove_padding(padded_text)
         return text
 
+    @staticmethod
+    def shift_rows(block):
+        for row in range(1, 4):
+            block[row] = np.roll(block[row], -row)
+
+    @staticmethod
+    def reverse_shift_rows(block):
+        for row in range(1, 4):
+            block[row] = np.roll(block[row], row)
+
+    @staticmethod
+    def mult2(num):
+        # helper function to modular multiply
+        num = np.uint8(num)
+        original_num = num
+        num = num << np.uint8(1)
+        if num < original_num:
+            num ^= np.uint8(0x1b)
+        return num
+
+    def mix_columns(self, block):
+        block_copy = block.copy()
+        mult_copy = self.vmult(block)
+        for i, col in enumerate(block.T):
+            col[0] = mult_copy[0, i] ^ mult_copy[1, i] ^ block_copy[1, i] ^ block_copy[2, i] ^ block_copy[3, i]
+            col[1] = mult_copy[1, i] ^ mult_copy[2, i] ^ block_copy[2, i] ^ block_copy[3, i] ^ block_copy[0, i]
+            col[2] = mult_copy[2, i] ^ mult_copy[3, i] ^ block_copy[3, i] ^ block_copy[0, i] ^ block_copy[1, i]
+            col[3] = mult_copy[3, i] ^ mult_copy[0, i] ^ block_copy[0, i] ^ block_copy[1, i] ^ block_copy[2, i]
+
+    def round_func(self, block, round_num):
+        # Substitute bytes
+        block = self.sub_bytes(block)
+
+        # Shift rows
+        self.shift_rows(block)
+
+        # Mix columns
+        # test_block = np.array([
+        #     [219, 242, 212, 45],
+        #     [19, 10, 212, 38],
+        #     [83, 34, 212, 49],
+        #     [69, 92, 213, 76]
+        # ])
+        if round_num < self.rounds:
+            self.mix_columns(block)
+
+        # add round key
+        block = np.bitwise_xor(block, self.key[round_num])
+
+        return block
+
+    def reverse_round_func(self, block, round_num):
+        # add round key
+        block = np.bitwise_xor(block, self.key[round_num])
+
+        # Mix columns
+        if round_num < self.rounds:
+            self.mix_columns(block)
+            self.mix_columns(block)
+            self.mix_columns(block)
+
+        # Shift rows
+        self.reverse_shift_rows(block)
+
+        # Substitute bytes
+        block = self.reverse_sub_bytes(block)
+
+        return block
+
     def encrypt(self, plaintext):
         # Transform plaintext to 4x4 blocks
         plain_blocks = self.turn_text_to_mat(plaintext)
+        cipher_blocks = np.zeros((len(plain_blocks), 4, 4), np.uint8)
 
-        for plain_block in plain_blocks:
+        for i, plain_block in enumerate(plain_blocks):
             # First step: Add round key (XOR every bit of plaintext with key)
-            cipher_block = np.bitwise_xor(plain_block, self.key)
+            cipher_block = np.bitwise_xor(plain_block, self.key[0])
 
+            for round_num in range(1, self.rounds + 1):
+                cipher_block = self.round_func(cipher_block, round_num)
+
+            cipher_blocks[i] = cipher_block
+
+        return self.turn_mat_to_text(cipher_blocks)
 
     def decrypt(self, ciphertext):
-        raise NotImplementedError
+        # Transform ciphertext into 4x4 blocks
+        cipher_blocks = self.turn_text_to_mat(ciphertext)
+        plain_blocks = np.zeros((len(cipher_blocks), 4, 4), np.uint8)
+
+        for i, cipher_block in enumerate(cipher_blocks):
+            plain_block = cipher_block.copy()
+            for round_num in range(self.rounds, 0, -1):
+                plain_block = self.reverse_round_func(plain_block, round_num)
+
+            plain_block = np.bitwise_xor(plain_block, self.key[0])
+            plain_blocks[i] = plain_block
+
+        return self.turn_mat_to_text(plain_blocks)
 
 if __name__ == "__main__":
     aes = AES("Random key 12345")
-    aes.encrypt("wowowow this is some really random text")
+    plaintext = "I really like salmon"
+    ciphertext = aes.encrypt(plaintext)
+    decrypted_text = aes.decrypt(ciphertext)
+
+    print(f"""
+Original plain text:
+    {plaintext}
+Decrypted text:
+    {decrypted_text}
+    """)
