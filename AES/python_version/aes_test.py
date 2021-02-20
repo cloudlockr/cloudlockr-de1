@@ -16,7 +16,7 @@ letters = letters0 + letters1 + letters2
 
 try:
     # Generate 10000 keys and data to encrypt and decrypt
-    for _ in range(10000):
+    for _ in range(1000):
         key = random.randint(2**127, 2**128-1)
         key = key.to_bytes(16, byteorder="big")
         plaintext = bytes("".join(random.choice(letters) for i in range(random.randint(20, 300))), encoding="ascii")

@@ -12,7 +12,6 @@ from sbox import SBOX, REVERSE_SBOX
 # The AES class only accepts bytes as the secret input key and encryption/decryption data
 class AES:
     def __init__(self, key):
-        key_length = len(key) * 8
         self.rounds = 10
 
         # helper functions to efficiently apply function to numpy arrays element wise
