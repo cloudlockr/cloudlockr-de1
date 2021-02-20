@@ -1,20 +1,19 @@
 """
-This module is a test implementation of the AES algorithm in python in
+This module is an implementation of the AES algorithm in python in
 preparation for the implementation in verilog.
+This implementation will be used to verify the correctness of the version written
+in verilog.
 """
+
 import numpy as np
 from sbox import SBOX, REVERSE_SBOX
 
 
+# The AES class only accepts bytes as the secret input key and encryption/decryption data
 class AES:
     def __init__(self, key):
         key_length = len(key) * 8
-        if key_length == 128:
-            self.rounds = 10
-        elif key_length == 192:
-            self.rounds = 12
-        else:
-            self.rounds = 14
+        self.rounds = 10
 
         # helper functions to efficiently apply function to numpy arrays element wise
         self.sub_bytes = np.vectorize(lambda x : SBOX[x//16, x%16])
@@ -50,21 +49,21 @@ class AES:
         if pad_bytes % 16 == 0:
             return text
 
+        padding = bytes(" ", encoding="ascii")
         for _ in range(pad_bytes):
-            text += hex(pad_bytes)[-1]
+            text += padding
         return text
 
     @staticmethod
     def remove_padding(text):
-        try:
-            pad_bytes = int(text[-1], 16)
-            # Confirm that last byte was a padding
-            if int(int(text[-pad_bytes], 16)) == pad_bytes:
-                return text[:-pad_bytes]
-
-            return text
-        except ValueError:
-            return text
+        to_keep = len(text)
+        for byte in reversed(text):
+            if byte == ord(" "):
+                to_keep -= 1
+            else:
+                break
+        
+        return text[:to_keep]
 
     def turn_text_to_mat(self, text):
         padded_text = self.add_padding(text)
@@ -75,19 +74,20 @@ class AES:
         for num in range(num_blocks):
             for col_index in range(4):
                 for row_index in range(4):
-                    blocks[num, row_index, col_index] = np.uint8(ord(padded_text[num * 16 + col_index * 4 + row_index]))
+                    blocks[num, row_index, col_index] = np.uint8(padded_text[num * 16 + col_index * 4 + row_index])
 
         return blocks
 
-    def turn_mat_to_text(self, mat):
+    def turn_mat_to_text(self, mat, remove_pad=True):
         # Turn matrix grid back to text
-        padded_text = ""
+        text = bytes()
         for num in range(mat.shape[0]):
             for col_index in range(4):
                 for row_index in range(4):
-                    padded_text += chr(mat[num, row_index, col_index])
-
-        text = self.remove_padding(padded_text)
+                    text += mat[num, row_index, col_index]
+        
+        if remove_pad:
+            text = self.remove_padding(text)
         return text
 
     @staticmethod
@@ -173,7 +173,7 @@ class AES:
 
             cipher_blocks[i] = cipher_block
 
-        return self.turn_mat_to_text(cipher_blocks)
+        return self.turn_mat_to_text(cipher_blocks, remove_pad=False)
 
     def decrypt(self, ciphertext):
         # Transform ciphertext into 4x4 blocks
@@ -190,9 +190,13 @@ class AES:
 
         return self.turn_mat_to_text(plain_blocks)
 
+# really small test
 if __name__ == "__main__":
-    aes = AES("Random key 12345")
-    plaintext = "I really like salmon"
+    private_key = 194676653899780611291974622703866714262
+    private_key = private_key.to_bytes(16, byteorder="big")
+
+    plaintext = bytes("Z3bVMSUrW`aWWU:,OA1WoQg/&UvZI@CW|G~%c),)^b/O%C]`", encoding="ascii")
+    aes = AES(private_key)
     ciphertext = aes.encrypt(plaintext)
     decrypted_text = aes.decrypt(ciphertext)
 
