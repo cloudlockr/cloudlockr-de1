@@ -78,12 +78,7 @@ module tb_top_aes();
             assert(dut.block[i] === mem_content[i + 9'd272]);
         end
 
-        @(posedge dut.index === 4'd15);
-        @(posedge clk);
-        @(posedge clk);
-        @(posedge dut.index === 4'd15);
-        @(posedge clk);
-        @(posedge clk);
+        @(posedge done);
 
         #400;
         $stop;

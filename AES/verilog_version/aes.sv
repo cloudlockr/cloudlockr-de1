@@ -29,8 +29,9 @@ module top_aes(input logic clk, input logic rst_n,
 
     logic [31:0] word0, word1, word2, word3;
     logic [8:0] mem_i;
-    logic [3:0] index, r_i;
+    logic [3:0] r_i;
     logic [1:0] k_i;
+    logic done;
 
     enum {START, MEM0, MEM1, KEXP0, KEXP1, XOR, ROUND, SUB, SHIFT, MIX0, MIX1, DONE} state;
 
@@ -43,7 +44,6 @@ module top_aes(input logic clk, input logic rst_n,
             master_write <= 1'b0;
 
             mem_i <= 9'b0;
-            index <= 4'b0;
             r_i <= 4'b0;
             k_i <= 2'b1;
 
@@ -51,6 +51,8 @@ module top_aes(input logic clk, input logic rst_n,
             rcon[1] <= 9'b0;
             rcon[2] <= 9'b0;
             rcon[3] <= 9'b0;
+
+            done <= 1'b0;
         end
         else begin
             case(state)
@@ -60,7 +62,6 @@ module top_aes(input logic clk, input logic rst_n,
                     master_write <= 1'b0;
 
                     mem_i <= 9'b0;
-                    index <= 4'b0;
                     r_i <= 4'b0;
                     k_i <= 2'b1;
 
@@ -68,6 +69,8 @@ module top_aes(input logic clk, input logic rst_n,
                     rcon[1] <= 9'b0;
                     rcon[2] <= 9'b0;
                     rcon[3] <= 9'b0;
+
+                    done <= 1'b0;
 
                     if (slave_read) begin
                         if (slave_address === 4'd0) begin
@@ -233,20 +236,20 @@ module top_aes(input logic clk, input logic rst_n,
                         block[8+i] <= mult2_block[8+i] ^ mult2_block[12+i] ^ copy_block[12+i] ^ copy_block[i] ^ copy_block[4+i];
                         block[12+i] <= mult2_block[12+i] ^ mult2_block[i] ^ copy_block[i] ^ copy_block[4+i] ^ copy_block[8+i];
                     end
-                    state <= DONE;
+                    state <= XOR;
                 end
 
                 XOR: begin
-                    block[index] <= block[index] ^ key[index];
-                    index <= index + 4'b1;
-                    if (index === 4'd15) begin
-                        state <= ROUND;
+                    for (int i = 0; i < 16; i++) begin
+                        block[i] <= block[i] ^ key[i + (r_i << 4) + 0];
                     end
+                    state <= ROUND;
                 end
 
                 default: begin
                     state <= START;
                     slave_waitrequest <= 1'b1;
+                    done <= 1'b1;
                 end
             endcase
         end
