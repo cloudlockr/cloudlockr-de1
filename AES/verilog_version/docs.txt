@@ -1,0 +1,4 @@
+word 0: when written, starts accelerator, may also be read
+word 1: destination byte address
+word 2: source byte address
+word 3: number of 8 bit words in plain text

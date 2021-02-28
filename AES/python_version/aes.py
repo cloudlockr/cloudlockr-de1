@@ -6,13 +6,13 @@ in verilog.
 """
 
 import numpy as np
+import random
 from sbox import SBOX, REVERSE_SBOX
 
 
 # The AES class only accepts bytes as the secret input key and encryption/decryption data
 class AES:
     def __init__(self, key):
-        key_length = len(key) * 8
         self.rounds = 10
 
         # helper functions to efficiently apply function to numpy arrays element wise
@@ -44,9 +44,9 @@ class AES:
 
     @staticmethod
     def add_padding(text):
-        # If text is not multiple of 16 bytes, need to pad it
-        pad_bytes = 16 - len(text) % 16
-        if pad_bytes % 16 == 0:
+        # If text is not multiple of 32 bytes, need to pad it
+        pad_bytes = 32 - len(text) % 32
+        if pad_bytes % 32 == 0:
             return text
 
         padding = bytes(" ", encoding="ascii")
@@ -67,27 +67,31 @@ class AES:
 
     def turn_text_to_mat(self, text):
         padded_text = self.add_padding(text)
-        num_blocks = len(padded_text) // 16
+        num_blocks = len(padded_text) // 32
 
         # Both text and key are represented with 4x4 matrix in AES, construct matrix grid
         blocks = np.zeros((num_blocks, 4, 4), dtype=np.uint8)
         for num in range(num_blocks):
-            for col_index in range(4):
-                for row_index in range(4):
-                    blocks[num, row_index, col_index] = np.uint8(padded_text[num * 16 + col_index * 4 + row_index])
+            for col_i in range(4):
+                for row_i in range(4):
+                    digit = int(padded_text[num*32+col_i*8+row_i*2:num*32+col_i*8+row_i*2+2], 16)
+                    blocks[num, row_i, col_i] = np.uint8(digit)
 
         return blocks
 
     def turn_mat_to_text(self, mat, remove_pad=True):
         # Turn matrix grid back to text
-        text = bytes()
+        text = ""
         for num in range(mat.shape[0]):
             for col_index in range(4):
                 for row_index in range(4):
-                    text += mat[num, row_index, col_index]
-        
-        if remove_pad:
-            text = self.remove_padding(text)
+                    digit = hex(mat[num, row_index, col_index])[2:]
+                    if len(digit) == 1:
+                        digit = "0" + digit
+                    text += digit
+
+        # if remove_pad:
+        #     text = self.remove_padding(text)
         return text
 
     @staticmethod
@@ -162,6 +166,7 @@ class AES:
     def encrypt(self, plaintext):
         # Transform plaintext to 4x4 blocks
         plain_blocks = self.turn_text_to_mat(plaintext)
+
         cipher_blocks = np.zeros((len(plain_blocks), 4, 4), np.uint8)
 
         for i, plain_block in enumerate(plain_blocks):
@@ -192,17 +197,76 @@ class AES:
 
 # really small test
 if __name__ == "__main__":
-    private_key = 194676653899780611291974622703866714262
-    private_key = private_key.to_bytes(16, byteorder="big")
+    private_key = ""
+    plaintext = ""
+    num_blocks = 15
 
-    plaintext = bytes("Z3bVMSUrW`aWWU:,OA1WoQg/&UvZI@CW|G~%c),)^b/O%C]`", encoding="ascii")
+    #KEY
+    for _ in range(16):
+        key_digit = hex(random.randint(0, 255))[2:]
+        if len(key_digit) == 1:
+            key_digit = "0" + key_digit
+        private_key += key_digit
+
+    # PLAINTEXT
+    for _ in range(num_blocks * 16):
+        text_digit = hex(random.randint(0, 127))[2:]
+        if len(text_digit) == 1:
+            text_digit = "0" + text_digit
+        plaintext += text_digit
+
+    # Generate mem file for modelsim to load (encrypt)
+    with open("../verilog_version/mem_content0.memh", "w") as f:
+        # SBOX
+        for row in range(16):
+            for col in range(16):
+                f.write(f"{hex(SBOX[row, col])[2:]}\n")
+        
+        # KEY
+        for i in range(0, 16 * 2, 2):
+            key_digit = private_key[i:i+2]
+            f.write(f"{key_digit}\n")
+
+        # PLAINTEXT
+        for i in range(0, num_blocks * 16 * 2, 2):
+            text_digit = plaintext[i:i+2]
+            f.write(f"{text_digit}\n")
+
+    # Generate mem file for reference (encrypt)
+    with open("../verilog_version/ref_content1.memh", "w") as f:
+        for i in range(0, num_blocks * 16 * 2, 2):
+            text_digit = plaintext[i:i+2]
+            f.write(f"{text_digit}\n")
+
     aes = AES(private_key)
     ciphertext = aes.encrypt(plaintext)
-    decrypted_text = aes.decrypt(ciphertext)
 
-    print(f"""
-Original plain text:
-    {plaintext}
-Decrypted text:
-    {decrypted_text}
-    """)
+    # Generate mem file for modelsim to load (decrypt)
+    with open("../verilog_version/mem_content1.memh", "w") as f:
+        # SBOX
+        for row in range(16):
+            for col in range(16):
+                f.write(f"{hex(SBOX[row, col])[2:]}\n")
+
+        # REVERSE_SBOX
+        for row in range(16):
+            for col in range(16):
+                f.write(f"{hex(REVERSE_SBOX[row, col])[2:]}\n")
+        
+        # KEY
+        for i in range(0, 16 * 2, 2):
+            key_digit = private_key[i:i+2]
+            f.write(f"{key_digit}\n")
+
+        # CIPHERTEXT
+        for i in range(0, num_blocks * 16 * 2, 2):
+            cipher_digit = ciphertext[i:i+2]
+            f.write(f"{cipher_digit}\n")
+
+    # Generate mem file for reference (decypt)
+    with open("../verilog_version/ref_content0.memh", "w") as f:
+        for i in range(0, num_blocks * 16 * 2, 2):
+            cipher_digit = ciphertext[i:i+2]
+            f.write(f"{cipher_digit}\n")
+
+    aes.decrypt(ciphertext)
