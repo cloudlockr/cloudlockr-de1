@@ -321,4 +321,4 @@ module aes_encrypt(input logic clk, input logic rst_n,
             endcase
         end
     end
-endmodule: top_aes
+endmodule: aes_encrypt

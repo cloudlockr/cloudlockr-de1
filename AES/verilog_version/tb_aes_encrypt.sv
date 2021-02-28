@@ -1,6 +1,6 @@
 `timescale 1 ps / 1 ps
 
-module tb_top_aes();
+module tb_aes_encrypt();
     logic clk, rst_n;
     logic slave_waitrequest, slave_read, slave_write;
     logic [3:0] slave_address;
@@ -53,7 +53,7 @@ module tb_top_aes();
         slave_write = 1'b0;
         rst_n = 1'b1;
 
-        num_blocks = 5'd10;
+        num_blocks = 5'd15;
 
         @(posedge clk);
         $readmemh("./mem_content0.memh", mem_content);
@@ -111,4 +111,4 @@ module tb_top_aes();
         #400;
         $stop;
     end
-endmodule: tb_top_aes
+endmodule: tb_aes_encrypt

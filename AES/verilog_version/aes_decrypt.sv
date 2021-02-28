@@ -24,6 +24,7 @@ module aes_decrypt(input logic clk, input logic rst_n,
     // use 1D array for key, cipher block, and sbox
     // all of the arrays have to be read in from memory
     logic [7:0] sbox [0:255];
+    logic [7:0] r_sbox [0:255];
     logic [7:0] key [0:175];
     logic [7:0] block [0:15];
     logic [8:0] rcon [0:3];
@@ -34,7 +35,7 @@ module aes_decrypt(input logic clk, input logic rst_n,
     logic [27:0] n_blocks, block_num;
     logic [31:0] mem_i;
     logic [3:0] r_i, block_i;
-    logic [1:0] k_i;
+    logic [1:0] k_i, mix_i;
     logic done;
 
     enum {START, MEM0, MEM1, MEM2, MEM3, KEXP0, KEXP1, XOR, ROUND, SUB, SHIFT, MIX0, MIX1, DONE} state;
@@ -138,7 +139,10 @@ module aes_decrypt(input logic clk, input logic rst_n,
                         if (mem_i <= 32'd255) begin
                             sbox[mem_i] <= master_readdata;
                         end
-                        else if (mem_i <= 32'd271) begin
+                        else if (mem_i <= 32'd511) begin
+                            r_sbox[mem_i-256] <= master_readdata;
+                        end
+                        else if (mem_i <= 32'd527) begin
                             key[(block_i>>4'd2)+(block_i<<4'd2)] <= master_readdata;
                             block_i <= block_i + 4'b1;
                         end
@@ -151,7 +155,7 @@ module aes_decrypt(input logic clk, input logic rst_n,
 
                 // states to copy in content from memory to sbox, key, and cipher block
                 MEM1: begin
-                    if (mem_i === 32'd287) begin
+                    if (mem_i === 32'd543) begin
                         state <= KEXP0;
                         mem_i <= mem_i + 32'b1;
                     end
@@ -204,7 +208,6 @@ module aes_decrypt(input logic clk, input logic rst_n,
                 KEXP0: begin
                     if (r_i === 4'd10) begin
                         state <= XOR;
-                        r_i <= 4'b0;
                     end
                     else begin
                         key[((r_i+1)<<4)+0] <= sbox[key[(r_i<<4)+7]] ^ key[(r_i<<4)+0] ^ rcon[0];
@@ -237,9 +240,9 @@ module aes_decrypt(input logic clk, input logic rst_n,
                 end
 
                 ROUND: begin
-                    if (r_i === 4'd10) begin
+                    if (r_i === 4'd0) begin
                         state <= MEM2;
-                        r_i <= 4'b0;
+                        r_i <= 4'd10;
 
                         master_address <= mem_i + (block_num << 28'd4);
                         master_read <= 1'b1;
@@ -249,38 +252,38 @@ module aes_decrypt(input logic clk, input logic rst_n,
                         master2_writedata <= block[block_i];
                     end
                     else begin
-                        state <= SUB;
-                        r_i <= r_i + 4'b1;
+                        state <= XOR;
+                        r_i <= r_i - 4'b1;
                     end
                 end
 
                 SUB: begin
                     // hopefully synthesizable for loop
                     for (int i = 0; i < 16; i++) begin
-                        block[i] <= sbox[block[i]];
+                        block[i] <= r_sbox[block[i]];
                     end
-                    state <= SHIFT;
+                    state <= ROUND;
                 end
 
                 SHIFT: begin
-                    block[4'd4] <= block[4'd5];
-                    block[4'd5] <= block[4'd6];
-                    block[4'd6] <= block[4'd7];
-                    block[4'd7] <= block[4'd4];
+                    block[4'd4] <= block[4'd7];
+                    block[4'd5] <= block[4'd4];
+                    block[4'd6] <= block[4'd5];
+                    block[4'd7] <= block[4'd6];
                     block[4'd8] <= block[4'd10];
                     block[4'd9] <= block[4'd11];
                     block[4'd10] <= block[4'd8];
                     block[4'd11] <= block[4'd9];
-                    block[4'd12] <= block[4'd15];
-                    block[4'd13] <= block[4'd12];
-                    block[4'd14] <= block[4'd13];
-                    block[4'd15] <= block[4'd14];
-                    state <= MIX0;
+                    block[4'd12] <= block[4'd13];
+                    block[4'd13] <= block[4'd14];
+                    block[4'd14] <= block[4'd15];
+                    block[4'd15] <= block[4'd12];
+                    state <= SUB;
                 end
 
                 MIX0: begin
                     if (r_i === 4'd10) begin
-                        state <= XOR;
+                        state <= SHIFT;
                     end
                     else begin
                         for (int i = 0; i < 16; i++) begin
@@ -292,6 +295,7 @@ module aes_decrypt(input logic clk, input logic rst_n,
                                 mult2_block[i] <= block[i] << 8'b1;
                             end
                         end
+                        mix_i <= mix_i + 2'b1;
                         state <= MIX1;
                     end
                 end
@@ -303,14 +307,26 @@ module aes_decrypt(input logic clk, input logic rst_n,
                         block[8+i] <= mult2_block[8+i] ^ mult2_block[12+i] ^ copy_block[12+i] ^ copy_block[i] ^ copy_block[4+i];
                         block[12+i] <= mult2_block[12+i] ^ mult2_block[i] ^ copy_block[i] ^ copy_block[4+i] ^ copy_block[8+i];
                     end
-                    state <= XOR;
+                    if (mix_i === 2'd3) begin
+                        state <= SHIFT;
+                        mix_i <= 2'b0;
+                    end
+                    else begin
+                        state <= MIX0;
+                    end
                 end
 
                 XOR: begin
                     for (int i = 0; i < 16; i++) begin
                         block[i] <= block[i] ^ key[i + (r_i << 4) + 0];
                     end
-                    state <= ROUND;
+                    mix_i <= 2'b0;
+                    if (r_i === 4'b0) begin
+                        state <= ROUND;
+                    end
+                    else begin
+                        state <= MIX0;
+                    end
                 end
 
                 default: begin
@@ -321,4 +337,4 @@ module aes_decrypt(input logic clk, input logic rst_n,
             endcase
         end
     end
-endmodule: top_aes
+endmodule: aes_decrypt

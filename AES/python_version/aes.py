@@ -90,9 +90,6 @@ class AES:
                         digit = "0" + digit
                     text += digit
 
-        # for i in range(0, 32 * mat.shape[0], 2):
-        #     print(text[i:i+2])
-        
         # if remove_pad:
         #     text = self.remove_padding(text)
         return text
@@ -200,16 +197,9 @@ class AES:
 
 # really small test
 if __name__ == "__main__":
-#     print(f"""
-# Original plain text:
-#     {plaintext}
-# Decrypted text:
-#     {decrypted_text}
-#     """)
-
     private_key = ""
     plaintext = ""
-    num_blocks = 10
+    num_blocks = 15
 
     #KEY
     for _ in range(16):
@@ -256,6 +246,11 @@ if __name__ == "__main__":
         # SBOX
         for row in range(16):
             for col in range(16):
+                f.write(f"{hex(SBOX[row, col])[2:]}\n")
+
+        # REVERSE_SBOX
+        for row in range(16):
+            for col in range(16):
                 f.write(f"{hex(REVERSE_SBOX[row, col])[2:]}\n")
         
         # KEY
@@ -273,3 +268,5 @@ if __name__ == "__main__":
         for i in range(0, num_blocks * 16 * 2, 2):
             cipher_digit = ciphertext[i:i+2]
             f.write(f"{cipher_digit}\n")
+
+    aes.decrypt(ciphertext)
