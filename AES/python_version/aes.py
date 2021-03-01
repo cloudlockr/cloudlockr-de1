@@ -269,4 +269,8 @@ if __name__ == "__main__":
             cipher_digit = ciphertext[i:i+2]
             f.write(f"{cipher_digit}\n")
 
-    aes.decrypt(ciphertext)
+    decrypted_text = aes.decrypt(ciphertext)
+    if plaintext == decrypted_text:
+        print("Encryption and decryption worked")
+    else:
+        print("Encryption and decryption failed")

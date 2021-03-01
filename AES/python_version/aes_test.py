@@ -5,23 +5,30 @@ the test is passed
 """
 
 import random
-import string
 from aes import AES
 
 
-letters0 = string.ascii_letters
-letters1 = string.digits
-letters2 = string.punctuation
-letters = letters0 + letters1 + letters2
-
 try:
+    num_blocks = 15
     # Generate 10000 keys and data to encrypt and decrypt
     for _ in range(1000):
-        key = random.randint(2**127, 2**128-1)
-        key = key.to_bytes(16, byteorder="big")
-        plaintext = bytes("".join(random.choice(letters) for i in range(random.randint(20, 300))), encoding="ascii")
+        private_key = ""
+        plaintext = ""
+        #KEY
+        for _ in range(16):
+            key_digit = hex(random.randint(0, 255))[2:]
+            if len(key_digit) == 1:
+                key_digit = "0" + key_digit
+            private_key += key_digit
 
-        aes = AES(key)
+        # PLAINTEXT
+        for _ in range(num_blocks * 16):
+            text_digit = hex(random.randint(0, 127))[2:]
+            if len(text_digit) == 1:
+                text_digit = "0" + text_digit
+            plaintext += text_digit
+
+        aes = AES(private_key)
         ciphertext = aes.encrypt(plaintext)
         decrypted_text = aes.decrypt(ciphertext)
 

@@ -38,19 +38,3 @@ REVERSE_SBOX = np.array([
     [0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61],
     [0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d]
 ], dtype=np.uint8)
-
-if __name__ == "__main__":
-    # Generate mem file for modelsim to load
-    with open("../verilog_version/mem_content.memh", "w") as f:
-        # SBOX
-        for row in range(16):
-            for col in range(16):
-                f.write(f"{hex(SBOX[row, col])[2:]}\n")
-        
-        # KEY
-        for num in range(16):
-            f.write(f"{hex(random.randint(0, 255))[2:]}\n")
-
-        # PLAINTEXT
-        for num in range(16):
-            f.write(f"{hex(random.randint(0, 127))[2:]}\n")
