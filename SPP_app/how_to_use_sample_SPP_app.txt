@@ -1,0 +1,14 @@
+First, go to SPP\app\src\main\java\com\example\spp\MainActivity.java 
+to change:
+
+private static String address
+
+to whatever the MAC address of your own RFS Daughter Card's Bluetooth HC-05 module is. 
+
+Use the "Bluetooth Pair" app from the Android play store to connect to the RFS when everything is connected and powered on. 
+Bluetooth and Location services MUST be on. 
+
+When everything is set up, running this app on your own Android phone will send the string "Hello, Jason the great!!!\n"
+
+
+
