@@ -22,6 +22,7 @@
 #include "HPS.h"
 #include "UART.h"
 #include "WIFI.h"
+#include "Bluetooth.h"
 
 
 #define SWITCHES    (volatile unsigned int *)(0xFF200000)
@@ -48,7 +49,7 @@ static void AppInit( void )
 {
     // Initialize UART ports.
     UART_Init( UART_ePORT_WIFI );
-    UART_Init( UART_ePORT_BLUE_TOOTH );
+    UART_Init( UART_ePORT_BLUETOOTH );
     
     // Initialize WIFI interface.
     //while ( WIFI_Init() == false)
@@ -79,6 +80,7 @@ static void mainLoop(void)
         {
             loopCountOld = loopCount;
             WIFI_Process();
+            BLUETOOTH_Process();
         }
 
 	    #if 1
@@ -94,13 +96,13 @@ static void mainLoop(void)
 	    }
         else 
         #endif
-        if ( UART_TestForReceivedData( UART_ePORT_BLUE_TOOTH ) )
+        if ( UART_TestForReceivedData( UART_ePORT_BLUETOOTH ) )
         {
-            ch = UART_getchar( UART_ePORT_BLUE_TOOTH );
+            ch = UART_getchar( UART_ePORT_BLUETOOTH );
 
-	        UART_putchar( UART_ePORT_BLUE_TOOTH, ch ); // send back whatever character received.
+	        UART_putchar( UART_ePORT_BLUETOOTH, ch ); // send back whatever character received.
 
-	        printf( "Bluetooth Received: %c", (char)ch );
+	        printf( "DE1 received BT msg from frontend %c", (char)ch );
 	        printf( "- loopCount: %i\n", loopCount );
         }
         
