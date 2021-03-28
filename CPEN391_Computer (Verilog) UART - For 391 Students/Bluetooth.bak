@@ -1,0 +1,69 @@
+//---------------------------------------------------------
+// File: Bluetooth.c
+//
+// Description
+// This module implement wifi related functionalities.
+//
+//---------------------------------------------------------
+
+#define BUFFER_SIZE 128     // 128 is enough?
+
+static int  bluetooth_Count = 0;
+static char bluetooth_Data[BUFFER_SIZE];
+
+typedef enum
+{
+    BLUETOOTH_CMD_INIT = 0,
+    BLUETOOTH_CMD_QUERY,
+    // ...
+    
+} BLUETOOTH_CMD;
+
+// static functions
+static void bluetooth_Process( void );
+static BLUETOOTH_CMD bluetooth_ParseCmd( void );
+
+
+void Bluetooth_Init( void )
+{
+   // what to initialize?
+}
+
+// Called by main()
+void Bluetooth_Receive( char ch )
+{
+    if ( wifi_Count < BUFFER_SIZE )
+    {
+        wifi_Data[wifi_Count] = ch;
+        
+        if ( wifi_Count == BUFFER_SIZE )
+        {
+            Wifi_Process();
+            
+            wifi_Count = 0;
+        }
+    }
+}
+
+static void bluetooth_Process( void )
+{   
+    BLUETOOTH_CMD bluetooth_Cmd;
+    
+    bluetooth_Cmd = wifi_ParseCmd();
+
+    if ( bluetooth_Cmd == BLUETOOTH_CMD_INIT )
+    {
+        // what to do...
+    }
+    else if ( bluetooth_Cmd == BLUETOOTH_CMD_QUERY )
+    {
+        // what to do...
+    }
+}
+
+static BLUETOOTH_CMD bluetooth_ParseCmd( void )
+{
+    // go through bluetooth_Data and parse bluetooth commands.
+    // ....
+}
+

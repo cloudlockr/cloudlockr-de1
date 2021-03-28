@@ -1,0 +1,65 @@
+//---------------------------------------------------------
+// File: WIFI.h
+//
+// Description
+// This module implement wifi related functionalities.
+//
+//---------------------------------------------------------
+
+#define BUFFER_SIZE 128     // 128 is enough?
+
+int wifi_Count = 0;
+char wifi_Data[BUFFER_SIZE];
+
+typedef enum
+{
+    WIFI_CMD_INIT = 0,
+    WIFI_CMD_QUERY,
+    // ...
+    
+} WIFI_CMD;
+
+
+void Wifi_Init( void )
+{
+   // what to initialize?
+}
+
+// Called by main()
+void Wifi_Receive( char ch )
+{
+    if ( wifi_Count < BUFFER_SIZE )
+    {
+        wifi_Data[wifi_Count] = ch;
+        
+        if ( wifi_Count == BUFFER_SIZE )
+        {
+            Wifi_Process();
+            
+            wifi_Count = 0;
+        }
+    }
+}
+
+void Wifi_Process( void )
+{   
+    WIFI_CMD wifi_Cmd;
+    
+    wifi_Cmd = wifi_ParseCmd();
+
+    if ( wifi_Cmd == WIFI_CMD_INIT )
+    {
+        // what to do...
+    }
+    else if ( wifi_Cmd == WIFI_CMD_QUERY )
+    {
+        // what to do...
+    }
+}
+
+WIFI_CMD wifi_ParseCmd( void )
+{
+    // go through wifi_Data and parse wifi commands.
+    // ....
+}
+

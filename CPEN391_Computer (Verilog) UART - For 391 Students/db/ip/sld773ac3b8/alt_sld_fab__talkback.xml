@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProgramExecution>
+ <SOPCSystem>
+  <CompileID>0</CompileID>
+  <DeviceFamily>UNKNOWN</DeviceFamily>
+  <HDLLanguage></HDLLanguage>
+  <Qsys>0</Qsys>
+  <SOPCModule>
+   <C>1</C>
+   <ModuleType>alt_sld_fab</ModuleType>
+   <SOPCModuleParameter>
+    <C>2</C>
+    <Name>DESIGN_HASH</Name>
+    <Value>55ffe151cd14f2845980</Value>
+   </SOPCModuleParameter>
+   <SOPCModuleParameter>
+    <C>3</C>
+    <Name>NODE_COUNT</Name>
+    <Value>4</Value>
+   </SOPCModuleParameter>
+   <SOPCModuleParameter>
+    <C>4</C>
+    <Name>MAX_WIDTH</Name>
+    <Value>26</Value>
+   </SOPCModuleParameter>
+   <SOPCModuleParameter>
+    <C>5</C>
+    <Name>SETTINGS</Name>
+    <Value>{fabric sld dir agent mfr_code 110 type_code 128 version 1 instance -1 ir_width 1 prefer_host { } psig f63706bb} {fabric sld dir agent mfr_code 110 type_code 128 version 1 instance -1 ir_width 1 prefer_host { } psig f63706bb} {fabric sld dir agent mfr_code 110 type_code 132 version 1 instance 0 ir_width 3 psig f63706bb} {fabric sld dir agent mfr_code 110 type_code 132 version 1 instance 1 ir_width 3 psig f63706bb} </Value>
+   </SOPCModuleParameter>
+   <SOPCModuleParameter>
+    <C>6</C>
+    <Name>CLOCKS</Name>
+    <Value>{id {} } {id {} } {id {} } {id {} } </Value>
+   </SOPCModuleParameter>
+   <SOPCModuleParameter>
+    <C>7</C>
+    <Name>AGENTS</Name>
+    <Value></Value>
+   </SOPCModuleParameter>
+   <SOPCModuleParameter>
+    <C>8</C>
+    <Name>EP_INFOS</Name>
+    <Value>{hpath {CPEN391_Computer:u0|CPEN391_Computer_JTAG_UART_for_ARM_0:jtag_uart_for_arm_0|alt_jtag_atlantic:CPEN391_Computer_JTAG_UART_for_ARM_0_alt_jtag_atlantic|altera_sld_agent_endpoint:inst|altera_fabric_endpoint:ep} } {hpath {CPEN391_Computer:u0|CPEN391_Computer_JTAG_UART_for_ARM_0:jtag_uart_for_arm_1|alt_jtag_atlantic:CPEN391_Computer_JTAG_UART_for_ARM_0_alt_jtag_atlantic|altera_sld_agent_endpoint:inst|altera_fabric_endpoint:ep} } {hpath {CPEN391_Computer:u0|CPEN391_Computer_JTAG_To_FPGA_Bridge:jtag_to_fpga_bridge|altera_avalon_st_jtag_interface:jtag_phy_embedded_in_jtag_master|altera_jtag_sld_node:node|sld_virtual_jtag_basic:sld_virtual_jtag_component|sld_virtual_jtag_impl:sld_virtual_jtag_impl_inst} } {hpath {CPEN391_Computer:u0|CPEN391_Computer_JTAG_To_FPGA_Bridge:jtag_to_hps_bridge|altera_avalon_st_jtag_interface:jtag_phy_embedded_in_jtag_master|altera_jtag_sld_node:node|sld_virtual_jtag_basic:sld_virtual_jtag_component|sld_virtual_jtag_impl:sld_virtual_jtag_impl_inst} } </Value>
+   </SOPCModuleParameter>
+   <SOPCModuleParameter>
+    <C>9</C>
+    <Name>MIRROR</Name>
+    <Value>0</Value>
+   </SOPCModuleParameter>
+   <SOPCModuleParameter>
+    <C>10</C>
+    <Name>TOP_HUB</Name>
+    <Value>1</Value>
+   </SOPCModuleParameter>
+   <SOPCModuleParameter>
+    <C>11</C>
+    <Name>DEVICE_FAMILY</Name>
+    <Value>Cyclone V</Value>
+   </SOPCModuleParameter>
+   <SOPCModuleParameter>
+    <C>12</C>
+    <Name>AUTO_DEVICE</Name>
+    <Value>Unknown</Value>
+   </SOPCModuleParameter>
+   <SOPCModuleParameter>
+    <C>13</C>
+    <Name>AUTO_DEVICE_SPEEDGRADE</Name>
+    <Value>Unknown</Value>
+   </SOPCModuleParameter>
+  </SOPCModule>
+  <SystemID>1405024460</SystemID>
+ </SOPCSystem>
+ <SchemaVersion>schema_2013-01-18</SchemaVersion>
+</ProgramExecution>

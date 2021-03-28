@@ -1,0 +1,114 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst CPEN_Computer_V1.JTAG_To_HPS_Bridge.fifo -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_HPS_Bridge.p2b_adapter -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_FPGA_Bridge.jtag_phy_embedded_in_jtag_master -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.hps_io.border -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS -pg 1 -lvl 3 -y 570
+preplace inst CPEN_Computer_V1.HEX2_3 -pg 1 -lvl 5 -y 130
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.nand0 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.qspi -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.l3regs -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.spim0 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.spim1 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.fpgamgr -pg 1
+preplace inst CPEN_Computer_V1.System_PLL.sys_pll -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.arm_a9_0 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.L2 -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_HPS_Bridge.p2b -pg 1
+preplace inst CPEN_Computer_V1.HEX0_1 -pg 1 -lvl 5 -y 30
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.arm_a9_1 -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_FPGA_Bridge.clk_src -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.timer0 -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_HPS_Bridge.b2p_adapter -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.timer1 -pg 1
+preplace inst CPEN_Computer_V1 -pg 1 -lvl 1 -y 40 -regy -20
+preplace inst CPEN_Computer_V1.JTAG_To_HPS_Bridge.jtag_phy_embedded_in_jtag_master -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.wd_timer0 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.timer2 -pg 1
+preplace inst CPEN_Computer_V1.System_PLL -pg 1 -lvl 1 -y 500
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.wd_timer1 -pg 1
+preplace inst CPEN_Computer_V1.BitFlipper_0 -pg 1 -lvl 4 -y 290
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.timer3 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.eosc1 -pg 1
+preplace inst CPEN_Computer_V1.HEX4_5 -pg 1 -lvl 5 -y 230
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.dcan0 -pg 1
+preplace inst CPEN_Computer_V1.Onchip_SRAM -pg 1 -lvl 5 -y 970
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.eosc2 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.dcan1 -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_HPS_Bridge.clk_rst -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.uart0 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.sdmmc -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_FPGA_Bridge -pg 1 -lvl 4 -y 680
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.fpga_interfaces -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.uart1 -pg 1
+preplace inst CPEN_Computer_V1.IO_Bridge -pg 1 -lvl 4 -y 390
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.axi_sdram -pg 1
+preplace inst CPEN_Computer_V1.SDRAM -pg 1 -lvl 5 -y 1070
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.usb0 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.gpio0 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.usb1 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.f2s_sdram_ref_clk -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_HPS_Bridge -pg 1 -lvl 2 -y 590
+preplace inst CPEN_Computer_V1.JTAG_To_FPGA_Bridge.b2p -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.gpio1 -pg 1
+preplace inst CPEN_Computer_V1.LCD_0 -pg 1 -lvl 4 -y 170
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.f2s_periph_ref_clk -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_FPGA_Bridge.p2b -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.gpio2 -pg 1
+preplace inst CPEN_Computer_V1.Interval_Timer -pg 1 -lvl 5 -y 350
+preplace inst CPEN_Computer_V1.System_PLL.reset_from_locked -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_HPS_Bridge.b2p -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.axi_ocram -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_FPGA_Bridge.transacto -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_FPGA_Bridge.clk_rst -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_FPGA_Bridge.fifo -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_HPS_Bridge.timing_adt -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.clk_0 -pg 1
+preplace inst CPEN_Computer_V1.PushButtons -pg 1 -lvl 5 -y 770
+preplace inst CPEN_Computer_V1.JTAG_To_HPS_Bridge.clk_src -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_FPGA_Bridge.p2b_adapter -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.i2c0 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.hps_io -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.gmac0 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.gmac1 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.sdrctl -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.i2c1 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.arm_gic_0 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.bridges -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.i2c2 -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.clkmgr -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.i2c3 -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_HPS_Bridge.transacto -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.rstmgr -pg 1
+preplace inst CPEN_Computer_V1.Slider_Switches -pg 1 -lvl 5 -y 1170
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.sysmgr -pg 1
+preplace inst CPEN_Computer_V1.JTAG_To_FPGA_Bridge.b2p_adapter -pg 1
+preplace inst CPEN_Computer_V1.LEDS -pg 1 -lvl 5 -y 1270
+preplace inst CPEN_Computer_V1.JTAG_UART_for_ARM_0 -pg 1 -lvl 5 -y 450
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.dma -pg 1
+preplace inst CPEN_Computer_V1.ARM_A9_HPS.timer -pg 1
+preplace inst CPEN_Computer_V1.SysID -pg 1 -lvl 5 -y 890
+preplace inst CPEN_Computer_V1.JTAG_UART_for_ARM_1 -pg 1 -lvl 5 -y 670
+preplace inst CPEN_Computer_V1.JTAG_To_FPGA_Bridge.timing_adt -pg 1
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(SLAVE)IO_Bridge.external_interface,(SLAVE)CPEN_Computer_V1.io) 1 0 4 NJ 600 NJ 480 NJ 480 NJ
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(SLAVE)CPEN_Computer_V1.hex0_1,(SLAVE)HEX0_1.external_connection) 1 0 5 NJ 60 NJ 60 NJ 60 NJ 60 NJ
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(SLAVE)CPEN_Computer_V1.slider_switches,(SLAVE)Slider_Switches.external_connection) 1 0 5 NJ 1200 NJ 1200 NJ 1200 NJ 1200 NJ
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(SLAVE)CPEN_Computer_V1.pushbuttons,(SLAVE)PushButtons.external_connection) 1 0 5 NJ 800 NJ 800 NJ 800 NJ 800 NJ
+preplace netloc FAN_OUT<net_container>CPEN_Computer_V1</net_container>(SLAVE)Interval_Timer.irq,(SLAVE)JTAG_UART_for_ARM_0.irq,(SLAVE)IO_Bridge.interrupt,(SLAVE)PushButtons.irq,(MASTER)ARM_A9_HPS.f2h_irq0,(SLAVE)JTAG_UART_for_ARM_1.irq) 1 3 2 1120 540 1480
+preplace netloc FAN_OUT<net_container>CPEN_Computer_V1</net_container>(SLAVE)JTAG_To_FPGA_Bridge.clk,(MASTER)System_PLL.sys_clk,(SLAVE)Slider_Switches.clk,(SLAVE)LEDS.clk,(SLAVE)JTAG_To_HPS_Bridge.clk,(SLAVE)HEX2_3.clk,(SLAVE)BitFlipper_0.clock,(SLAVE)IO_Bridge.clk,(SLAVE)ARM_A9_HPS.h2f_axi_clock,(SLAVE)PushButtons.clk,(SLAVE)SysID.clk,(SLAVE)JTAG_UART_for_ARM_0.clk,(SLAVE)Interval_Timer.clk,(SLAVE)ARM_A9_HPS.f2h_axi_clock,(SLAVE)SDRAM.clk,(SLAVE)HEX4_5.clk,(SLAVE)Onchip_SRAM.clk1,(SLAVE)ARM_A9_HPS.h2f_lw_axi_clock,(SLAVE)JTAG_UART_for_ARM_1.clk,(SLAVE)HEX0_1.clk,(SLAVE)LCD_0.clk) 1 1 4 450 530 710 530 1100 520 1420
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(SLAVE)LEDS.external_connection,(SLAVE)CPEN_Computer_V1.leds) 1 0 5 NJ 1300 NJ 1300 NJ 1300 NJ 1300 NJ
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(SLAVE)LCD_0.external_interface,(SLAVE)CPEN_Computer_V1.lcd) 1 0 4 NJ 220 NJ 220 NJ 220 NJ
+preplace netloc INTERCONNECT<net_container>CPEN_Computer_V1</net_container>(SLAVE)HEX2_3.s1,(MASTER)ARM_A9_HPS.h2f_lw_axi_master,(SLAVE)SysID.control_slave,(SLAVE)LCD_0.avalon_lcd_slave,(SLAVE)Slider_Switches.s1,(SLAVE)LEDS.s1,(MASTER)JTAG_To_FPGA_Bridge.master,(SLAVE)PushButtons.s1,(SLAVE)JTAG_UART_for_ARM_0.avalon_jtag_slave,(SLAVE)Interval_Timer.s1,(MASTER)ARM_A9_HPS.h2f_axi_master,(SLAVE)BitFlipper_0.avalon_slave_0,(SLAVE)IO_Bridge.avalon_slave,(SLAVE)SDRAM.s1,(SLAVE)HEX4_5.s1,(SLAVE)JTAG_UART_for_ARM_1.avalon_jtag_slave,(SLAVE)HEX0_1.s1,(SLAVE)Onchip_SRAM.s1) 1 3 2 1040 560 1400
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(MASTER)CPEN_Computer_V1.sdram_clk,(MASTER)System_PLL.sdram_clk) 1 1 5 NJ 420 NJ 420 NJ 380 NJ 340 NJ
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(SLAVE)CPEN_Computer_V1.sdram,(SLAVE)SDRAM.wire) 1 0 5 NJ 1140 NJ 1140 NJ 1140 NJ 1140 NJ
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(SLAVE)System_PLL.ref_clk,(SLAVE)CPEN_Computer_V1.system_pll_ref_clk) 1 0 1 NJ
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(SLAVE)CPEN_Computer_V1.hex2_3,(SLAVE)HEX2_3.external_connection) 1 0 5 NJ 160 NJ 160 NJ 160 NJ 160 NJ
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(SLAVE)System_PLL.ref_reset,(SLAVE)CPEN_Computer_V1.system_pll_ref_reset) 1 0 1 NJ
+preplace netloc INTERCONNECT<net_container>CPEN_Computer_V1</net_container>(SLAVE)JTAG_To_FPGA_Bridge.clk_reset,(SLAVE)HEX0_1.reset,(SLAVE)JTAG_UART_for_ARM_1.reset,(SLAVE)BitFlipper_0.reset,(SLAVE)HEX4_5.reset,(SLAVE)Onchip_SRAM.reset1,(SLAVE)PushButtons.reset,(SLAVE)SysID.reset,(SLAVE)LCD_0.reset,(MASTER)ARM_A9_HPS.h2f_reset,(SLAVE)LEDS.reset,(SLAVE)HEX2_3.reset,(SLAVE)JTAG_To_HPS_Bridge.clk_reset,(SLAVE)Interval_Timer.reset,(MASTER)System_PLL.reset_source,(SLAVE)Slider_Switches.reset,(SLAVE)SDRAM.reset,(SLAVE)IO_Bridge.reset,(SLAVE)JTAG_UART_for_ARM_0.reset) 1 1 4 410 510 NJ 510 1080 580 1440
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(SLAVE)CPEN_Computer_V1.memory,(SLAVE)ARM_A9_HPS.memory) 1 0 3 NJ 670 NJ 670 NJ
+preplace netloc POINT_TO_POINT<net_container>CPEN_Computer_V1</net_container>(SLAVE)ARM_A9_HPS.f2h_axi_slave,(MASTER)JTAG_To_HPS_Bridge.master) 1 2 1 N
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(SLAVE)CPEN_Computer_V1.hex4_5,(SLAVE)HEX4_5.external_connection) 1 0 5 NJ 280 NJ 280 NJ 280 NJ 280 NJ
+preplace netloc EXPORT<net_container>CPEN_Computer_V1</net_container>(SLAVE)CPEN_Computer_V1.hps_io,(SLAVE)ARM_A9_HPS.hps_io) 1 0 3 NJ 440 NJ 440 NJ
+levelinfo -pg 1 0 140 1760
+levelinfo -hier CPEN_Computer_V1 150 230 530 850 1220 1520 1670
