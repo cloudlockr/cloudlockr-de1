@@ -1,0 +1,17 @@
+C:/Altera/15.0/quartus/bin64/quartus_hps --cable="DE-SoC [USB-1]" -o GDBSERVER --gdbport0=3335 --preloader=C:/Altera/15.0/University_Program/Monitor_Program/arm_tools/u-boot-spl.srec --preloaderaddr=0xffff1398
+
+notes: 
+- above preloader command can be run before starting eclipse in instruction 3.
+- wifi network and password needs to be set in WIFI_Init function in WIFI.c
+
+How to run DE1 firmware:
+
+1. Open Quartus Project, use Programmer to load .sof onto DE1
+2. Use OpenConnect to connect to UBC ECE license. 
+3. Run "eclipse &" from EDS command shell as administrator.
+4. Download preloader using command above (in EDS command shell). 
+5. Press Ctrl + C to stop GDB server. 
+6. In DS5, Build Project, then do Debug As->Debug Configurations, select CPEN391_Config and press Debug.
+7. Press "Run" (green arrow button).
+
+EDS = Altera Embedded Command Shell
