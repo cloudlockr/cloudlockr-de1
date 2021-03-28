@@ -1,6 +1,7 @@
 package com.example.spp;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +28,12 @@ public class MainActivity extends Activity {
     private static final int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
-    private OutputStream outStream = null;
+    private OutputStream outStream   = null;
+    private InputStream inputStream = null;
+    volatile boolean stopWorker;
+    byte[] readBuffer;
+    int readBufferPosition;
+    Thread workerThread;
 
     // Well known SPP UUID
     private static final UUID MY_UUID =
@@ -98,7 +105,7 @@ public class MainActivity extends Activity {
         if ( result == 0 ) {
 
             // Create a data stream so we can talk to server.
-            out.append("\n...Sending message to server...");
+            out.append("\n...Get output sream...");
 
             try {
                 outStream = btSocket.getOutputStream();
@@ -106,8 +113,32 @@ public class MainActivity extends Activity {
                 AlertBox("Fatal Error", "In onResume() and output stream creation failed:" + e.getMessage() + ".");
             }
         }
+        
+        // Get input stream.
+        if ( result == 0 ) {
 
+            // Create a data stream so we can talk to server.
+            out.append("\n...Get input stream...");
 
+            try {
+                inputStream = btSocket.getInputStream();
+                
+            } catch (IOException e) {
+                AlertBox("Fatal Error", "In onResume() and intput stream creation failed:" + e.getMessage() + ".");
+            }
+        }
+        
+        // Begin listen for data.
+        if ( result == 0 ) {
+
+            // Create a data stream so we can talk to server.
+            out.append("\n...Opening listener...");
+
+            beginListenForData();
+
+            out.append("\n...input listener opened");
+        }
+        
         if (  result == 0) {
             String message = "Hello, Jason the \n";
             byte[] msgBuffer = message.getBytes();
@@ -212,4 +243,70 @@ public class MainActivity extends Activity {
                     }
                 }).show();
     }
+    
+    void beginListenForData()
+	{
+		final Handler handler = new Handler();
+		final byte delimiter = 10; //This is the ASCII code for a newline character
+	
+		stopWorker = false;
+		readBufferPosition = 0;
+		readBuffer = new byte[1024];
+		workerThread = new Thread(new Runnable()
+		{
+			public void run()
+			{                
+				while(!Thread.currentThread().isInterrupted() && !stopWorker)
+				{
+					try 
+					{
+						int bytesAvailable = inputStream.available();
+						if(bytesAvailable > 0)
+						{
+							byte[] packetBytes = new byte[bytesAvailable];
+							inputStream.read(packetBytes);
+							for(int i=0;i<bytesAvailable;i++)
+							{
+								byte b = packetBytes[i];
+								if(b == delimiter)
+								{
+									byte[] encodedBytes = new byte[readBufferPosition];
+									System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
+									final String data = new String(encodedBytes, "US-ASCII");
+									readBufferPosition = 0;
+		
+									handler.post(new Runnable()
+									{
+										public void run()
+										{
+											//myLabel.setText(data);
+                      out.append("\n" );
+                      out.append( data );
+										}
+									});
+								}
+								else
+								{
+									readBuffer[readBufferPosition++] = b;
+								}
+							}
+						}
+					} 
+					catch (IOException ex) 
+					{
+						stopWorker = true;
+					}
+				}
+			}
+		});
+	
+		workerThread.start();
+	}
 }
+
+
+
+
+
+
+
