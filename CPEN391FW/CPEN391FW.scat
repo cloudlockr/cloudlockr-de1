@@ -1,0 +1,10 @@
+HPSSDRAM 0x00000000    0x40000000 	; A memory block name followed by a start address and a size in hex
+{
+	APP_CODE +0						; code loaded at base +0
+	{
+		*(+RO, +RW, +ZI)			; read only, read write and zero initialized
+	}
+	
+	ARM_LIB_STACKHEAP +0 EMPTY 0x10000	; A size for the Stack and Heap (64kbytes) at top of memory
+	{}
+}
