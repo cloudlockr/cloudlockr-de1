@@ -24,7 +24,7 @@ notes:
 - wifi network and password needs to be set in WIFI_Init function in WIFI.c
 - EDS = Altera Embedded Command Shell
 
-#How to use sample SPP app
+# How to use sample SPP app
 
 First, go to SPP\app\src\main\java\com\example\spp\MainActivity.java 
 to change:
