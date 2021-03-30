@@ -104,7 +104,7 @@ void UART_Init( UART_ePORT ePort )
         // Now Clear all bits in the FiFo control registers
         Wifi_FifoControlReg = 0x00; // 0x00 = 0000 0000
     }
-    else if ( ePort == UART_ePORT_BLUE_TOOTH )
+    else if ( ePort == UART_ePORT_BLUETOOTH )
     {
         // set bit 7 of Line Control Register to 1, to gain access to the baud rate registers
         Bluetooth_LineControlReg = 0x80; // 0x80 = 1000 0000
@@ -157,7 +157,7 @@ int UART_putchar( UART_ePORT ePort, int c)
         Wifi_TransmitterFifo = c;
  
     }
-    else if ( ePort == UART_ePORT_BLUE_TOOTH )
+    else if ( ePort == UART_ePORT_BLUETOOTH )
     {
         // wait for Transmitter Holding Register bit (5) of line status register to be '1'
         // indicating we can write to the device
@@ -197,7 +197,7 @@ int UART_getchar( UART_ePORT ePort )
         newChar = Wifi_ReceiverFifo;
  
     }
-    else if ( ePort == UART_ePORT_BLUE_TOOTH )
+    else if ( ePort == UART_ePORT_BLUETOOTH )
     {
         // wait for Data Ready bit (0) of line status register to be '1'
         while ( !(Bluetooth_LineStatusReg & (1 << 0)) )
@@ -234,7 +234,7 @@ int UART_TestForReceivedData( UART_ePORT ePort )
             return 1;
         } 
     }
-    else if ( ePort == UART_ePORT_BLUE_TOOTH )
+    else if ( ePort == UART_ePORT_BLUETOOTH )
     {
         // if Wifi_LineStatusReg bit 0 is set to 1
         // return TRUE, otherwise return FALSE
@@ -266,7 +266,7 @@ void UART_Flush( UART_ePORT ePort )
             Wifi_ReceiverFifo = 0x00;
         }
     }
-    else if ( ePort == UART_ePORT_BLUE_TOOTH )
+    else if ( ePort == UART_ePORT_BLUETOOTH )
     {
         // while bit 0 of Line Status Register == ‘1’
         // read unwanted char out of fifo receiver buffer
