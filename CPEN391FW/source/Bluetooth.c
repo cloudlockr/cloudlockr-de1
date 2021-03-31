@@ -19,8 +19,7 @@
 #include "Bluetooth.h"
 
 
-#define BUFFER_SIZE 128     // 128 is enough?
-
+#define BUFFER_SIZE 30     // 128 is enough?
 static int  bluetooth_Count = 0;
 static char bluetooth_Data[BUFFER_SIZE];
 
@@ -39,26 +38,31 @@ typedef enum
 
 void BLUETOOTH_Receive( char ch )
 {
-    static STATE_T state = STATE_PARSE_MSG;
-    
-    if (state == STATE_PARSE_MSG)
-    {
-	if ( bluetooth_Count < BUFFER_SIZE && ch == '\r' )
-    	{
-            bluetooth_Data[bluetooth_Count++] = ch;      
-   	}
-	
-        else
-        {                     
+    //static STATE_T state = STATE_PARSE_MSG;
+
+
+
+   // if (state == STATE_PARSE_MSG)
+    //{
+	    if ( bluetooth_Count < BUFFER_SIZE) // && ch != '\r' )
+    	    {
+                bluetooth_Data[bluetooth_Count] = ch;
+                bluetooth_Count++;
+   	    }
+
+        if ( bluetooth_Count >= BUFFER_SIZE)
+        {
+            printf("bluetooth buffer stopped at %d chars\n", bluetooth_Count);
             bluetooth_Count = 0;
-	    state = STATE_JSON_PARSE;
-        }   
-    }
-    
+            //state = STATE_JSON_PARSE;
+        }
+    //}
+
+    /*
     if (state == STATE_JSON_PARSE)
     {
 	// do stuff here to get some kind of JSON object that has fields with values
-	    
+
 	// use JSON object to figure out what kind of message,
 	// and whether message is valid/successful, etc
 	int msgType =  1; // or 2, 3, ... 7
@@ -84,16 +88,16 @@ void BLUETOOTH_Receive( char ch )
 	    // similar to above, fill in later
 	    // call other function(s) to do actions
 	}
-	    
+
 	// call other function(s) to do actions
     }
-	
+    */
 
 }
 
 
 void BLUETOOTH_Process( void )
-{       
+{
     char buffer[120];
     static int count = 0;
 
