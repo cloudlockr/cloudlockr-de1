@@ -24,40 +24,71 @@
 static int  bluetooth_Count = 0;
 static char bluetooth_Data[BUFFER_SIZE];
 
-/*
 typedef enum
 {
-    BLUETOOTH_CMD_INIT = 0,
-    BLUETOOTH_CMD_QUERY,
-    // ...
-    
-} BLUETOOTH_CMD;
-  */
-  
-// static functions
-// static BLUETOOTH_CMD bluetooth_ParseCmd( void );
+    STATE_PARSE_MSG = 0,
+    STATE_MSG_VALUE,  // may not be needed
+    STATE_JSON_PARSE,
+    STATE_PARSE_MSG_1, // this and below may not be needed
+    STATE_PARSE_MSG_2,
+    STATE_PARSE_MSG_3,
+    STATE_PARSE_MSG_4,
+    STATE_PARSE_MSG_5,
+} STATE_T;
 
- /*
-void BLUETOOTH_Init( void )
-{
-   // what to initialize?
-	memset( bluetooth_Data, 0, sizeof(bluetooth_Data) );
-}
-*/
-
-// Called by main()
 
 void BLUETOOTH_Receive( char ch )
 {
-    if ( bluetooth_Count < BUFFER_SIZE )
+    static STATE_T state = STATE_PARSE_MSG;
+    
+    if (state == STATE_PARSE_MSG)
     {
-        bluetooth_Data[bluetooth_Count] = ch;
-        
-        if ( bluetooth_Count == BUFFER_SIZE )
+	if ( bluetooth_Count < BUFFER_SIZE && ch == '\r' )
+    	{
+            bluetooth_Data[bluetooth_Count++] = ch;      
+   	}
+	
+        else
         {                     
             bluetooth_Count = 0;
-        }
+	    state = STATE_JSON_PARSE;
+        }   
     }
+    
+    if (state == STATE_JSON_PARSE)
+    {
+	// do stuff here to get some kind of JSON object that has fields with values
+	    
+	// use JSON object to figure out what kind of message,
+	// and whether message is valid/successful, etc
+	int msgType =  1; // or 2, 3, ... 7
+	int success = 1; // or 0
+	int localEncryptionComponent = 555;
+ 	char buffer[BUFFER_SIZE];
+
+	if (msgType == 1)
+	{
+	    // call other function(s) to do actions
+	    sprintf( buffer, "\"status\": %i", success);
+	    UART_puts( UART_ePORT_BLUETOOTH, buffer );
+	}
+	if (msgType == 2)
+	{
+	    // call other function(s) to do actions
+            sprintf( buffer, "\"status\": %i, \"localEncryptionComponent\": %i", success, localEncryptionComponent);
+	    UART_puts( UART_ePORT_BLUETOOTH, buffer );
+	}
+	// ... and so on...
+	if (msgType == 7)
+	{
+	    // similar to above, fill in later
+	    // call other function(s) to do actions
+	}
+	    
+	// call other function(s) to do actions
+    }
+	
+
 }
 
 
