@@ -11,8 +11,6 @@ module tb_aes_encrypt();
 
     aes_encrypt dut(.*);
 
-    logic [31:0] read_data;
-
     initial begin
         clk = 1'b0;
         forever #10 clk = ~clk;
@@ -30,26 +28,6 @@ module tb_aes_encrypt();
         @(posedge clk);
         #2;
         slave_write = 1'b1;
-        slave_address = 4'd0;
-        slave_writedata = (mem_content[259] << 24) + (mem_content[258] << 16) + (mem_content[257] << 8) + (mem_content[256]);
-
-        @(posedge clk);
-        #2;
-        slave_address = 4'd1;
-        slave_writedata = (mem_content[263] << 24) + (mem_content[262] << 16) + (mem_content[261] << 8) + (mem_content[260]);
-
-        @(posedge clk);
-        #2;
-        slave_address = 4'd2;
-        slave_writedata = (mem_content[267] << 24) + (mem_content[266] << 16) + (mem_content[265] << 8) + (mem_content[264]);
-
-        @(posedge clk);
-        #2;
-        slave_address = 4'd3;
-        slave_writedata = (mem_content[271] << 24) + (mem_content[270] << 16) + (mem_content[269] << 8) + (mem_content[268]);
-
-        @(posedge clk);
-        #2;
         slave_address = 4'd4;
         slave_writedata = (mem_content[275] << 24) + (mem_content[274] << 16) + (mem_content[273] << 8) + (mem_content[272]);
 
@@ -67,6 +45,26 @@ module tb_aes_encrypt();
         #2;
         slave_address = 4'd7;
         slave_writedata = (mem_content[287] << 24) + (mem_content[286] << 16) + (mem_content[285] << 8) + (mem_content[284]);
+
+        @(posedge clk);
+        #2;
+        slave_address = 4'd0;
+        slave_writedata = (mem_content[259] << 24) + (mem_content[258] << 16) + (mem_content[257] << 8) + (mem_content[256]);
+
+        @(posedge clk);
+        #2;
+        slave_address = 4'd1;
+        slave_writedata = (mem_content[263] << 24) + (mem_content[262] << 16) + (mem_content[261] << 8) + (mem_content[260]);
+
+        @(posedge clk);
+        #2;
+        slave_address = 4'd2;
+        slave_writedata = (mem_content[267] << 24) + (mem_content[266] << 16) + (mem_content[265] << 8) + (mem_content[264]);
+
+        @(posedge clk);
+        #2;
+        slave_address = 4'd3;
+        slave_writedata = (mem_content[271] << 24) + (mem_content[270] << 16) + (mem_content[269] << 8) + (mem_content[268]);
 
         @(posedge clk);
         #2;
@@ -90,14 +88,8 @@ module tb_aes_encrypt();
         @(posedge clk);
         @(posedge clk);
         @(posedge clk);
-        #2;
         slave_read = 1'b1;
         slave_address = 4'd0;
-
-        @(posedge clk);
-        read_data = slave_readdata;
-        slave_read = 1'b1;
-        slave_address = 4'd1;
 
         #2;
         assert(slave_readdata[7:0] === ref_content[0]);
@@ -106,9 +98,8 @@ module tb_aes_encrypt();
         assert(slave_readdata[31:24] === ref_content[3]);
 
         @(posedge clk);
-        read_data = slave_readdata;
         slave_read = 1'b1;
-        slave_address = 4'd2;
+        slave_address = 4'd1;
 
         #2;
         assert(slave_readdata[7:0] === ref_content[4]);
@@ -117,9 +108,8 @@ module tb_aes_encrypt();
         assert(slave_readdata[31:24] === ref_content[7]);
 
         @(posedge clk);
-        read_data = slave_readdata;
         slave_read = 1'b1;
-        slave_address = 4'd3;
+        slave_address = 4'd2;
 
         #2;
         assert(slave_readdata[7:0] === ref_content[8]);
@@ -128,7 +118,6 @@ module tb_aes_encrypt();
         assert(slave_readdata[31:24] === ref_content[11]);
 
         @(posedge clk);
-        read_data = slave_readdata;
         slave_read = 1'b1;
         slave_address = 4'd3;
 

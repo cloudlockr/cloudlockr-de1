@@ -22,13 +22,13 @@ module aes_encrypt(input logic clk, input logic rst_n,
     enum {START, SBOX, KEXP0, KEXP1, XOR, ROUND, SUB, SHIFT, MIX0, MIX1, DONE} state;
 
     always @(posedge clk) begin
-        if (slave_write && slave_address == 4'd0) begin
+        if (slave_write && slave_address === 4'd4) begin
             state <= START;
 
-            key[0]  = slave_writedata[7:0];
-            key[4]  = slave_writedata[15:8];
-            key[8]  = slave_writedata[23:16];
-            key[12] = slave_writedata[31:24];
+            block[0]  = slave_writedata[7:0];
+            block[4]  = slave_writedata[15:8];
+            block[8]  = slave_writedata[23:16];
+            block[12] = slave_writedata[31:24];
 
             slave_waitrequest <= 1'b1;
 
@@ -57,20 +57,6 @@ module aes_encrypt(input logic clk, input logic rst_n,
 
                     done <= 1'b0;
 
-                    // if (slave_read) begin
-                    //     if (slave_address === 4'd0) begin
-                    //         slave_readdata <= block0;
-                    //     end
-                    //     else if (slave_address === 4'd1) begin
-                    //         slave_readdata <= block1;
-                    //     end
-                    //     else if (slave_address === 4'd2) begin
-                    //         slave_readdata <= block2;
-                    //     end
-                    //     else if (slave_address === 4'd3) begin
-                    //         slave_readdata <= block3;
-                    //     end
-                    // end
                     if (slave_write) begin
                         if (slave_address === 4'd0) begin
                             // first 32 bit of key
