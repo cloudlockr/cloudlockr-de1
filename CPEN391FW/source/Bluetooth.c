@@ -38,12 +38,12 @@ typedef enum
 
 void BLUETOOTH_Receive( char ch )
 {
-    //static STATE_T state = STATE_PARSE_MSG;
+    static STATE_T state = STATE_PARSE_MSG;
 
 
 
-   // if (state == STATE_PARSE_MSG)
-    //{
+    if (state == STATE_PARSE_MSG)
+    {
 	    if ( bluetooth_Count < BUFFER_SIZE) // && ch != '\r' )
     	    {
                 bluetooth_Data[bluetooth_Count] = ch;
@@ -54,11 +54,11 @@ void BLUETOOTH_Receive( char ch )
         {
             printf("bluetooth buffer stopped at %d chars\n", bluetooth_Count);
             bluetooth_Count = 0;
-            //state = STATE_JSON_PARSE;
+            state = STATE_JSON_PARSE;
         }
-    //}
+    }
 
-    /*
+
     if (state == STATE_JSON_PARSE)
     {
 	// do stuff here to get some kind of JSON object that has fields with values
@@ -73,13 +73,13 @@ void BLUETOOTH_Receive( char ch )
 	if (msgType == 1)
 	{
 	    // call other function(s) to do actions
-	    sprintf( buffer, "\"status\": %i", success);
+	    sprintf( buffer, "\"status\": %i\n", success);
 	    UART_puts( UART_ePORT_BLUETOOTH, buffer );
 	}
 	if (msgType == 2)
 	{
 	    // call other function(s) to do actions
-            sprintf( buffer, "\"status\": %i, \"localEncryptionComponent\": %i", success, localEncryptionComponent);
+            sprintf( buffer, "\"status\": %i, \"localEncryptionComponent\": %i\n", success, localEncryptionComponent);
 	    UART_puts( UART_ePORT_BLUETOOTH, buffer );
 	}
 	// ... and so on...
@@ -91,7 +91,7 @@ void BLUETOOTH_Receive( char ch )
 
 	// call other function(s) to do actions
     }
-    */
+    // */
 
 }
 
