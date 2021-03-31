@@ -132,10 +132,6 @@ void UART_Init( UART_ePORT ePort )
         // Now Clear all bits in the FiFo control registers
         Bluetooth_FifoControlReg = 0x00; // 0x00 = 0000 0000
     }
-    else if ( ePort == UART_ePORT_TOUCH_SCREEN )
-    {
-    }
-  
 }
 
 /**************************************************************************
@@ -169,9 +165,6 @@ int UART_putchar( UART_ePORT ePort, int c)
         // write character to Transmitter fifo register
         Bluetooth_TransmitterFifo = c;
     }
-    else if ( ePort == UART_ePORT_TOUCH_SCREEN )
-    {
-    }
     
     // return the character we printed
     return c;
@@ -195,7 +188,6 @@ int UART_getchar( UART_ePORT ePort )
         
         // read new character from ReceiverFiFo register
         newChar = Wifi_ReceiverFifo;
- 
     }
     else if ( ePort == UART_ePORT_BLUETOOTH )
     {
@@ -207,9 +199,6 @@ int UART_getchar( UART_ePORT ePort )
       
         // read new character from ReceiverFiFo register
         newChar = Bluetooth_ReceiverFifo;
-    }
-    else if ( ePort == UART_ePORT_TOUCH_SCREEN )
-    {
     }
     
     // return new character
@@ -229,22 +218,13 @@ int UART_TestForReceivedData( UART_ePORT ePort )
     {
         // if Wifi_LineStatusReg bit 0 is set to 1
         // return TRUE, otherwise return FALSE
-        if ( Wifi_LineStatusReg & (1 << 0))
-        {
-            return 1;
-        } 
+        return ( Wifi_LineStatusReg & (1 << 0));
     }
     else if ( ePort == UART_ePORT_BLUETOOTH )
     {
         // if Wifi_LineStatusReg bit 0 is set to 1
         // return TRUE, otherwise return FALSE
-        if (Bluetooth_LineStatusReg & (1 << 0))
-        {
-              return 1;
-        } 
-    }
-    else if ( ePort == UART_ePORT_TOUCH_SCREEN )
-    {
+        return (Bluetooth_LineStatusReg & (1 << 0));
     }
     
     return 0;
@@ -275,9 +255,6 @@ void UART_Flush( UART_ePORT ePort )
         {
               Bluetooth_ReceiverFifo = 0x00;
         }
-    }
-    else if ( ePort == UART_ePORT_TOUCH_SCREEN )
-    {
     }
 }
 
