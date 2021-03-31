@@ -195,18 +195,20 @@ class AES:
 
         return self.turn_mat_to_text(plain_blocks)
 
-# really small test
 if __name__ == "__main__":
     private_key = ""
     plaintext = ""
-    num_blocks = 15
+    num_blocks = 1
 
-    #KEY
-    for _ in range(16):
-        key_digit = hex(random.randint(0, 255))[2:]
-        if len(key_digit) == 1:
-            key_digit = "0" + key_digit
-        private_key += key_digit
+    # #KEY
+    # for _ in range(16):
+    #     key_digit = hex(random.randint(0, 255))[2:]
+    #     if len(key_digit) == 1:
+    #         key_digit = "0" + key_digit
+    #     private_key += key_digit
+    
+    # print(private_key)
+    private_key = "d4665317110ad9741d65d3b7fa47318a"
 
     # PLAINTEXT
     for _ in range(num_blocks * 16):
@@ -268,6 +270,7 @@ if __name__ == "__main__":
         for i in range(0, num_blocks * 16 * 2, 2):
             cipher_digit = ciphertext[i:i+2]
             f.write(f"{cipher_digit}\n")
+        print("Generated reference solution")
 
     decrypted_text = aes.decrypt(ciphertext)
     if plaintext == decrypted_text:

@@ -1,4 +1,13 @@
-word 0: when written, starts accelerator, may also be read
-word 1: destination byte address
-word 2: source byte address
-word 3: number of 8 bit words in plain text
+Word number, number means the slave address
+
+word 0: First 32 bits of key, [7:0] is the lowest 8 bits, [15:8] is the second lowest 8 bits, etc.
+word 1: Second 32 bits of key
+word 2: Third 32 bits of key
+word 3: Fourth 32 bits of key
+
+word 4: First 32 bits of plaintext
+word 5: Second 32 bits of plaintext
+word 6: Third 32 bits of plaintext
+word 7: Fourth 32 bits of plaintext
+
+word 8: Start AES module
