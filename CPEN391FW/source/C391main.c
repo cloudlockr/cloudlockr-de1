@@ -100,10 +100,12 @@ static void mainLoop(void)
         {
             ch = UART_getchar( UART_ePORT_BLUETOOTH );
 
-	        UART_putchar( UART_ePORT_BLUETOOTH, ch ); // send back whatever character received.
+	    UART_putchar( UART_ePORT_BLUETOOTH, ch ); // send back whatever character received.
 
-	        printf( "DE1 received BT msg from frontend %c", (char)ch );
-	        printf( "- loopCount: %i\n", loopCount );
+	    printf( "DE1 received BT msg from frontend %c", (char)ch );
+	    printf( "- loopCount: %i\n", loopCount );
+		
+	    BLUETOOTH_Receive( ch );	
         }
         
         // Process switches
