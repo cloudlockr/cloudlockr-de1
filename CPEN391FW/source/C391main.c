@@ -65,7 +65,7 @@ static void AppInit( void )
 static void mainLoop(void)
 {
 	int loopCount = 0;
-	int ch;
+	unsigned char ch;
     int switches;
     int buttons, buttonsOld;
     int loopCountOld = 0;
@@ -86,7 +86,7 @@ static void mainLoop(void)
         // Polling data from WIFI UART.
 	    if ( UART_TestForReceivedData( UART_ePORT_WIFI ) )
 	    {
-	        ch = UART_getchar( UART_ePORT_WIFI );
+	        ch = (char)UART_getchar( UART_ePORT_WIFI );
 
 	        //UART_putchar( UART_ePORT_WIFI, ch ); // send back whatever character received.
 
@@ -97,9 +97,8 @@ static void mainLoop(void)
         
 	    if ( UART_TestForReceivedData( UART_ePORT_BLUETOOTH ) )
 	    {
-	    	ch = UART_getchar( UART_ePORT_BLUETOOTH );
-	    	printf( "Bluetooth Received: %c ", ch );
-	    	printf( "- loopCount: %i\n", loopCount );
+	    	ch = (char)UART_getchar( UART_ePORT_BLUETOOTH );
+            //printf( "%c", ch );
 	    	BLUETOOTH_Receive( ch );
 	    }
 
