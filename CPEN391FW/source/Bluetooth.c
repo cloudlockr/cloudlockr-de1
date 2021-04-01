@@ -28,70 +28,70 @@ typedef enum
     STATE_PARSE_MSG = 0,
     STATE_MSG_VALUE,  // may not be needed
     STATE_JSON_PARSE,
-    STATE_PARSE_MSG_1, // this and below may not be needed
-    STATE_PARSE_MSG_2,
-    STATE_PARSE_MSG_3,
-    STATE_PARSE_MSG_4,
-    STATE_PARSE_MSG_5,
 } STATE_T;
 
 
 void BLUETOOTH_Receive( char ch )
 {
-    static STATE_T state = STATE_PARSE_MSG;
+    int msgType;
+    int success;
+    bool bReceivedMsg;
 
-
-
-    if (state == STATE_PARSE_MSG)
+    bReceivedMsg = false;
+	if ( bluetooth_Count < BUFFER_SIZE )
+   	{
+            bluetooth_Data[bluetooth_Count] = ch;
+            bluetooth_Count++;
+            
+            if ( ( bluetooth_Count >= 2 ) && 
+                 ( bluetooth_Data[bluetooth_Count-1] == '\n' ) && 
+                 ( bluetooth_Data[bluetooth_Count-2] == '\r' ) )
+            {
+                bReceivedMsg = true;
+            }
+   	}
+    else if ( bluetooth_Count >= BUFFER_SIZE )
+    {   
+        bReceivedMsg = true;
+    }
+        
+    if ( bReceivedMsg ) // respond only if a whole msg has be received or termination condition is met.
     {
-	    if ( bluetooth_Count < BUFFER_SIZE) // && ch != '\r' )
-    	    {
-                bluetooth_Data[bluetooth_Count] = ch;
-                bluetooth_Count++;
-   	    }
+        bluetooth_Data[bluetooth_Count] = 0;
+        printf( "msg received:\n" );
+        printf( bluetooth_Data );
+        printf( "\n" );
+        
+        printf("bluetooth buffer stopped at %d chars\n", bluetooth_Count);
+        bluetooth_Count = 0;
+        
+	    // do stuff here to get some kind of JSON object that has fields with values
 
-        if ( bluetooth_Count >= BUFFER_SIZE)
+	    // use JSON object to figure out what kind of message,
+	    // and whether message is valid/successful, etc
+        
+        if ( strncmp( "blah", bluetooth_Data, 4 ) == 0 )
         {
-            printf("bluetooth buffer stopped at %d chars\n", bluetooth_Count);
-            bluetooth_Count = 0;
-            state = STATE_JSON_PARSE;
+            msgType = 1;
+            success = 1;
         }
+        else
+        {
+            msgType = 2;
+            success = 0;
+        }
+	    
+
+	    if (msgType == 1)
+	    {
+	        // call other function(s) to do actions
+	        UART_puts( UART_ePORT_BLUETOOTH, "\"status\": 1\n" );
+	    }
+	    else if (msgType == 2)
+	    {
+            UART_puts( UART_ePORT_BLUETOOTH, "\"failed\": 0\n" );
+	    }
     }
-
-
-    if (state == STATE_JSON_PARSE)
-    {
-	// do stuff here to get some kind of JSON object that has fields with values
-
-	// use JSON object to figure out what kind of message,
-	// and whether message is valid/successful, etc
-	int msgType =  1; // or 2, 3, ... 7
-	int success = 1; // or 0
-	int localEncryptionComponent = 555;
- 	char buffer[BUFFER_SIZE];
-
-	if (msgType == 1)
-	{
-	    // call other function(s) to do actions
-	    sprintf( buffer, "\"status\": %i\n", success);
-	    UART_puts( UART_ePORT_BLUETOOTH, buffer );
-	}
-	if (msgType == 2)
-	{
-	    // call other function(s) to do actions
-            sprintf( buffer, "\"status\": %i, \"localEncryptionComponent\": %i\n", success, localEncryptionComponent);
-	    UART_puts( UART_ePORT_BLUETOOTH, buffer );
-	}
-	// ... and so on...
-	if (msgType == 7)
-	{
-	    // similar to above, fill in later
-	    // call other function(s) to do actions
-	}
-
-	// call other function(s) to do actions
-    }
-    // */
 
 }
 
@@ -108,14 +108,3 @@ void BLUETOOTH_Process( void )
 
 }
 
-/*
-static BLUETOOTH_CMD bluetooth_ParseCmd( void )
-{
-	BLUETOOTH_CMD bluetooth_Cmd;
-
-    // go through bluetooth_Data and parse bluetooth commands.
-    // ....
-
-	return bluetooth_Cmd;
-}
-  */
