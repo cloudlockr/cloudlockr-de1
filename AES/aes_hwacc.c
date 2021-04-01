@@ -204,8 +204,8 @@ int main()
     }
 
     /* ================================================================================================================================
-	 * Starting no key expansion test
-	 */
+     * Starting no key expansion test
+     */
     // Purposely creating invalid key to test whether function uses this key (it shouldn't)
     unsigned char key2[] = {0x0};
     unsigned char plaintext2[] = {0x2a, 0x1f, 0x22, 0x16, 0x00, 0x12, 0x1c, 0x7c, 0x75, 0x34, 0x40, 0x41, 0x1e, 0x1b, 0x12, 0x4a};
