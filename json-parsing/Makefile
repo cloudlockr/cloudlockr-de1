@@ -1,6 +1,9 @@
 # You can put your build options here
 -include config.mk
 
+strtojson: strtojson.c jsmn.h
+	$(CC) $(LDFLAGS) $< -c
+
 test: test_default test_strict test_links test_strict_links
 test_default: test/tests.c jsmn.h
 	$(CC) $(CFLAGS) $(LDFLAGS) $< -o test/$@
