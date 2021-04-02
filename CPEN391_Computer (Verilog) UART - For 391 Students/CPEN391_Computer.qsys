@@ -54,6 +54,14 @@
          type = "String";
       }
    }
+   element CPEN391_Computer
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
    element CPEN_Computer_V1
    {
       datum _originalDeviceFamily
@@ -299,6 +307,22 @@
          type = "boolean";
       }
    }
+   element aes_decrypt_0
+   {
+      datum _sortIndex
+      {
+         value = "20";
+         type = "int";
+      }
+   }
+   element aes_encrypt_0
+   {
+      datum _sortIndex
+      {
+         value = "19";
+         type = "int";
+      }
+   }
    element bit_flipper_0
    {
       datum _sortIndex
@@ -308,7 +332,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -1197,6 +1221,8 @@
   <parameter name="gui_refclk" value="50.0" />
   <parameter name="other_boards" value="None" />
  </module>
+ <module name="aes_decrypt_0" kind="aes_decrypt" version="1.0" enabled="1" />
+ <module name="aes_encrypt_0" kind="aes_encrypt" version="1.0" enabled="1" />
  <module name="bit_flipper_0" kind="bit_flipper" version="1.0" enabled="1" />
  <connection
    kind="avalon"
@@ -1336,6 +1362,24 @@
  <connection
    kind="avalon"
    version="15.0"
+   start="ARM_A9_HPS.h2f_lw_axi_master"
+   end="aes_encrypt_0.slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x3000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_lw_axi_master"
+   end="aes_decrypt_0.slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x4000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="15.0"
    start="JTAG_To_FPGA_Bridge.master"
    end="IO_Bridge.avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -1460,6 +1504,24 @@
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
+   kind="avalon"
+   version="15.0"
+   start="JTAG_To_FPGA_Bridge.master"
+   end="aes_encrypt_0.slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0xff203000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="15.0"
+   start="JTAG_To_FPGA_Bridge.master"
+   end="aes_decrypt_0.slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0xff204000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
    kind="clock"
    version="15.0"
    start="System_PLL.sys_clk"
@@ -1540,6 +1602,16 @@
    version="15.0"
    start="System_PLL.sys_clk"
    end="bit_flipper_0.clock" />
+ <connection
+   kind="clock"
+   version="15.0"
+   start="System_PLL.sys_clk"
+   end="aes_encrypt_0.clock" />
+ <connection
+   kind="clock"
+   version="15.0"
+   start="System_PLL.sys_clk"
+   end="aes_decrypt_0.clock" />
  <connection
    kind="clock"
    version="15.0"
@@ -1674,6 +1746,16 @@
    kind="reset"
    version="15.0"
    start="ARM_A9_HPS.h2f_reset"
+   end="aes_encrypt_0.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_reset"
+   end="aes_decrypt_0.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_reset"
    end="Onchip_SRAM.reset1" />
  <connection
    kind="reset"
@@ -1755,6 +1837,16 @@
    version="15.0"
    start="System_PLL.reset_source"
    end="LCD_0.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="System_PLL.reset_source"
+   end="aes_encrypt_0.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="System_PLL.reset_source"
+   end="aes_decrypt_0.reset" />
  <connection
    kind="reset"
    version="15.0"

@@ -28,10 +28,10 @@
 // ------------------------------------------
 // Generation parameters:
 //   output_name:         CPEN391_Computer_mm_interconnect_0_cmd_demux
-//   ST_DATA_W:           167
-//   ST_CHANNEL_W:        15
+//   ST_DATA_W:           169
+//   ST_CHANNEL_W:        17
 //   NUM_OUTPUTS:         2
-//   VALID_WIDTH:         15
+//   VALID_WIDTH:         17
 // ------------------------------------------
 
 //------------------------------------------
@@ -45,9 +45,9 @@ module CPEN391_Computer_mm_interconnect_0_cmd_demux
     // -------------------
     // Sink
     // -------------------
-    input  [15-1      : 0]   sink_valid,
-    input  [167-1    : 0]   sink_data, // ST_DATA_W=167
-    input  [15-1 : 0]   sink_channel, // ST_CHANNEL_W=15
+    input  [17-1      : 0]   sink_valid,
+    input  [169-1    : 0]   sink_data, // ST_DATA_W=169
+    input  [17-1 : 0]   sink_channel, // ST_CHANNEL_W=17
     input                         sink_startofpacket,
     input                         sink_endofpacket,
     output                        sink_ready,
@@ -56,15 +56,15 @@ module CPEN391_Computer_mm_interconnect_0_cmd_demux
     // Sources 
     // -------------------
     output reg                      src0_valid,
-    output reg [167-1    : 0] src0_data, // ST_DATA_W=167
-    output reg [15-1 : 0] src0_channel, // ST_CHANNEL_W=15
+    output reg [169-1    : 0] src0_data, // ST_DATA_W=169
+    output reg [17-1 : 0] src0_channel, // ST_CHANNEL_W=17
     output reg                      src0_startofpacket,
     output reg                      src0_endofpacket,
     input                           src0_ready,
 
     output reg                      src1_valid,
-    output reg [167-1    : 0] src1_data, // ST_DATA_W=167
-    output reg [15-1 : 0] src1_channel, // ST_CHANNEL_W=15
+    output reg [169-1    : 0] src1_data, // ST_DATA_W=169
+    output reg [17-1 : 0] src1_channel, // ST_CHANNEL_W=17
     output reg                      src1_startofpacket,
     output reg                      src1_endofpacket,
     input                           src1_ready,
@@ -109,7 +109,7 @@ module CPEN391_Computer_mm_interconnect_0_cmd_demux
     assign ready_vector[0] = src0_ready;
     assign ready_vector[1] = src1_ready;
 
-    assign sink_ready = |(sink_channel & {{13{1'b0}},{ready_vector[NUM_OUTPUTS - 1 : 0]}});
+    assign sink_ready = |(sink_channel & {{15{1'b0}},{ready_vector[NUM_OUTPUTS - 1 : 0]}});
 
 endmodule
 

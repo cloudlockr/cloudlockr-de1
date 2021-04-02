@@ -39,13 +39,13 @@
 // ------------------------------------------
 // Generation parameters:
 //   output_name:         CPEN391_Computer_mm_interconnect_0_rsp_mux_002
-//   NUM_INPUTS:          13
-//   ARBITRATION_SHARES:  1 1 1 1 1 1 1 1 1 1 1 1 1
+//   NUM_INPUTS:          15
+//   ARBITRATION_SHARES:  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 //   ARBITRATION_SCHEME   "no-arb"
 //   PIPELINE_ARB:        0
 //   PKT_TRANS_LOCK:      72 (arbitration locking enabled)
-//   ST_DATA_W:           131
-//   ST_CHANNEL_W:        15
+//   ST_DATA_W:           133
+//   ST_CHANNEL_W:        17
 // ------------------------------------------
 
 module CPEN391_Computer_mm_interconnect_0_rsp_mux_002
@@ -54,103 +54,117 @@ module CPEN391_Computer_mm_interconnect_0_rsp_mux_002
     // Sinks
     // ----------------------
     input                       sink0_valid,
-    input [131-1   : 0]  sink0_data,
-    input [15-1: 0]  sink0_channel,
+    input [133-1   : 0]  sink0_data,
+    input [17-1: 0]  sink0_channel,
     input                       sink0_startofpacket,
     input                       sink0_endofpacket,
     output                      sink0_ready,
 
     input                       sink1_valid,
-    input [131-1   : 0]  sink1_data,
-    input [15-1: 0]  sink1_channel,
+    input [133-1   : 0]  sink1_data,
+    input [17-1: 0]  sink1_channel,
     input                       sink1_startofpacket,
     input                       sink1_endofpacket,
     output                      sink1_ready,
 
     input                       sink2_valid,
-    input [131-1   : 0]  sink2_data,
-    input [15-1: 0]  sink2_channel,
+    input [133-1   : 0]  sink2_data,
+    input [17-1: 0]  sink2_channel,
     input                       sink2_startofpacket,
     input                       sink2_endofpacket,
     output                      sink2_ready,
 
     input                       sink3_valid,
-    input [131-1   : 0]  sink3_data,
-    input [15-1: 0]  sink3_channel,
+    input [133-1   : 0]  sink3_data,
+    input [17-1: 0]  sink3_channel,
     input                       sink3_startofpacket,
     input                       sink3_endofpacket,
     output                      sink3_ready,
 
     input                       sink4_valid,
-    input [131-1   : 0]  sink4_data,
-    input [15-1: 0]  sink4_channel,
+    input [133-1   : 0]  sink4_data,
+    input [17-1: 0]  sink4_channel,
     input                       sink4_startofpacket,
     input                       sink4_endofpacket,
     output                      sink4_ready,
 
     input                       sink5_valid,
-    input [131-1   : 0]  sink5_data,
-    input [15-1: 0]  sink5_channel,
+    input [133-1   : 0]  sink5_data,
+    input [17-1: 0]  sink5_channel,
     input                       sink5_startofpacket,
     input                       sink5_endofpacket,
     output                      sink5_ready,
 
     input                       sink6_valid,
-    input [131-1   : 0]  sink6_data,
-    input [15-1: 0]  sink6_channel,
+    input [133-1   : 0]  sink6_data,
+    input [17-1: 0]  sink6_channel,
     input                       sink6_startofpacket,
     input                       sink6_endofpacket,
     output                      sink6_ready,
 
     input                       sink7_valid,
-    input [131-1   : 0]  sink7_data,
-    input [15-1: 0]  sink7_channel,
+    input [133-1   : 0]  sink7_data,
+    input [17-1: 0]  sink7_channel,
     input                       sink7_startofpacket,
     input                       sink7_endofpacket,
     output                      sink7_ready,
 
     input                       sink8_valid,
-    input [131-1   : 0]  sink8_data,
-    input [15-1: 0]  sink8_channel,
+    input [133-1   : 0]  sink8_data,
+    input [17-1: 0]  sink8_channel,
     input                       sink8_startofpacket,
     input                       sink8_endofpacket,
     output                      sink8_ready,
 
     input                       sink9_valid,
-    input [131-1   : 0]  sink9_data,
-    input [15-1: 0]  sink9_channel,
+    input [133-1   : 0]  sink9_data,
+    input [17-1: 0]  sink9_channel,
     input                       sink9_startofpacket,
     input                       sink9_endofpacket,
     output                      sink9_ready,
 
     input                       sink10_valid,
-    input [131-1   : 0]  sink10_data,
-    input [15-1: 0]  sink10_channel,
+    input [133-1   : 0]  sink10_data,
+    input [17-1: 0]  sink10_channel,
     input                       sink10_startofpacket,
     input                       sink10_endofpacket,
     output                      sink10_ready,
 
     input                       sink11_valid,
-    input [131-1   : 0]  sink11_data,
-    input [15-1: 0]  sink11_channel,
+    input [133-1   : 0]  sink11_data,
+    input [17-1: 0]  sink11_channel,
     input                       sink11_startofpacket,
     input                       sink11_endofpacket,
     output                      sink11_ready,
 
     input                       sink12_valid,
-    input [131-1   : 0]  sink12_data,
-    input [15-1: 0]  sink12_channel,
+    input [133-1   : 0]  sink12_data,
+    input [17-1: 0]  sink12_channel,
     input                       sink12_startofpacket,
     input                       sink12_endofpacket,
     output                      sink12_ready,
+
+    input                       sink13_valid,
+    input [133-1   : 0]  sink13_data,
+    input [17-1: 0]  sink13_channel,
+    input                       sink13_startofpacket,
+    input                       sink13_endofpacket,
+    output                      sink13_ready,
+
+    input                       sink14_valid,
+    input [133-1   : 0]  sink14_data,
+    input [17-1: 0]  sink14_channel,
+    input                       sink14_startofpacket,
+    input                       sink14_endofpacket,
+    output                      sink14_ready,
 
 
     // ----------------------
     // Source
     // ----------------------
     output                      src_valid,
-    output [131-1    : 0] src_data,
-    output [15-1 : 0] src_channel,
+    output [133-1    : 0] src_data,
+    output [17-1 : 0] src_channel,
     output                      src_startofpacket,
     output                      src_endofpacket,
     input                       src_ready,
@@ -161,12 +175,12 @@ module CPEN391_Computer_mm_interconnect_0_rsp_mux_002
     input clk,
     input reset
 );
-    localparam PAYLOAD_W        = 131 + 15 + 2;
-    localparam NUM_INPUTS       = 13;
+    localparam PAYLOAD_W        = 133 + 17 + 2;
+    localparam NUM_INPUTS       = 15;
     localparam SHARE_COUNTER_W  = 1;
     localparam PIPELINE_ARB     = 0;
-    localparam ST_DATA_W        = 131;
-    localparam ST_CHANNEL_W     = 15;
+    localparam ST_DATA_W        = 133;
+    localparam ST_CHANNEL_W     = 17;
     localparam PKT_TRANS_LOCK   = 72;
 
     // ------------------------------------------
@@ -195,6 +209,8 @@ module CPEN391_Computer_mm_interconnect_0_rsp_mux_002
     wire [PAYLOAD_W - 1 : 0] sink10_payload;
     wire [PAYLOAD_W - 1 : 0] sink11_payload;
     wire [PAYLOAD_W - 1 : 0] sink12_payload;
+    wire [PAYLOAD_W - 1 : 0] sink13_payload;
+    wire [PAYLOAD_W - 1 : 0] sink14_payload;
 
     assign valid[0] = sink0_valid;
     assign valid[1] = sink1_valid;
@@ -209,6 +225,8 @@ module CPEN391_Computer_mm_interconnect_0_rsp_mux_002
     assign valid[10] = sink10_valid;
     assign valid[11] = sink11_valid;
     assign valid[12] = sink12_valid;
+    assign valid[13] = sink13_valid;
+    assign valid[14] = sink14_valid;
 
 
     // ------------------------------------------
@@ -231,6 +249,8 @@ module CPEN391_Computer_mm_interconnect_0_rsp_mux_002
       lock[10] = sink10_data[72];
       lock[11] = sink11_data[72];
       lock[12] = sink12_data[72];
+      lock[13] = sink13_data[72];
+      lock[14] = sink14_data[72];
     end
 
     assign last_cycle = src_valid & src_ready & src_endofpacket & ~(|(lock & grant));
@@ -274,6 +294,8 @@ module CPEN391_Computer_mm_interconnect_0_rsp_mux_002
     // 10      |      1       |  0
     // 11      |      1       |  0
     // 12      |      1       |  0
+    // 13      |      1       |  0
+    // 14      |      1       |  0
      wire [SHARE_COUNTER_W - 1 : 0] share_0 = 1'd0;
      wire [SHARE_COUNTER_W - 1 : 0] share_1 = 1'd0;
      wire [SHARE_COUNTER_W - 1 : 0] share_2 = 1'd0;
@@ -287,6 +309,8 @@ module CPEN391_Computer_mm_interconnect_0_rsp_mux_002
      wire [SHARE_COUNTER_W - 1 : 0] share_10 = 1'd0;
      wire [SHARE_COUNTER_W - 1 : 0] share_11 = 1'd0;
      wire [SHARE_COUNTER_W - 1 : 0] share_12 = 1'd0;
+     wire [SHARE_COUNTER_W - 1 : 0] share_13 = 1'd0;
+     wire [SHARE_COUNTER_W - 1 : 0] share_14 = 1'd0;
 
     // ------------------------------------------
     // Choose the share value corresponding to the grant.
@@ -306,7 +330,9 @@ module CPEN391_Computer_mm_interconnect_0_rsp_mux_002
     share_9 & { SHARE_COUNTER_W {next_grant[9]} } |
     share_10 & { SHARE_COUNTER_W {next_grant[10]} } |
     share_11 & { SHARE_COUNTER_W {next_grant[11]} } |
-    share_12 & { SHARE_COUNTER_W {next_grant[12]} };
+    share_12 & { SHARE_COUNTER_W {next_grant[12]} } |
+    share_13 & { SHARE_COUNTER_W {next_grant[13]} } |
+    share_14 & { SHARE_COUNTER_W {next_grant[14]} };
     end
 
     // ------------------------------------------
@@ -394,11 +420,17 @@ module CPEN391_Computer_mm_interconnect_0_rsp_mux_002
 
     wire final_packet_12 = 1'b1;
 
+    wire final_packet_13 = 1'b1;
+
+    wire final_packet_14 = 1'b1;
+
 
     // ------------------------------------------
     // Concatenate all final_packet signals (wire or reg) into a handy vector.
     // ------------------------------------------
     wire [NUM_INPUTS - 1 : 0] final_packet = {
+    final_packet_14,
+    final_packet_13,
     final_packet_12,
     final_packet_11,
     final_packet_10,
@@ -508,6 +540,8 @@ module CPEN391_Computer_mm_interconnect_0_rsp_mux_002
     assign sink10_ready = src_ready && grant[10];
     assign sink11_ready = src_ready && grant[11];
     assign sink12_ready = src_ready && grant[12];
+    assign sink13_ready = src_ready && grant[13];
+    assign sink14_ready = src_ready && grant[14];
 
     assign src_valid = |(grant & valid);
 
@@ -525,7 +559,9 @@ module CPEN391_Computer_mm_interconnect_0_rsp_mux_002
       sink9_payload & {PAYLOAD_W {grant[9]} } |
       sink10_payload & {PAYLOAD_W {grant[10]} } |
       sink11_payload & {PAYLOAD_W {grant[11]} } |
-      sink12_payload & {PAYLOAD_W {grant[12]} };
+      sink12_payload & {PAYLOAD_W {grant[12]} } |
+      sink13_payload & {PAYLOAD_W {grant[13]} } |
+      sink14_payload & {PAYLOAD_W {grant[14]} };
     end
 
     // ------------------------------------------
@@ -558,6 +594,10 @@ module CPEN391_Computer_mm_interconnect_0_rsp_mux_002
     sink11_startofpacket,sink11_endofpacket};
     assign sink12_payload = {sink12_channel,sink12_data,
     sink12_startofpacket,sink12_endofpacket};
+    assign sink13_payload = {sink13_channel,sink13_data,
+    sink13_startofpacket,sink13_endofpacket};
+    assign sink14_payload = {sink14_channel,sink14_data,
+    sink14_startofpacket,sink14_endofpacket};
 
     assign {src_channel,src_data,src_startofpacket,src_endofpacket} = src_payload;
 endmodule
