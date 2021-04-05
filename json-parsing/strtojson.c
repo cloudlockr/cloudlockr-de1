@@ -12,10 +12,13 @@
  */
 extern jsmntok_t *str_to_json(const char *str) {
   jsmn_parser p;
+  int num_tokens;
+  jsmntok_t *tokens;
+  int error;
   size_t len = strlen(str);
 
   jsmn_init(&p);
-  int num_tokens = jsmn_parse(&p, str, len, NULL, SIZE_MAX);
+  num_tokens = jsmn_parse(&p, str, len, NULL, SIZE_MAX);
   if (num_tokens < 0) {
     switch (num_tokens) {
       case JSMN_ERROR_NOMEM:
@@ -34,10 +37,10 @@ extern jsmntok_t *str_to_json(const char *str) {
     return NULL;
   }
 
-  jsmntok_t *tokens = (jsmntok_t *)malloc(num_tokens * sizeof(jsmntok_t));
+  tokens = (jsmntok_t *)malloc(num_tokens * sizeof(jsmntok_t));
   if (!tokens) return NULL;
 
-  int error = jsmn_parse(&p, str, len, tokens, num_tokens);
+  error = jsmn_parse(&p, str, len, tokens, num_tokens);
   if (error < 0) {
     switch (error) {
       case JSMN_ERROR_NOMEM:

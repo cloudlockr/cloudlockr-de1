@@ -62,10 +62,10 @@ int test_empty(void) {
 
 int test_malformed(void) {
   const char *str = "{{{"; // Incomplete JSON object
+  const char *str2 = "((("; // JSON object with invalid characters
   jsmntok_t *result = str_to_json(str);
   check(result == NULL);
 
-  const char *str2 = "((("; // JSON object with invalid characters
   result = str_to_json(str2);
   check(result == NULL);
   return 0;
@@ -73,25 +73,51 @@ int test_malformed(void) {
 
 int test_proper(void) {
   const char *str = "{}"; // Empty JSON object
+  jsmntok_t expected[1];
+  jsmntok_t expected2[6];
+  const char *str2 = "{\"list\": [1, 2, 3]}";
   jsmntok_t *result = str_to_json(str);
   check(result != NULL);
 
-  jsmntok_t expected[1];
-  expected[0] = (jsmntok_t) {JSMN_OBJECT, 0, 1, 2};
+  expected[0].type = JSMN_OBJECT;
+  expected[0].start = 0;
+  expected[0].end = 1;
+  expected[0].size = 2;
   check(compare_token_arrays(expected, result, 1, str));
   free(result);
 
-  const char *str2 = "{\"list\": [1, 2, 3]}";
   result = str_to_json(str2);
   check(result != NULL);
 
-  jsmntok_t expected2[6];
-  expected2[0] = (jsmntok_t) {JSMN_OBJECT, 0, 18, 19};
-  expected2[1] = (jsmntok_t) {JSMN_STRING, 1, 5, 5};
-  expected2[2] = (jsmntok_t) {JSMN_ARRAY, 9, 17, 9};
-  expected2[3] = (jsmntok_t) {JSMN_PRIMITIVE, 10, 10, 1};
-  expected2[4] = (jsmntok_t) {JSMN_PRIMITIVE, 13, 13, 1};
-  expected2[5] = (jsmntok_t) {JSMN_PRIMITIVE, 16, 16, 1};
+  expected2[0].type = JSMN_OBJECT;
+  expected2[0].start = 0;
+  expected2[0].end = 18;
+  expected2[0].size = 19;
+
+  expected2[1].type = JSMN_STRING;
+  expected2[1].start = 1;
+  expected2[1].end = 5;
+  expected2[1].size = 5;
+
+  expected2[2].type = JSMN_ARRAY;
+  expected2[2].start = 9;
+  expected2[2].end = 17;
+  expected2[2].size = 9;
+
+  expected2[3].type = JSMN_PRIMITIVE;
+  expected2[3].start = 10;
+  expected2[3].end = 10;
+  expected2[3].size = 1;
+
+  expected2[4].type = JSMN_PRIMITIVE;
+  expected2[4].start = 13;
+  expected2[4].end = 13;
+  expected2[4].size = 1;
+
+  expected2[5].type = JSMN_PRIMITIVE;
+  expected2[5].start = 16;
+  expected2[5].end = 16;
+  expected2[5].size = 1;
   check(compare_token_arrays(expected2, result, 6, str2));
   free(result);
   return 0;
