@@ -16,11 +16,7 @@
 #include "TypeDef.h"
 #include "HPS.h"
 #include "UART.h"
-
-#ifndef JSON_PARSER_H
-#define JSON_PARSER_H
 #include "JsonParser.h"
-#endif
 
 #define BUFFER_SIZE 1024
 static int  bluetooth_count = 0;
@@ -36,8 +32,8 @@ typedef enum
 } STATE_T;
 
 /*
- * Sends a message to the phone over bluetooth. Assumes that the string has already been
- * properly formatted with special characters like quotations backslashed.
+ * Sends a JSON message to the phone over bluetooth. Assumes that the string has already been
+ * properly formatted as a valid JSON object and has special characters like quotations backslashed.
  *
  * The main purpose of this function is to fragment the messages and send them in the
  * expected format.
@@ -46,6 +42,18 @@ void bluetooth_send_message( char* data )
 {
 	// TODO: need to still implement (and convert bluetooth_process() to use it)
 	(void) data;
+}
+
+/*
+ * Special communication method for sending a specific status code
+ * (most communications only require this)
+ */
+void bluetooth_send_status( int status )
+{
+	// Format message and send
+	char res_buffer[18];
+	snprintf(res_buffer, sizeof(res_buffer), "{\"status\":%d}\v\n", status);
+	UART_puts( UART_ePORT_BLUETOOTH, res_buffer );
 }
 
 /*
@@ -100,9 +108,7 @@ char* bluetooth_process( char ch )
 			// Assign the correct OK status
 			status = 2;
 
-		char res_buffer[18];
-		snprintf(res_buffer, sizeof(res_buffer), "{\"status\":%d}\v\n", status);
-		UART_puts( UART_ePORT_BLUETOOTH, res_buffer );
+		bluetooth_send_status(status);
 	}
 	else if ( fullMessageReceived )
     {
@@ -110,7 +116,7 @@ char* bluetooth_process( char ch )
 		bluetooth_data[bluetooth_count] = 0;
 
 		// Acknowledge the fragment
-		UART_puts( UART_ePORT_BLUETOOTH, "{\"status\":2}\v\n" );
+		bluetooth_send_status(2);
         
 		// Reset state
         bluetooth_count = 0;
@@ -119,7 +125,6 @@ char* bluetooth_process( char ch )
         printf( "msg received:\n" );
 		printf( bluetooth_data );
 		printf( "\n" );
-		printf("bluetooth buffer stopped at %d chars\n", bluetooth_count);
 
         return bluetooth_data;
     }
@@ -130,7 +135,7 @@ char* bluetooth_process( char ch )
 /*
  * Waits for an entire bluetooth message to be received and processed
  */
-char* bluetooth_wait_for_data()
+char* bluetooth_wait_for_data( void )
 {
 	while (1)
 	{

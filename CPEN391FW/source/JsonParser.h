@@ -1,4 +1,6 @@
 /*
+
+
  * MIT License
  *
  * Copyright (c) 2010 Serge Zaitsev
@@ -29,10 +31,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #ifdef JSMN_STATIC
 #define JSMN_API static
@@ -89,25 +87,6 @@ typedef struct jsmn_parser {
   unsigned int toknext; /* next token to allocate */
   int toksuper;         /* superior token node, e.g. parent object or array */
 } jsmn_parser;
-
-
-// Custom declarations
-jsmntok_t *str_to_json(const char *str);
-int jsoneq(const char *json, jsmntok_t *tok, const char *s);
-
-
-/**
- * Create JSON parser over an array of tokens
- */
-JSMN_API void jsmn_init(jsmn_parser *parser);
-
-/**
- * Run JSON parser. It parses a JSON data string into and array of tokens, each
- * describing
- * a single JSON object.
- */
-JSMN_API int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
-                        jsmntok_t *tokens, const unsigned int num_tokens);
 
 #ifndef JSMN_HEADER
 /**
@@ -275,7 +254,7 @@ static int jsmn_parse_string(jsmn_parser *parser, const char *js,
 /**
  * Parse JSON string and fill tokens.
  */
-JSMN_API int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
+static int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
                         jsmntok_t *tokens, const unsigned int num_tokens) {
   int r;
   int i;
@@ -466,7 +445,7 @@ JSMN_API int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
  * Creates a new parser based over a given buffer with an array of tokens
  * available.
  */
-JSMN_API void jsmn_init(jsmn_parser *parser) {
+static void jsmn_init(jsmn_parser *parser) {
   parser->pos = 0;
   parser->toknext = 0;
   parser->toksuper = -1;
@@ -478,7 +457,7 @@ JSMN_API void jsmn_init(jsmn_parser *parser) {
  * Returns array of jsmntok_t objects if parsing succeeds
  * If parsing fails, an error message is printed to stderr and NULL is returned
  */
-jsmntok_t *str_to_json(const char *str) {
+static jsmntok_t *str_to_json(const char *str) {
   jsmn_parser p1, p2;
   int num_tokens;
   jsmntok_t *tokens;
@@ -540,7 +519,7 @@ jsmntok_t *str_to_json(const char *str) {
  *
  * If they are equal, 1 is returned, otherwise 0 is returned
  */
-int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
+static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
   if (tok->type == JSMN_STRING && (int)strlen(s) == tok->end - tok->start &&
       strncmp(json + tok->start, s, tok->end - tok->start) == 0) {
     return 1;
@@ -548,10 +527,40 @@ int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
   return 0;
 }
 
-#endif /* JSMN_HEADER */
+/*
+ * Returns an array of string values of the json values.
+ * The max length of value is capped by the MAX_VALUE_SIZE
+ */
+static char** get_json_values(const char *json, jsmntok_t *tok, int numTokens)
+{
+	char** ret = malloc(sizeof(char*) * numTokens);
+	int valuesAdded = 0;
 
-#ifdef __cplusplus
+	for (int i = 2; valuesAdded < numTokens; i += 2)
+	{
+		// Get the token and copy the data to the return buffer
+		jsmntok_t token = tok[i];
+		int length = token.end - token.start;
+
+		ret[valuesAdded] = malloc(length + 1);
+		memcpy(ret[valuesAdded], json + token.start, length);
+
+		valuesAdded++;
+	}
+
+	return ret;
 }
-#endif
+
+static void free_json_values_array(char** array, int numTokens)
+{
+	for (int i = 0; i < numTokens; i++)
+	{
+		free(array[i]);
+	}
+
+	free(array);
+}
+
+#endif /* JSMN_HEADER */
 
 #endif /* JSON_PARSER_H */

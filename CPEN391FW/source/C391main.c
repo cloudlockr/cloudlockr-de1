@@ -37,7 +37,20 @@
 static void init( void );
 static void controller( void );
 
-/*------------------- Local Function -------------------*/
+
+/*------------------- FUNCTIONS DELCARATIONS TO BE IMPLEMENTED IN OTHER FILES (TODO: REMOVE ONCE COMPLETED) -------------------*/
+
+// int generate_display_hex_code( void );
+// int verify(char* devicePassword, char* hexCode);
+// char* upload_data(char* email, char* fileId, char* packetNumber, char* totalPackets, char* fileData);
+// void download_data(char* localEncrpytionComponent, char* email, char* fileId);
+// char* get_wifi_networks( void );
+// int set_wifi_config(char* networkName, char* networkPassword);
+// int set_device_password(char* password);
+
+
+
+/*-------------------------------------------------------------------------------------------------*/
 
 /**************************************************************************
 ** Initialize all firmware modules.
@@ -74,39 +87,103 @@ static void controller( void )
 			continue;
 		}
 
-		// Get the message type
-		jsmntok_t firstToken = jsonTokens[1];
-		char value[2];
-		memcpy(value, &jsonString + firstToken.start, 1);
-		value[1] = 0;
-
-		long messageType = strtol(value, NULL, 10);
+		// Get the first value to determine messageType
+		char** messageTypeValues = get_json_values(jsonString, jsonTokens, 1);
+		long messageType = strtol(messageTypeValues[0], NULL, 10);
+		free_json_values_array(messageTypeValues, 1);
 
 		// Direct the request to the appropriate handler function (pure functions that take inputs, not the JSON tokens)
+		int status = -1;
+		char* responseData = NULL;
+
+		char** allValues;
+		int expectedNumValues = 0;
+
 		switch (messageType)
 		{
 			case 1:
+			{
+				//TODO: status = generate_display_hex_code();
+				status = 1; // TODO: remove, placeholder until above function is implemented
 				break;
+			}
 			case 2:
+			{
+				expectedNumValues = 3;
+				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+
+				//TODO: status = verify(allValues[1], allValues[2]);
+				status = 1; // TODO: remove, placeholder until above function is implemented
 				break;
+			}
 			case 3:
+			{
+				expectedNumValues = 6;
+				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+
+				// TODO: responseData = upload_data(allValues[1], allValues[2], allValues[3], allValues[4], allValues[5]);
+				responseData = "{\"status\":1,\"localEncryptionComponent\":\"test\"}"; // TODO: remove, placeholder until above function is implemented
 				break;
+			}
 			case 4:
+			{
+				expectedNumValues = 4;
+				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+
+				// TODO: download_data(allValues[1], allValues[2], allValues[3]);
 				break;
+			}
 			case 5:
+			{
+				// TODO: responseData = get_wifi_networks();
+				responseData = "{\"status\":1,\"networks\":\"[network1,network2]\"}"; // TODO: remove, placeholder until above function is implemented
 				break;
+			}
 			case 6:
+			{
+				expectedNumValues = 3;
+				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+
+				// TODO: status = set_wifi_config(allValues[1], allValues[2]);
+				status = 1; // TODO: remove, placeholder until above function is implemented
 				break;
+			}
 			case 7:
+			{
+				expectedNumValues = 2;
+				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+
+				// TODO: status = set_device_password(allValues[1]);
+				status = 1; // TODO: remove, placeholder until above function is implemented
 				break;
+			}
 			default:
-				break; // TODO: send error response due to invalid message type
+			{
+				// Send error status if messageType is invalid
+				bluetooth_send_status(0);
+			}
 		}
 
-		// TODO: remove this (only for testing purposes, should actually respond in the controller)
-		//HPS_usleep(3 * 1000 * 10000);
-		//UART_puts( UART_ePORT_BLUETOOTH, "{\"status\":1}\v\n" );
-		/////////////////////
+		// Free values (if they were collected)
+		if ( expectedNumValues > 0 )
+		{
+			free_json_values_array(allValues, expectedNumValues);
+		}
+
+		// Pause (to prevent response message from being sent too quickly)
+		HPS_usleep(1 * 1000 * 1000); // ~0.5 second
+
+		// Send the response message (if applicable)
+		if ( status != -1 )
+		{
+			// Send basic status response
+			bluetooth_send_status(status);
+		}
+		else if ( responseData != NULL )
+		{
+			// Send full char message
+			bluetooth_send_message(responseData);
+		}
 	}
 }
 
