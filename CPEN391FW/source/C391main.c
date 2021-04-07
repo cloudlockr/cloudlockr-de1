@@ -83,7 +83,8 @@ static void controller( void )
 		// Check for JSON parsing errors
 		if ( jsonTokens == NULL )
 		{
-			// TODO: send error response
+			// Send error response and abort token processing
+			bluetooth_send_status(0);
 			continue;
 		}
 
@@ -160,7 +161,7 @@ static void controller( void )
 			default:
 			{
 				// Send error status if messageType is invalid
-				bluetooth_send_status(0);
+				status = 0;
 			}
 		}
 
