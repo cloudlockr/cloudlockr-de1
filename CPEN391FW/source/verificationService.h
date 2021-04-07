@@ -9,8 +9,6 @@
 #define VERIFICATIONSERVICE_H_
 
 
-
-
 /*------------------- Type Define -------------------*/
 /*------------------- Function Prototype -------------------*/
 void setPassword( char *password );
