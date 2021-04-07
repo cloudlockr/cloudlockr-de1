@@ -11,8 +11,10 @@ C:/Altera/15.0/quartus/bin64/quartus_hps --cable="DE-SoC [USB-1]" -o GDBSERVER -
 6. In order for Wi-fi to work (currently), before running the C code in DS5, use a jumper wire to touch the Wifi reset signal on the RFS to Ground. 
 This means touching pin 2 to pin 12 which are the 1st and 6th metals pins from the top, when looking at the back of the RFS(with ribbon cable connector on right side).
 
-7. In DS5, Build Project, then do Debug As->Debug Configurations, select CPEN391_Config and press Debug.
-8. Press "Run" (green arrow button).
+7. The Scatter file may have to be reselected Project's Properties -> C/C++ Build -> Settings -> Tool Settings -> Arm Linker 5 -> Image Layout. Choose scatter file here.
+
+8. In DS5, Build Project, then do Debug As->Debug Configurations, select CPEN391_Config and press Debug.
+9. Press "Run" (green arrow button).
 
 notes: 
 - above preloader command can be run before starting eclipse in instruction 3.

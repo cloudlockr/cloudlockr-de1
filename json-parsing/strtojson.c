@@ -11,46 +11,50 @@
  * If parsing fails, an error message is printed to stderr and NULL is returned
  */
 extern jsmntok_t *str_to_json(const char *str) {
-  jsmn_parser p;
+  jsmn_parser p1, p2;
+  int num_tokens;
+  jsmntok_t *tokens;
+  int error;
   size_t len = strlen(str);
 
-  jsmn_init(&p);
-  int num_tokens = jsmn_parse(&p, str, len, NULL, SIZE_MAX);
+  jsmn_init(&p1);
+  num_tokens = jsmn_parse(&p1, str, len, NULL, SIZE_MAX);
   if (num_tokens < 0) {
     switch (num_tokens) {
       case JSMN_ERROR_NOMEM:
-        fprintf(stderr, "Not enough memory");
+        fprintf(stderr, "Not enough memory\n");
         break;
       case JSMN_ERROR_INVAL:
-        fprintf(stderr, "JSON string contains invalid character");
+        fprintf(stderr, "JSON string contains invalid character\n");
         break;
       case JSMN_ERROR_PART:
-        fprintf(stderr, "JSON string incomplete");
+        fprintf(stderr, "JSON string incomplete\n");
         break;
       default:
-        fprintf(stderr, "Something really bad happened");
+        fprintf(stderr, "Something really bad happened\n");
         break;
     }
     return NULL;
   }
 
-  jsmntok_t *tokens = (jsmntok_t *)malloc(num_tokens * sizeof(jsmntok_t));
+  tokens = (jsmntok_t *)malloc(num_tokens * sizeof(jsmntok_t));
   if (!tokens) return NULL;
 
-  int error = jsmn_parse(&p, str, len, tokens, num_tokens);
+  jsmn_init(&p2);
+  error = jsmn_parse(&p2, str, len, tokens, num_tokens);
   if (error < 0) {
     switch (error) {
       case JSMN_ERROR_NOMEM:
-        fprintf(stderr, "Couldn't allocate %i tokens", num_tokens);
+        fprintf(stderr, "Couldn't allocate %i tokens\n", num_tokens);
         break;
       case JSMN_ERROR_INVAL:
-        fprintf(stderr, "JSON string contains invalid character");
+        fprintf(stderr, "JSON string contains invalid character\n");
         break;
       case JSMN_ERROR_PART:
-        fprintf(stderr, "JSON string incomplete");
+        fprintf(stderr, "JSON string incomplete\n");
         break;
       default:
-        fprintf(stderr, "Something really bad happened");
+        fprintf(stderr, "Something really bad happened\n");
         break;
     }
     free(tokens);

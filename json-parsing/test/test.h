@@ -1,6 +1,8 @@
 #ifndef __TEST_H__
 #define __TEST_H__
 
+#include <stdio.h>
+
 static int test_passed = 0;
 static int test_failed = 0;
 
