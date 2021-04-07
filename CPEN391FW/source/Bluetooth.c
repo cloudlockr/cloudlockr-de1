@@ -16,10 +16,13 @@
 #include "TypeDef.h"
 #include "HPS.h"
 #include "UART.h"
-#include "Bluetooth.h"
 
+#ifndef JSON_PARSER_H
+#define JSON_PARSER_H
+#include "JsonParser.h"
+#endif
 
-#define BUFFER_SIZE 128     // 128 is enough?
+#define BUFFER_SIZE 1024
 static int  bluetooth_count = 0;
 static int  fragment_count = 0;
 static char bluetooth_data[BUFFER_SIZE];
@@ -32,8 +35,23 @@ typedef enum
     STATE_JSON_PARSE,
 } STATE_T;
 
+/*
+ * Sends a message to the phone over bluetooth. Assumes that the string has already been
+ * properly formatted with special characters like quotations backslashed.
+ *
+ * The main purpose of this function is to fragment the messages and send them in the
+ * expected format.
+ */
+void bluetooth_send_message( char* data )
+{
+	// TODO: need to still implement (and convert bluetooth_process() to use it)
+	(void) data;
+}
 
-void BLUETOOTH_Receive( char ch )
+/*
+ * Returns a parsed json token after all data has been processed. NULL otherwise.
+ */
+char* bluetooth_process( char ch )
 {
     bool fullMessageReceived = false;
     bool fragmentReceived = false;
@@ -93,38 +111,38 @@ void BLUETOOTH_Receive( char ch )
 
 		// Acknowledge the fragment
 		UART_puts( UART_ePORT_BLUETOOTH, "{\"status\":2}\v\n" );
-
-        printf( "msg received:\n" );
-        printf( bluetooth_data );
-        printf( "\n" );
         
-        printf("bluetooth buffer stopped at %d chars\n", bluetooth_count);
+		// Reset state
         bluetooth_count = 0;
         fragment_count = 0;
         
-	    // TODO: add JSON parsing here
+        printf( "msg received:\n" );
+		printf( bluetooth_data );
+		printf( "\n" );
+		printf("bluetooth buffer stopped at %d chars\n", bluetooth_count);
 
-	    // TODO: return parse JSON data (need to change the return type, return NULL if no data to return yet)
-
-
-        // TODO: remove this (only for testing purposes, should actually respond in the controller)
-        HPS_usleep(3 * 1000 * 10000);
-        UART_puts( UART_ePORT_BLUETOOTH, "{\"status\":1}\v\n" );
-        /////////////////////
+        return bluetooth_data;
     }
 
+	return NULL;
 }
 
-
-void BLUETOOTH_Process( void )
+/*
+ * Waits for an entire bluetooth message to be received and processed
+ */
+char* bluetooth_wait_for_data()
 {
-    char buffer[120];
-    static int count = 0;
+	while (1)
+	{
+		if ( UART_TestForReceivedData( UART_ePORT_BLUETOOTH ) )
+		{
+			char ch = (char)UART_getchar( UART_ePORT_BLUETOOTH );
+			char* fullJsonString = bluetooth_process( ch );
 
-    sprintf( buffer, "DE1 msg to frontend, count: %i\n", count );
-    count++;
-    
-    UART_puts( UART_ePORT_BLUETOOTH, buffer );
-
+			if ( fullJsonString != NULL )
+			{
+				return fullJsonString;
+			}
+		}
+	}
 }
-

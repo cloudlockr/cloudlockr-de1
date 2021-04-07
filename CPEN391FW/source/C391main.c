@@ -17,13 +17,12 @@
 /* Application common headers */
 #include "TypeDef.h"
 
-
 /* Application module headers */
 #include "HPS.h"
 #include "UART.h"
 #include "WIFI.h"
 #include "Bluetooth.h"
-
+#include "JsonParser.h"
 
 #define SWITCHES    (volatile unsigned int *)(0xFF200000)
 #define PUSHBUTTONS (volatile unsigned int *)(0xFF200010)
@@ -35,9 +34,8 @@
 
 
 /*------------------- Local Function Prototype -------------------*/
-static void AppInit( void );
-static void mainLoop(void);
-
+static void init( void );
+static void controller( void );
 
 /*------------------- Local Function -------------------*/
 
@@ -45,7 +43,7 @@ static void mainLoop(void);
 ** Initialize all firmware modules.
 **
 ***************************************************************************/
-static void AppInit( void )
+static void init( void )
 {
     // Initialize UART ports.
     UART_Init( UART_ePORT_WIFI );
@@ -61,64 +59,56 @@ static void AppInit( void )
 
 }
 
-
-static void mainLoop(void)
+static void controller( void )
 {
-	int loopCount = 0;
-	unsigned char ch;
-    int switches;
-    int buttons, buttonsOld;
-    int loopCountOld = 0;
-    
-
-    // main routine/loop here
 	while (1)
 	{
-		loopCount++;
-        
-        if ( ( loopCount >= loopCountOld ) && ( loopCount >= ( loopCountOld + 1500000 ) ) )
-        {
-            loopCountOld = loopCount;
-            WIFI_Process();
-        }
+		// Wait for a request message to be received
+		char* jsonString = bluetooth_wait_for_data();
+		jsmntok_t* jsonTokens = str_to_json(jsonString);
 
-	    #if 0
-        // Polling data from WIFI UART.
-	    if ( UART_TestForReceivedData( UART_ePORT_WIFI ) )
-	    {
-	        ch = (char)UART_getchar( UART_ePORT_WIFI );
+		// Check for JSON parsing errors
+		if ( jsonTokens == NULL )
+		{
+			// TODO: send error response
+			continue;
+		}
 
-	        //UART_putchar( UART_ePORT_WIFI, ch ); // send back whatever character received.
+		// Get the message type
+		jsmntok_t firstToken = jsonTokens[1];
+		char value[2];
+		memcpy(value, &jsonString + firstToken.start, 1);
+		value[1] = 0;
 
-	        printf( "Wifi Received: %c", (char)ch );
-	        printf( "- loopCount: %i\n", loopCount );
-	    }
-        #endif
-        
-	    if ( UART_TestForReceivedData( UART_ePORT_BLUETOOTH ) )
-	    {
-	    	ch = (char)UART_getchar( UART_ePORT_BLUETOOTH );
-	    	BLUETOOTH_Receive( ch );
-	    }
+		long messageType = strtol(value, NULL, 10);
 
-        // Process switches
-        switches = *SWITCHES ;
-        *LEDS = switches;
-        *HEX0_1 = switches;
-        *HEX2_3 = switches;
-        *HEX4_5 = switches;
+		// Direct the request to the appropriate handler function (pure functions that take inputs, not the JSON tokens)
+		switch (messageType)
+		{
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+			case 5:
+				break;
+			case 6:
+				break;
+			case 7:
+				break;
+			default:
+				break; // TODO: send error response due to invalid message type
+		}
 
-        //printf("Switches = %x\n", switches) ;
-        
-        buttons = *PUSHBUTTONS;
-        if ( buttons != buttonsOld )
-        {
-            buttonsOld = buttons;
-            printf("Buttons = %x\n", buttons );
-        }
+		// TODO: remove this (only for testing purposes, should actually respond in the controller)
+		//HPS_usleep(3 * 1000 * 10000);
+		//UART_puts( UART_ePORT_BLUETOOTH, "{\"status\":1}\v\n" );
+		/////////////////////
 	}
 }
-
 
 /*------------------- API Function -------------------*/
 
@@ -131,11 +121,8 @@ static void mainLoop(void)
 int main(void)
 {
 	printf( ">>>>>>>>>    CPEN391 Firmware    <<<<<<<<<\n");
-
-    AppInit();
-    
-    mainLoop();
-
+    init();
+    controller();
 	return 0;
 }
 
