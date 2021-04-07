@@ -53,11 +53,11 @@ static void AppInit( void )
     
     // Initialize WIFI interface.
     //while ( WIFI_Init() == false)
-    WIFI_Init();
-    {
+    //WIFI_Init();
+    //{
         // We need a sleep function.
-        HPS_usleep(3 * 1000 * 1000); // 3 seconds
-    }
+    //    HPS_usleep(3 * 1000 * 1000); // 3 seconds
+    //}
 
 }
 
@@ -82,7 +82,7 @@ static void mainLoop(void)
             WIFI_Process();
         }
 
-	    #if 1
+	    #if 0
         // Polling data from WIFI UART.
 	    if ( UART_TestForReceivedData( UART_ePORT_WIFI ) )
 	    {
@@ -98,7 +98,6 @@ static void mainLoop(void)
 	    if ( UART_TestForReceivedData( UART_ePORT_BLUETOOTH ) )
 	    {
 	    	ch = (char)UART_getchar( UART_ePORT_BLUETOOTH );
-            //printf( "%c", ch );
 	    	BLUETOOTH_Receive( ch );
 	    }
 

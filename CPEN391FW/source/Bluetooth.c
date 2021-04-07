@@ -6,8 +6,8 @@
  */
 
 /*
- * Description
- * This module implement wifi related functionalities.
+ * Description:
+ * This module implements bluetooth related functionalities.
  */
 
 #include <stdio.h>
@@ -19,9 +19,11 @@
 #include "Bluetooth.h"
 
 
-#define BUFFER_SIZE 30     // 128 is enough?
-static int  bluetooth_Count = 0;
-static char bluetooth_Data[BUFFER_SIZE];
+#define BUFFER_SIZE 128     // 128 is enough?
+static int  bluetooth_count = 0;
+static int  fragment_count = 0;
+static char bluetooth_data[BUFFER_SIZE];
+static char last_two_data[2] = "";
 
 typedef enum
 {
@@ -33,64 +35,82 @@ typedef enum
 
 void BLUETOOTH_Receive( char ch )
 {
-    int msgType;
-    int success;
-    bool bReceivedMsg;
+    bool fullMessageReceived = false;
+    bool fragmentReceived = false;
+    int status = 1;
 
-    bReceivedMsg = false;
-	if ( bluetooth_Count < BUFFER_SIZE )
+    // Process passed char (if buffer space is available)
+	if ( bluetooth_count < BUFFER_SIZE )
    	{
-            bluetooth_Data[bluetooth_Count] = ch;
-            bluetooth_Count++;
+			// Save only valid chars to the bluetooth_data buffer
+			if ( ch != '\n' && ch != '\r' && ch != '\v')
+			{
+				bluetooth_data[bluetooth_count] = ch;
+				bluetooth_count++;
+				fragment_count++;
+			}
+
+			last_two_data[0] = last_two_data[1];
+			last_two_data[1] = ch;
             
-            if ( ( bluetooth_Count >= 2 ) && 
-                 ( bluetooth_Data[bluetooth_Count-1] == '\n' ) && 
-                 ( bluetooth_Data[bluetooth_Count-2] == '\r' ) )
+			// Check message end conditions
+            if ( last_two_data[0] == '\v' && last_two_data[1] == '\n' )
             {
-                bReceivedMsg = true;
+            	fullMessageReceived = true;
+            }
+            else if ( last_two_data[0] == '\r' && last_two_data[1] == '\n' )
+            {
+            	fragmentReceived = true;
             }
    	}
-    else if ( bluetooth_Count >= BUFFER_SIZE )
+    else if ( bluetooth_count >= BUFFER_SIZE )
     {   
-        bReceivedMsg = true;
+    	// Mark a fragmentation error
+    	fullMessageReceived = true;
+    	status = 3;
+
+    	// Move the buffer cursor back to "erase" collected fragment data
+    	bluetooth_count -= fragment_count;
     }
-        
-    if ( bReceivedMsg ) // respond only if a whole msg has be received or termination condition is met.
+
+	// Respond to received full messages (either full or a fragment)
+	if ( fragmentReceived )
+	{
+		fragment_count = 0;
+
+		if ( status == 1 )
+			// Assign the correct OK status
+			status = 2;
+
+		char res_buffer[18];
+		snprintf(res_buffer, sizeof(res_buffer), "{\"status\":%d}\v\n", status);
+		UART_puts( UART_ePORT_BLUETOOTH, res_buffer );
+	}
+	else if ( fullMessageReceived )
     {
-        bluetooth_Data[bluetooth_Count] = 0;
+		// NULL terminate the buffer
+		bluetooth_data[bluetooth_count] = 0;
+
+		// Acknowledge the fragment
+		UART_puts( UART_ePORT_BLUETOOTH, "{\"status\":2}\v\n" );
+
         printf( "msg received:\n" );
-        printf( bluetooth_Data );
+        printf( bluetooth_data );
         printf( "\n" );
         
-        printf("bluetooth buffer stopped at %d chars\n", bluetooth_Count);
-        bluetooth_Count = 0;
+        printf("bluetooth buffer stopped at %d chars\n", bluetooth_count);
+        bluetooth_count = 0;
+        fragment_count = 0;
         
-	    // do stuff here to get some kind of JSON object that has fields with values
+	    // TODO: add JSON parsing here
 
-	    // use JSON object to figure out what kind of message,
-	    // and whether message is valid/successful, etc
-        
-        if ( strncmp( "blah", bluetooth_Data, 4 ) == 0 )
-        {
-            msgType = 1;
-            success = 1;
-        }
-        else
-        {
-            msgType = 2;
-            success = 0;
-        }
-	    
+	    // TODO: return parse JSON data (need to change the return type, return NULL if no data to return yet)
 
-	    if (msgType == 1)
-	    {
-	        // call other function(s) to do actions
-	        UART_puts( UART_ePORT_BLUETOOTH, "\"status\": 1\n" );
-	    }
-	    else if (msgType == 2)
-	    {
-            UART_puts( UART_ePORT_BLUETOOTH, "\"failed\": 0\n" );
-	    }
+
+        // TODO: remove this (only for testing purposes, should actually respond in the controller)
+        HPS_usleep(3 * 1000 * 10000);
+        UART_puts( UART_ePORT_BLUETOOTH, "{\"status\":1}\v\n" );
+        /////////////////////
     }
 
 }
