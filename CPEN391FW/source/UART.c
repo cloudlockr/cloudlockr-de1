@@ -15,41 +15,11 @@
 
 
 #include "TypeDef.h"
+#include "memAddress.h";
 #include "UART.h"
 
 /*------------------- Constants Define -------------------*/
   
-#define Wifi_ReceiverFifo                  (*(volatile unsigned char *)(0xFF210200))
-#define Wifi_TransmitterFifo               (*(volatile unsigned char *)(0xFF210200))
-#define Wifi_InterruptEnableReg            (*(volatile unsigned char *)(0xFF210202))
-#define Wifi_InterruptIdentificationReg    (*(volatile unsigned char *)(0xFF210204))
-#define Wifi_FifoControlReg                (*(volatile unsigned char *)(0xFF210204))
-#define Wifi_LineControlReg                (*(volatile unsigned char *)(0xFF210206))
-#define Wifi_ModemControlReg               (*(volatile unsigned char *)(0xFF210208))
-#define Wifi_LineStatusReg                 (*(volatile unsigned char *)(0xFF21020A))
-#define Wifi_ModemStatusReg                (*(volatile unsigned char *)(0xFF21020C))
-#define Wifi_ScratchReg                    (*(volatile unsigned char *)(0xFF21020E))
-#define Wifi_DivisorLatchLSB               (*(volatile unsigned char *)(0xFF210200))
-#define Wifi_DivisorLatchMSB               (*(volatile unsigned char *)(0xFF210202))
-
-// TODO:
-// create similar defines for other port(s) (lie Bluetooth )
-// match verilog defined addrs in SerialIODecoder.v file for earlier in 1.3
-#define Bluetooth_ReceiverFifo                  (*(volatile unsigned char *)(0xFF210220))
-#define Bluetooth_TransmitterFifo               (*(volatile unsigned char *)(0xFF210220))
-#define Bluetooth_InterruptEnableReg            (*(volatile unsigned char *)(0xFF210222))
-#define Bluetooth_InterruptIdentificationReg    (*(volatile unsigned char *)(0xFF210224))
-#define Bluetooth_FifoControlReg                (*(volatile unsigned char *)(0xFF210224))
-#define Bluetooth_LineControlReg                (*(volatile unsigned char *)(0xFF210226))
-#define Bluetooth_ModemControlReg               (*(volatile unsigned char *)(0xFF210228))
-#define Bluetooth_LineStatusReg                 (*(volatile unsigned char *)(0xFF21022A))
-#define Bluetooth_ModemStatusReg                (*(volatile unsigned char *)(0xFF21022C))
-#define Bluetooth_ScratchReg                    (*(volatile unsigned char *)(0xFF21022E))
-#define Bluetooth_DivisorLatchLSB               (*(volatile unsigned char *)(0xFF210220))
-#define Bluetooth_DivisorLatchMSB               (*(volatile unsigned char *)(0xFF210222))
-
-
-
 // The "unsigned char *" bit of the declaration ensures a pointer to 
 // unsigned byte wide data is created, so that when we use it , 
 // unsigned bytes of data will be transferred.

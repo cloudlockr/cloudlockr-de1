@@ -16,47 +16,28 @@
 
 /* Application common headers */
 #include "TypeDef.h"
+#include "memAddress.h"
+
 
 /* Application module headers */
 #include "HPS.h"
 #include "UART.h"
 #include "WIFI.h"
 #include "Bluetooth.h"
-#include "JsonParser.h"
-
-#define SWITCHES    (volatile unsigned int *)(0xFF200000)
-#define PUSHBUTTONS (volatile unsigned int *)(0xFF200010)
-
-#define LEDS        (volatile unsigned int *)(0xFF200020)
-#define HEX0_1      (volatile unsigned int *)(0xFF200030)
-#define HEX2_3      (volatile unsigned int *)(0xFF200040)
-#define HEX4_5      (volatile unsigned int *)(0xFF200050)
 
 
 /*------------------- Local Function Prototype -------------------*/
-static void init( void );
-static void controller( void );
+static void AppInit( void );
+static void mainLoop(void);
 
 
-/*------------------- FUNCTIONS DELCARATIONS TO BE IMPLEMENTED IN OTHER FILES (TODO: REMOVE ONCE COMPLETED) -------------------*/
-
-// int generate_display_hex_code( void );
-// int verify(char* devicePassword, char* hexCode);
-// char* upload_data(char* email, char* fileId, char* packetNumber, char* totalPackets, char* fileData);
-// void download_data(char* localEncrpytionComponent, char* email, char* fileId);
-// char* get_wifi_networks( void );
-// int set_wifi_config(char* networkName, char* networkPassword);
-// int set_device_password(char* password);
-
-
-
-/*-------------------------------------------------------------------------------------------------*/
+/*------------------- Local Function -------------------*/
 
 /**************************************************************************
 ** Initialize all firmware modules.
 **
 ***************************************************************************/
-static void init( void )
+static void AppInit( void )
 {
     // Initialize UART ports.
     UART_Init( UART_ePORT_WIFI );
@@ -64,129 +45,73 @@ static void init( void )
     
     // Initialize WIFI interface.
     //while ( WIFI_Init() == false)
-    //WIFI_Init();
-    //{
+    WIFI_Init();
+    {
         // We need a sleep function.
-    //    HPS_usleep(3 * 1000 * 1000); // 3 seconds
-    //}
+        HPS_usleep(3 * 1000 * 1000); // 3 seconds
+    }
 
 }
 
-static void controller( void )
+
+static void mainLoop(void)
 {
+	int loopCount = 0;
+	unsigned char ch;
+    int switches;
+    int buttons, buttonsOld;
+    int loopCountOld = 0;
+    
+
+    // main routine/loop here
 	while (1)
 	{
-		// Wait for a request message to be received
-		char* jsonString = bluetooth_wait_for_data();
-		jsmntok_t* jsonTokens = str_to_json(jsonString);
+		loopCount++;
+        
+        if ( ( loopCount >= loopCountOld ) && ( loopCount >= ( loopCountOld + 1500000 ) ) )
+        {
+            loopCountOld = loopCount;
+            WIFI_Process();
+        }
 
-		// Check for JSON parsing errors
-		if ( jsonTokens == NULL )
-		{
-			// Send error response and abort token processing
-			bluetooth_send_status(0);
-			continue;
-		}
+	    #if 1
+        // Polling data from WIFI UART.
+	    if ( UART_TestForReceivedData( UART_ePORT_WIFI ) )
+	    {
+	        ch = (char)UART_getchar( UART_ePORT_WIFI );
 
-		// Get the first value to determine messageType
-		char** messageTypeValues = get_json_values(jsonString, jsonTokens, 1);
-		long messageType = strtol(messageTypeValues[0], NULL, 10);
-		free_json_values_array(messageTypeValues, 1);
+	        //UART_putchar( UART_ePORT_WIFI, ch ); // send back whatever character received.
 
-		// Direct the request to the appropriate handler function (pure functions that take inputs, not the JSON tokens)
-		int status = -1;
-		char* responseData = NULL;
+	        printf( "Wifi Received: %c", (char)ch );
+	        printf( "- loopCount: %i\n", loopCount );
+	    }
+        #endif
+        
+	    if ( UART_TestForReceivedData( UART_ePORT_BLUETOOTH ) )
+	    {
+	    	ch = (char)UART_getchar( UART_ePORT_BLUETOOTH );
+            //printf( "%c", ch );
+	    	BLUETOOTH_Receive( ch );
+	    }
 
-		char** allValues;
-		int expectedNumValues = 0;
+        // Process switches
+        switches = *SWITCHES ;
+        *LEDS = switches;
+        *HEX0_1 = switches;
+        *HEX2_3 = switches;
+        *HEX4_5 = switches;
 
-		switch (messageType)
-		{
-			case 1:
-			{
-				//TODO: status = generate_display_hex_code();
-				status = 1; // TODO: remove, placeholder until above function is implemented
-				break;
-			}
-			case 2:
-			{
-				expectedNumValues = 3;
-				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
-
-				//TODO: status = verify(allValues[1], allValues[2]);
-				status = 1; // TODO: remove, placeholder until above function is implemented
-				break;
-			}
-			case 3:
-			{
-				expectedNumValues = 6;
-				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
-
-				// TODO: responseData = upload_data(allValues[1], allValues[2], allValues[3], allValues[4], allValues[5]);
-				responseData = "{\"status\":1,\"localEncryptionComponent\":\"test\"}"; // TODO: remove, placeholder until above function is implemented
-				break;
-			}
-			case 4:
-			{
-				expectedNumValues = 4;
-				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
-
-				// TODO: download_data(allValues[1], allValues[2], allValues[3]);
-				break;
-			}
-			case 5:
-			{
-				// TODO: responseData = get_wifi_networks();
-				responseData = "{\"status\":1,\"networks\":\"[network1,network2]\"}"; // TODO: remove, placeholder until above function is implemented
-				break;
-			}
-			case 6:
-			{
-				expectedNumValues = 3;
-				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
-
-				// TODO: status = set_wifi_config(allValues[1], allValues[2]);
-				status = 1; // TODO: remove, placeholder until above function is implemented
-				break;
-			}
-			case 7:
-			{
-				expectedNumValues = 2;
-				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
-
-				// TODO: status = set_device_password(allValues[1]);
-				status = 1; // TODO: remove, placeholder until above function is implemented
-				break;
-			}
-			default:
-			{
-				// Send error status if messageType is invalid
-				status = 0;
-			}
-		}
-
-		// Free values (if they were collected)
-		if ( expectedNumValues > 0 )
-		{
-			free_json_values_array(allValues, expectedNumValues);
-		}
-
-		// Pause (to prevent response message from being sent too quickly)
-		HPS_usleep(1 * 1000 * 1000); // ~0.5 second
-
-		// Send the response message (if applicable)
-		if ( status != -1 )
-		{
-			// Send basic status response
-			bluetooth_send_status(status);
-		}
-		else if ( responseData != NULL )
-		{
-			// Send full char message
-			bluetooth_send_message(responseData);
-		}
+        //printf("Switches = %x\n", switches) ;
+        
+        buttons = *PUSHBUTTONS;
+        if ( buttons != buttonsOld )
+        {
+            buttonsOld = buttons;
+            printf("Buttons = %x\n", buttons );
+        }
 	}
 }
+
 
 /*------------------- API Function -------------------*/
 
@@ -199,8 +124,11 @@ static void controller( void )
 int main(void)
 {
 	printf( ">>>>>>>>>    CPEN391 Firmware    <<<<<<<<<\n");
-    init();
-    controller();
+
+    AppInit();
+    
+    mainLoop();
+
 	return 0;
 }
 

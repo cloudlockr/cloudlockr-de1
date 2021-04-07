@@ -10,9 +10,9 @@
  * Functions for verification.
  */
 
-/*------------------- Constants Define -------------------*/
-#define MASTER_PW_ADDR (volatile unsigned char *)0x03000000
+#include "memAddress.h";
 
+/*------------------- Constants Define -------------------*/
 /*------------------- Type Define --------------------------------------------*/
 /*------------------- Local Data ---------------------------------------------*/
 /*------------------- Local Function Prototype -------------------------------*/

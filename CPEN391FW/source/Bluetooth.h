@@ -1,4 +1,18 @@
-char* bluetooth_wait_for_data( void );
-void bluetooth_send_message( char* data );
-void bluetooth_send_status( int statusCode );
-char* bluetooth_wait_for_data( void );
+/*
+ * Bluetooth.h
+ *
+ *  Created on: Mar 12, 2021
+ *      Author: Jason Bai
+ */
+
+/*
+ * Description
+ * This module implement bluetooth related functionalities.
+ */
+
+// Exported functions
+void BLUETOOTH_Init( void );
+void BLUETOOTH_Receive( char ch );
+void BLUETOOTH_Process( void );
+
+
