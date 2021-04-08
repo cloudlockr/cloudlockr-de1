@@ -13,6 +13,8 @@
 
 /* Standard headers */
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 /* Application common headers */
 #include "TypeDef.h"
@@ -24,6 +26,8 @@
 #include "WIFI.h"
 #include "Bluetooth.h"
 #include "JsonParser.h"
+#include "verificationService.h"
+#include "hexService.h"
 
 /*------------------- Local Function Prototype -------------------*/
 static void init( void );
@@ -32,8 +36,6 @@ static void controller( void );
 
 /*------------------- FUNCTIONS DELCARATIONS TO BE IMPLEMENTED IN OTHER FILES (TODO: REMOVE ONCE COMPLETED) -------------------*/
 
-// int generate_display_hex_code( void );
-// int verify(char* devicePassword, char* hexCode);
 // char* upload_data(char* email, char* fileId, char* packetNumber, char* totalPackets, char* fileData);
 // void download_data(char* localEncrpytionComponent, char* email, char* fileId);
 // char* get_wifi_networks( void );
@@ -66,6 +68,11 @@ static void init( void )
 
 static void controller( void )
 {
+    time_t t;
+    // Set seed as current time, used for random display HEX code
+    srand((unsigned)time(&t));
+
+    // Controller main loop
 	while (1)
 	{
 		// Wait for a request message to be received
@@ -96,8 +103,8 @@ static void controller( void )
 		{
 			case 1:
 			{
-				//TODO: status = generate_display_hex_code();
-				status = 1; // TODO: remove, placeholder until above function is implemented
+                generateDisplayHexCode();
+				status = 1;
 				break;
 			}
 			case 2:
@@ -105,8 +112,7 @@ static void controller( void )
 				expectedNumValues = 3;
 				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
 
-				//TODO: status = verify(allValues[1], allValues[2]);
-				status = 1; // TODO: remove, placeholder until above function is implemented
+                status = verify(allValues[1], allValues[2]);
 				break;
 			}
 			case 3:
@@ -146,8 +152,8 @@ static void controller( void )
 				expectedNumValues = 2;
 				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
 
-				// TODO: status = set_device_password(allValues[1]);
-				status = 1; // TODO: remove, placeholder until above function is implemented
+                setPassword(allValues[1]);
+                status = 1;
 				break;
 			}
 			default:

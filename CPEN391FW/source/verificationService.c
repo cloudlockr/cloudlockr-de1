@@ -10,6 +10,7 @@
  * Functions for verification.
  */
 
+#include <stdlib.h>
 #include "memAddress.h"
 #include "verificationService.h"
 
@@ -39,27 +40,32 @@ void setPassword( char *password )
 
 
 /**************************************************************************
-** Copies the master password to the password string.
+** Verifies whether the password provided by user matches the master password,
+** and whether the provided hex matches the DE1 HEX display
 **
 ** Parameters:
-**     password      char pointer to the password string
+**     password      char pointer to the user input password string
+**     hex           char pointer to the user input hex string
 **
 ***************************************************************************/
-void getPassword( char *password )
+int verify( char *password, char *hex )
 {
+	int verified = 1;
+
+	// Verify master password
 	for ( unsigned char i = 0; i < 32; i++ )
 	{
-		*(password + i) = *(MASTER_PW_ADDR + i);
+		if (*(MASTER_PW_ADDR + i) != *(password + i)) {
+			verified = 0;
+		}
 	}
+
+	// Verify HEX display
+	unsigned inputHexCode = (unsigned) strtol(hex, NULL, 16);
+	unsigned correctHexCode = *HEX_ADDR;
+	if (correctHexCode != inputHexCode) {
+		verified = 0;
+	}
+
+	return verified;
 }
-
-
-/**************************************************************************
-** thingy
-**
-** Parameters:
-**     password      int *me
-**     hex           char *you
-**
-***************************************************************************/
-//bool verify(password, hex)

@@ -11,6 +11,7 @@
 /*------------------- Constants Define -------------------*/
 /* verificationService.c */
 #define MASTER_PW_ADDR (volatile unsigned char *)0x03000000
+#define HEX_ADDR       (volatile unsigned char *)0x03010000
 
 /* UART.c */
 #define Wifi_ReceiverFifo                  (*(volatile unsigned char *)(0xFF210200))
@@ -54,7 +55,7 @@
 #define HEX4_5      (volatile unsigned char *)(0xFF200050)
 
 /* aesHwacc.c */
-#define aes_encrypt_addr  (volatile unsigned char*)0xFF203000
-#define aes_decrypt_addr  (volatile unsigned char*)0xFF204000
+#define AES_ENCRYPT_ADDR (volatile unsigned char*)0xFF203000
+#define AES_DECRYPT_ADDR (volatile unsigned char*)0xFF204000
 
 #endif /* SOURCE_MEMADDRESS_H_ */

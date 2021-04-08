@@ -8,8 +8,9 @@
  *  Created on: April 1, 2021
  *      Author: dannsy
  */
-#include <stdio.h>
+
 #include "memAddress.h"
+#include "aesHwacc.h"
 
 /**
  * Function to call Avalon memory mapped custom component AES encryption module.
@@ -28,10 +29,10 @@ void encrypt(unsigned char key[], unsigned char plaintext[], unsigned char ciphe
     unsigned word7 = (plaintext[0] << 24) + (plaintext[1] << 16) + (plaintext[2] << 8) + plaintext[3];
 
     // Write plaintext to AES encryption module
-    *(aes_encrypt_addr + 4) = word4;
-    *(aes_encrypt_addr + 5) = word5;
-    *(aes_encrypt_addr + 6) = word6;
-    *(aes_encrypt_addr + 7) = word7;
+    *(AES_ENCRYPT_ADDR + 4) = word4;
+    *(AES_ENCRYPT_ADDR + 5) = word5;
+    *(AES_ENCRYPT_ADDR + 6) = word6;
+    *(AES_ENCRYPT_ADDR + 7) = word7;
 
     if (keyexp)
     {
@@ -42,23 +43,23 @@ void encrypt(unsigned char key[], unsigned char plaintext[], unsigned char ciphe
         unsigned word3 = (key[0] << 24) + (key[1] << 16) + (key[2] << 8) + key[3];
 
         // Write key to AES encryption module
-        *(aes_encrypt_addr + 0) = word0;
-        *(aes_encrypt_addr + 1) = word1;
-        *(aes_encrypt_addr + 2) = word2;
-        *(aes_encrypt_addr + 3) = word3;
+        *(AES_ENCRYPT_ADDR + 0) = word0;
+        *(AES_ENCRYPT_ADDR + 1) = word1;
+        *(AES_ENCRYPT_ADDR + 2) = word2;
+        *(AES_ENCRYPT_ADDR + 3) = word3;
 
-        *(aes_encrypt_addr + 8) = (unsigned)0;
+        *(AES_ENCRYPT_ADDR + 8) = (unsigned)0;
     }
     else
     {
         // Don't perform key expansion
-        *(aes_encrypt_addr + 9) = (unsigned)0;
+        *(AES_ENCRYPT_ADDR + 9) = (unsigned)0;
     }
 
-    unsigned cipher0 = *(aes_encrypt_addr + 0);
-    unsigned cipher1 = *(aes_encrypt_addr + 1);
-    unsigned cipher2 = *(aes_encrypt_addr + 2);
-    unsigned cipher3 = *(aes_encrypt_addr + 3);
+    unsigned cipher0 = *(AES_ENCRYPT_ADDR + 0);
+    unsigned cipher1 = *(AES_ENCRYPT_ADDR + 1);
+    unsigned cipher2 = *(AES_ENCRYPT_ADDR + 2);
+    unsigned cipher3 = *(AES_ENCRYPT_ADDR + 3);
 
     for (int i = 0; i < 4; i++)
     {
@@ -86,10 +87,10 @@ void decrypt(unsigned char key[], unsigned char ciphertext[], unsigned char plai
     unsigned word7 = (ciphertext[0] << 24) + (ciphertext[1] << 16) + (ciphertext[2] << 8) + ciphertext[3];
 
     // Write plaintext to AES decryption module
-    *(aes_decrypt_addr + 4) = word4;
-    *(aes_decrypt_addr + 5) = word5;
-    *(aes_decrypt_addr + 6) = word6;
-    *(aes_decrypt_addr + 7) = word7;
+    *(AES_DECRYPT_ADDR + 4) = word4;
+    *(AES_DECRYPT_ADDR + 5) = word5;
+    *(AES_DECRYPT_ADDR + 6) = word6;
+    *(AES_DECRYPT_ADDR + 7) = word7;
 
     if (keyexp)
     {
@@ -100,23 +101,23 @@ void decrypt(unsigned char key[], unsigned char ciphertext[], unsigned char plai
         unsigned word3 = (key[0] << 24) + (key[1] << 16) + (key[2] << 8) + key[3];
 
         // Write key to AES decryption module
-        *(aes_decrypt_addr + 0) = word0;
-        *(aes_decrypt_addr + 1) = word1;
-        *(aes_decrypt_addr + 2) = word2;
-        *(aes_decrypt_addr + 3) = word3;
+        *(AES_DECRYPT_ADDR + 0) = word0;
+        *(AES_DECRYPT_ADDR + 1) = word1;
+        *(AES_DECRYPT_ADDR + 2) = word2;
+        *(AES_DECRYPT_ADDR + 3) = word3;
 
-        *(aes_decrypt_addr + 8) = (unsigned)0;
+        *(AES_DECRYPT_ADDR + 8) = (unsigned)0;
     }
     else
     {
         // Don't perform key expansion
-        *(aes_decrypt_addr + 9) = (unsigned)0;
+        *(AES_DECRYPT_ADDR + 9) = (unsigned)0;
     }
 
-    unsigned plain0 = *(aes_decrypt_addr + 0);
-    unsigned plain1 = *(aes_decrypt_addr + 1);
-    unsigned plain2 = *(aes_decrypt_addr + 2);
-    unsigned plain3 = *(aes_decrypt_addr + 3);
+    unsigned plain0 = *(AES_DECRYPT_ADDR + 0);
+    unsigned plain1 = *(AES_DECRYPT_ADDR + 1);
+    unsigned plain2 = *(AES_DECRYPT_ADDR + 2);
+    unsigned plain3 = *(AES_DECRYPT_ADDR + 3);
 
     for (int i = 0; i < 4; i++)
     {
@@ -130,6 +131,8 @@ void decrypt(unsigned char key[], unsigned char ciphertext[], unsigned char plai
 /**
  * Testing whether encryption and decryption modules work as expected
  */
+// #include <stdio.h>
+
 // int main()
 // {
 //     int debug = 1;

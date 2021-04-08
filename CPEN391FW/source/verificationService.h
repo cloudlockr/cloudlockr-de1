@@ -12,6 +12,6 @@
 /*------------------- Type Define -------------------*/
 /*------------------- Function Prototype -------------------*/
 void setPassword( char *password );
-void getPassword( char *password );
+int verify( char *password, char *hex );
 
 #endif /* VERIFICATIONSERVICE_H_ */

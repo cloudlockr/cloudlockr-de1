@@ -7,34 +7,33 @@
  *  Created on: April 1, 2021
  *      Author: dannsy
  */
-#include <stdio.h>
+
 #include <stdlib.h>
-#include <time.h>
 #include "memAddress.h"
+#include "hexService.h"
 
 /**
- * Function to generate random HEX display and returns the generated HEX as an int.
+ * Function to generate random HEX display and saves the display value to memory
  * Call srand(current time) at the start of the controller main loop.
  */
-int generateDisplayHexCode()
+void generateDisplayHexCode(void)
 {
-    int random0 = rand() % 256;
-    int random1 = rand() % 256;
-    int random2 = rand() % 256;
+    unsigned random0 = rand() % 256;
+    unsigned random1 = rand() % 256;
+    unsigned random2 = rand() % 256;
 
-    *HEX0_1 = (unsigned)random0;
-    *HEX2_3 = (unsigned)random1;
-    *HEX4_5 = (unsigned)random2;
+    *HEX0_1 = random0;
+    *HEX2_3 = random1;
+    *HEX4_5 = random2;
 
-    int concat_random = (random2 << 16) + (random1 << 8) + random0;
-
-    return concat_random;
+    unsigned concat_random = (random2 << 16) + (random1 << 8) + random0;
+    *HEX_ADDR = concat_random;
 }
 
 /**
  * Function to set HEX display back to 0.
  */
-void resetHex()
+void resetHex(void)
 {
     *HEX0_1 = (unsigned)0;
     *HEX2_3 = (unsigned)0;
@@ -44,7 +43,10 @@ void resetHex()
 /**
  * Sample usage of the random HEX display generator function
  */
-// int main()
+// #include <stdio.h>
+// #include <time.h>
+
+// int test()
 // {
 //     time_t t;
 
