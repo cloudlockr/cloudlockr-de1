@@ -1,5 +1,5 @@
 /*
- * random_hex.c
+ * hexService.c
  *
  * This module contains the function for generating random HEX display.
  * It is meant to be called from the main ARM controller.
@@ -16,7 +16,7 @@
  * Function to generate random HEX display and returns the generated HEX as an int.
  * Call srand(current time) at the start of the controller main loop.
  */
-int random_HEX()
+int generateDisplayHexCode()
 {
     int random0 = rand() % 256;
     int random1 = rand() % 256;
@@ -34,7 +34,7 @@ int random_HEX()
 /**
  * Function to set HEX display back to 0.
  */
-void reset_HEX()
+void resetHex()
 {
     *HEX0_1 = (unsigned)0;
     *HEX2_3 = (unsigned)0;
