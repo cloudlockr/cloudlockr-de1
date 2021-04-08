@@ -16,6 +16,7 @@
 
 /* Application common headers */
 #include "TypeDef.h"
+#include "memAddress.h"
 
 /* Application module headers */
 #include "HPS.h"
@@ -23,15 +24,6 @@
 #include "WIFI.h"
 #include "Bluetooth.h"
 #include "JsonParser.h"
-
-#define SWITCHES    (volatile unsigned int *)(0xFF200000)
-#define PUSHBUTTONS (volatile unsigned int *)(0xFF200010)
-
-#define LEDS        (volatile unsigned int *)(0xFF200020)
-#define HEX0_1      (volatile unsigned int *)(0xFF200030)
-#define HEX2_3      (volatile unsigned int *)(0xFF200040)
-#define HEX4_5      (volatile unsigned int *)(0xFF200050)
-
 
 /*------------------- Local Function Prototype -------------------*/
 static void init( void );

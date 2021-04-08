@@ -9,9 +9,7 @@
  *      Author: dannsy
  */
 #include <stdio.h>
-
-volatile unsigned *aes_encrypt_addr = (volatile unsigned *)0xFF203000;
-volatile unsigned *aes_decrypt_addr = (volatile unsigned *)0xFF204000;
+#include "memAddress.h"
 
 /**
  * Function to call Avalon memory mapped custom component AES encryption module.

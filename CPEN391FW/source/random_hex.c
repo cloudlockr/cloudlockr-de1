@@ -10,10 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-volatile unsigned *hex01 = (volatile unsigned *)0xFF200030;
-volatile unsigned *hex23 = (volatile unsigned *)0xFF200040;
-volatile unsigned *hex45 = (volatile unsigned *)0xFF200050;
+#include "memAddress.h"
 
 /**
  * Function to generate random HEX display and returns the generated HEX as an int.
@@ -25,9 +22,9 @@ int random_HEX()
     int random1 = rand() % 256;
     int random2 = rand() % 256;
 
-    *hex01 = (unsigned)random0;
-    *hex23 = (unsigned)random1;
-    *hex45 = (unsigned)random2;
+    *HEX0_1 = (unsigned)random0;
+    *HEX2_3 = (unsigned)random1;
+    *HEX4_5 = (unsigned)random2;
 
     int concat_random = (random2 << 16) + (random1 << 8) + random0;
 
@@ -39,9 +36,9 @@ int random_HEX()
  */
 void reset_HEX()
 {
-    *hex01 = (unsigned)0;
-    *hex23 = (unsigned)0;
-    *hex45 = (unsigned)0;
+    *HEX0_1 = (unsigned)0;
+    *HEX2_3 = (unsigned)0;
+    *HEX4_5 = (unsigned)0;
 }
 
 /**
