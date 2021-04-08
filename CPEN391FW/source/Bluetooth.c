@@ -18,18 +18,12 @@
 #include "UART.h"
 #include "JsonParser.h"
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 500100 // 1 mb of data (assuming 2 bytes per char) + 100 bytes of extra data allowance
+#define TIMEOUT_ITER 10000000 // Large number to represent the max number of iterations with no data arriving (~50 sec)
 static int  bluetooth_count = 0;
 static int  fragment_count = 0;
 static char bluetooth_data[BUFFER_SIZE];
 static char last_two_data[2] = "";
-
-typedef enum
-{
-    STATE_PARSE_MSG = 0,
-    STATE_MSG_VALUE,  // may not be needed
-    STATE_JSON_PARSE,
-} STATE_T;
 
 /*
  * Sends a JSON message to the phone over bluetooth. Assumes that the string has already been
@@ -40,7 +34,7 @@ typedef enum
  */
 void bluetooth_send_message( char* data )
 {
-	// TODO: need to still implement (and convert bluetooth_process() to use it)
+	// TODO: need to still implement
 	(void) data;
 }
 
@@ -61,43 +55,39 @@ void bluetooth_send_status( int status )
  */
 char* bluetooth_process( char ch )
 {
-    bool fullMessageReceived = false;
-    bool fragmentReceived = false;
-    int status = 1;
+	bool fullMessageReceived = false;
+	bool fragmentReceived = false;
+	int status = 1;
 
-    // Process passed char (if buffer space is available)
+	// Process passed char (if buffer space is available)
 	if ( bluetooth_count < BUFFER_SIZE )
-   	{
-			// Save only valid chars to the bluetooth_data buffer
-			if ( ch != '\n' && ch != '\r' && ch != '\v')
-			{
-				bluetooth_data[bluetooth_count] = ch;
-				bluetooth_count++;
-				fragment_count++;
-			}
+	{
+		// Save only valid chars to the bluetooth_data buffer
+		if ( ch != '\n' && ch != '\r' && ch != '\v')
+		{
+			bluetooth_data[bluetooth_count] = ch;
+			bluetooth_count++;
+			fragment_count++;
+		}
 
-			last_two_data[0] = last_two_data[1];
-			last_two_data[1] = ch;
-            
-			// Check message end conditions
-            if ( last_two_data[0] == '\v' && last_two_data[1] == '\n' )
-            {
-            	fullMessageReceived = true;
-            }
-            else if ( last_two_data[0] == '\r' && last_two_data[1] == '\n' )
-            {
-            	fragmentReceived = true;
-            }
-   	}
-    else if ( bluetooth_count >= BUFFER_SIZE )
-    {   
-    	// Mark a fragmentation error
-    	fullMessageReceived = true;
-    	status = 3;
+		last_two_data[0] = last_two_data[1];
+		last_two_data[1] = ch;
 
-    	// Move the buffer cursor back to "erase" collected fragment data
-    	bluetooth_count -= fragment_count;
-    }
+		// Check message end conditions
+		if ( last_two_data[0] == '\v' && last_two_data[1] == '\n' )
+			fullMessageReceived = true;
+		else if ( last_two_data[0] == '\r' && last_two_data[1] == '\n' )
+			fragmentReceived = true;
+	}
+	else if ( bluetooth_count >= BUFFER_SIZE )
+	{   
+		// Mark a fragmentation error
+		fullMessageReceived = true;
+		status = 3;
+
+		// Move the buffer cursor back to "erase" collected fragment data
+		bluetooth_count -= fragment_count;
+	}
 
 	// Respond to received full messages (either full or a fragment)
 	if ( fragmentReceived )
@@ -111,23 +101,19 @@ char* bluetooth_process( char ch )
 		bluetooth_send_status(status);
 	}
 	else if ( fullMessageReceived )
-    {
+	{
 		// NULL terminate the buffer
 		bluetooth_data[bluetooth_count] = 0;
 
 		// Acknowledge the fragment
 		bluetooth_send_status(2);
-        
-		// Reset state
-        bluetooth_count = 0;
-        fragment_count = 0;
-        
-        printf( "msg received:\n" );
+
+		printf( "msg received:\n" );
 		printf( bluetooth_data );
 		printf( "\n" );
 
-        return bluetooth_data;
-    }
+		return bluetooth_data;
+	}
 
 	return NULL;
 }
@@ -137,10 +123,17 @@ char* bluetooth_process( char ch )
  */
 char* bluetooth_wait_for_data( void )
 {
+	// Reset state
+	bluetooth_count = 0;
+	fragment_count = 0;
+	int i = 0;
+	
 	while (1)
 	{
 		if ( UART_TestForReceivedData( UART_ePORT_BLUETOOTH ) )
 		{
+			i = 0;
+			
 			char ch = (char)UART_getchar( UART_ePORT_BLUETOOTH );
 			char* fullJsonString = bluetooth_process( ch );
 
@@ -148,6 +141,16 @@ char* bluetooth_wait_for_data( void )
 			{
 				return fullJsonString;
 			}
+			
+			continue;
+		}
+		
+		// Timeout if UART has been waiting for expected data but never receives it
+		if ( i > TIMEOUT_ITER )
+		{
+			break;
 		}
 	}
+	
+	return NULL;
 }
