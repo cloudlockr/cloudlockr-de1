@@ -1,5 +1,5 @@
 /*
- * aes_hwacc.c
+ * aesHwacc.c
  *
  * This module contains functions for starting and reading the
  * hardware accelerated AES encryption/decryption modules.
@@ -9,9 +9,7 @@
  *      Author: dannsy
  */
 #include <stdio.h>
-
-volatile unsigned *aes_encrypt_addr = (volatile unsigned *)0xFF203000;
-volatile unsigned *aes_decrypt_addr = (volatile unsigned *)0xFF204000;
+#include "memAddress.h"
 
 /**
  * Function to call Avalon memory mapped custom component AES encryption module.
@@ -22,7 +20,7 @@ volatile unsigned *aes_decrypt_addr = (volatile unsigned *)0xFF204000;
  * 	ciphertext 	unsigned char array of size 16, will be filled with ciphertext after function execution
  * 	keyexp		int/boolean to specify whether to perform key expansion (only need to be true once for each encryption)
  */
-void aes_encrypt(unsigned char key[], unsigned char plaintext[], unsigned char ciphertext[], int keyexp)
+void encrypt(unsigned char key[], unsigned char plaintext[], unsigned char ciphertext[], int keyexp)
 {
     unsigned word4 = (plaintext[12] << 24) + (plaintext[13] << 16) + (plaintext[14] << 8) + plaintext[15];
     unsigned word5 = (plaintext[8] << 24) + (plaintext[9] << 16) + (plaintext[10] << 8) + plaintext[11];
@@ -80,7 +78,7 @@ void aes_encrypt(unsigned char key[], unsigned char plaintext[], unsigned char c
  * 	plaintext 	unsigned char array of size 16, will be filled with plaintext after function execution
  * 	keyexp		int/boolean to specify whether to perform key expansion (only need to be true once for each decryption)
  */
-void aes_decrypt(unsigned char key[], unsigned char ciphertext[], unsigned char plaintext[], int keyexp)
+void decrypt(unsigned char key[], unsigned char ciphertext[], unsigned char plaintext[], int keyexp)
 {
     unsigned word4 = (ciphertext[12] << 24) + (ciphertext[13] << 16) + (ciphertext[14] << 8) + ciphertext[15];
     unsigned word5 = (ciphertext[8] << 24) + (ciphertext[9] << 16) + (ciphertext[10] << 8) + ciphertext[11];

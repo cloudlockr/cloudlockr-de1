@@ -1,5 +1,5 @@
 /*
- * random_hex.c
+ * hexService.c
  *
  * This module contains the function for generating random HEX display.
  * It is meant to be called from the main ARM controller.
@@ -10,24 +10,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-volatile unsigned *hex01 = (volatile unsigned *)0xFF200030;
-volatile unsigned *hex23 = (volatile unsigned *)0xFF200040;
-volatile unsigned *hex45 = (volatile unsigned *)0xFF200050;
+#include "memAddress.h"
 
 /**
  * Function to generate random HEX display and returns the generated HEX as an int.
  * Call srand(current time) at the start of the controller main loop.
  */
-int random_HEX()
+int generateDisplayHexCode()
 {
     int random0 = rand() % 256;
     int random1 = rand() % 256;
     int random2 = rand() % 256;
 
-    *hex01 = (unsigned)random0;
-    *hex23 = (unsigned)random1;
-    *hex45 = (unsigned)random2;
+    *HEX0_1 = (unsigned)random0;
+    *HEX2_3 = (unsigned)random1;
+    *HEX4_5 = (unsigned)random2;
 
     int concat_random = (random2 << 16) + (random1 << 8) + random0;
 
@@ -37,11 +34,11 @@ int random_HEX()
 /**
  * Function to set HEX display back to 0.
  */
-void reset_HEX()
+void resetHex()
 {
-    *hex01 = (unsigned)0;
-    *hex23 = (unsigned)0;
-    *hex45 = (unsigned)0;
+    *HEX0_1 = (unsigned)0;
+    *HEX2_3 = (unsigned)0;
+    *HEX4_5 = (unsigned)0;
 }
 
 /**

@@ -2,7 +2,7 @@
  * verificationService.h
  *
  *  Created on: Apr 4, 2021
- *      Author: David
+ *      Author: Andrew C
  */
 
 #ifndef VERIFICATIONSERVICE_H_

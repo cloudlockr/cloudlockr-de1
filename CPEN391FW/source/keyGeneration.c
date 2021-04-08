@@ -1,5 +1,5 @@
 /*
- * key_generation.c
+ * keyGeneration.c
  *
  * This module contains the function which implements the private key generation algorithm.
  * Inputs to the algorithm includes DE1 master password, and specific DE1 inputs such as
@@ -26,7 +26,7 @@
  *
  * Private key will be returned as a 16 elements unsigned char array
  */
-void generate_key(char *master_pw, unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
+void keyGenerate(char *master_pw, unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
 {
     // Randomly generated 32 bits
     key[0] = (unsigned char)rand() % 256;
@@ -69,7 +69,7 @@ void generate_key(char *master_pw, unsigned wifi_lat, unsigned wifi_long, unsign
  *
  * Private key will be returned as a 16 elements unsigned char array
  */
-void regenerate_key(int gen_num, char *master_pw, unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
+void keyRegenerate(int gen_num, char *master_pw, unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
 {
     // First 32 bits frontend application
     key[0] = (unsigned char)(gen_num >> 24);
