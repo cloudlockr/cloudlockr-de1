@@ -74,9 +74,13 @@ static bool esp8266_send_data( const char *data, int length, char *buffer)
     sprintf( buffer, "%s\r\n", data );
     UART_puts( UART_ePORT_WIFI, buffer );
 
+    memset( buffer, 0, 1000 );
+
+    HPS_usleep( 3000 );
+
     while (1)
     {
-        if ( UART_gets( UART_ePORT_WIFI, buffer + count, sizeof(buffer) - count, 0 ) != NULL )
+        if ( UART_gets( UART_ePORT_WIFI, buffer + count, 1000 - count, 0 ) != NULL )
         {
             if (strstr(buffer + count, "SEND OK") != NULL)
             {
