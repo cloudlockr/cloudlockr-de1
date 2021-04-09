@@ -83,7 +83,7 @@ int verify(char *password, char *hex)
             break;
         }
         i++;
-    } while (master_pw_char != '\0' && pw_char != '\0' && i < MAX_PASSWORD_LENGTH);
+    } while (master_pw_char != '\0' && i < MAX_PASSWORD_LENGTH);
 
     // Verify HEX display only if password matches
     if (verified)

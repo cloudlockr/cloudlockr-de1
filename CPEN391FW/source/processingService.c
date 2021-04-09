@@ -1,5 +1,8 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include "constants.h"
+#include "bluetoothService.h"
+#include "JsonParser.h"
 #include "processingService.h"
 #include "verificationService.h"
 #include "aesHwacc.h"
@@ -120,26 +123,90 @@ int upload(char *file_id, int packet_number, int total_packets, char *file_data)
     int i = 0;
     while (file_data[i] != '\0' && i < MAX_FILEDATA_SIZE)
     {
+        int pad = 0;
         // Copy file data to plaintext array and pad it with 0 if necessary
         for (int j = 0; j < 16; j++)
         {
-            if (file_data[i + j] != '\0')
+            if (file_data[i + j] == '\0')
             {
-                plaintext[j] = file_data[i + j];
+                pad = 1;
+            }
+
+            if (pad)
+            {
+                plaintext[j] = 0x0;
             }
             else
             {
-                plaintext[j] = 0x0;
+                plaintext[j] = file_data[i + j];
             }
         }
 
         // Encrypt the plaintext
         encrypt(key, plaintext, ciphertext, 1);
 
+        if (pad)
+        {
+            break;
+        }
         i += 16;
     }
+
+    while (total_packets - 1 > packet_number)
+    {
+        // bluetooth_send_status(1);
+        // char *json_str = bluetooth_wait_for_data();
+
+        // placeholder json_str
+        char *json_str;
+        json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":1,\"totalPackets\":3,\"fileData\":\"abcdef1234567890\"}";
+
+        jsmntok_t *json_tokens = str_to_json(json_str);
+        int num_fields = 5;
+        char **all_values = get_json_values(json_str, json_tokens, num_fields);
+        packet_number = (int)strtol(all_values[2], NULL, 10);
+        file_data = all_values[4];
+        i = 0;
+
+        while (file_data[i] != '\0' && i < MAX_FILEDATA_SIZE)
+        {
+            int pad = 0;
+            // Copy file data to plaintext array and pad it with 0 if necessary
+            for (int j = 0; j < 16; j++)
+            {
+                if (file_data[i + j] == '\0')
+                {
+                    pad = 1;
+                }
+
+                if (pad)
+                {
+                    plaintext[j] = 0x0;
+                }
+                else
+                {
+                    plaintext[j] = file_data[i + j];
+                }
+            }
+
+            // Encrypt the plaintext
+            encrypt(key, plaintext, ciphertext, 1);
+
+            if (pad)
+            {
+                break;
+            }
+            i += 16;
+        }
+
+        free_json_values_array(all_values, num_fields);
+    }
+    char *response_data = "{\"status\":1,\"networks\":\"[network1,network2]\"}";
+
+    return 1;
 }
 
 int download()
 {
+    return 0;
 }

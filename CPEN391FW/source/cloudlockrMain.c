@@ -87,6 +87,11 @@ static void controller(void)
             json_str = "{\"type\":2,\"password\":\"1234567890abc\",\"hex\":\"ABCDEF\"}";
             i++;
         }
+        else if (i == 3)
+        {
+            json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":0,\"totalPackets\":3,\"fileData\":\"1234567890abcdef\"}";
+            i++;
+        }
         else
         {
             break;
@@ -141,7 +146,18 @@ static void controller(void)
                 all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
                 status = verify(all_values[1], all_values[2]);
-                state = 3;
+
+                // JUST FOR TESTING, REMOVE FOLLOWING LINE LATER
+                status = 1;
+
+                if (status)
+                {
+                    state = 3;
+                }
+                else
+                {
+                    state = 2;
+                }
             }
             else
             {
@@ -157,7 +173,10 @@ static void controller(void)
             {
                 expected_num_values = 5;
                 all_values = get_json_values(json_str, json_tokens, expected_num_values);
+                int packet_number = (int)strtol(all_values[2], NULL, 10);
+                int total_packets = (int)strtol(all_values[3], NULL, 10);
 
+                upload(all_values[1], packet_number, total_packets, all_values[4]);
                 // TODO: response_data = upload_data(all_values[1], all_values[2], all_values[3], all_values[4]);
                 response_data = "{\"status\":1,\"localEncryptionComponent\":\"test\"}"; // TODO: remove, placeholder until above function is implemented
             }

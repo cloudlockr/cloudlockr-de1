@@ -544,6 +544,7 @@ static char** get_json_values(const char *json, jsmntok_t *tok, int numTokens)
 
 		ret[valuesAdded] = malloc(length + 1);
 		memcpy(ret[valuesAdded], json + token.start, length);
+    ret[valuesAdded][length] = '\0';
 
 		valuesAdded++;
 	}
