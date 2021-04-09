@@ -74,9 +74,9 @@ static bool esp8266_send_data( const char *data, int length, char *buffer)
     sprintf( buffer, "%s\r\n", data );
     UART_puts( UART_ePORT_WIFI, buffer );
 
-    memset( buffer, 0, 1000 );
+//    memset( buffer, 0, 1000 );
 
-    HPS_usleep( 3000 );
+    //HPS_usleep( 3000 );
 
     while (1)
     {
@@ -109,7 +109,7 @@ char* uploadData(char* email, char* fileId, char* packetNumber, char* totalPacke
 static bool initiate_tcp(char *domain) {
 	bool success;
     char cmd_buffer[100];
-	sprintf(cmd_buffer, "AT+CIPSTART=\"TCP\",\"%s\",80", domain); // start TCP connection at domain with port 80
+	sprintf(cmd_buffer, "AT+CIPSTART=\"TCP\",\"%s\",80,7200", domain); // start TCP connection at domain with port 80
 	success = esp8266_send_command(cmd_buffer);
 	return success;
 }
@@ -137,9 +137,8 @@ static bool initiate_tcp(char *domain) {
 
 int set_wifi_config(char* networkName, char* networkPassword) {
 	char cmd[1000];
-    esp8266_send_command("AT+CWMODE_CUR=1");
-    esp8266_send_command("AT+CWLAPOPT=1,0x2");
-    sprintf(cmd, "AT+CWJAP_CUR=\"%s\",\"%s\"", networkName, networkPassword);
+    esp8266_send_command("AT+CWMODE=3");
+    sprintf(cmd, "AT+CWJAP=\"%s\",\"%s\"", networkName, networkPassword);
 	return esp8266_send_command(cmd);
 }
 
