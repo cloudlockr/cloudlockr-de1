@@ -1,12 +1,6 @@
-/*
- * aesHwacc.c
- *
+/**
  * This module contains functions for starting and reading the
  * hardware accelerated AES encryption/decryption modules.
- * It is meant to be called from the main ARM controller.
- *
- *  Created on: April 1, 2021
- *      Author: dannsy
  */
 
 #include "memAddress.h"

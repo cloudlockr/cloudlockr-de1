@@ -1,11 +1,11 @@
 source/processingService.o: ../source/processingService.c
 source/processingService.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stdio.h
 source/processingService.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stdlib.h
+source/processingService.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/string.h
 source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/constants.h
 source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/bluetoothService.h
 source/processingService.o: ../source/JsonParser.h
 source/processingService.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stddef.h
-source/processingService.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/string.h
 source/processingService.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stdint.h
 source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/processingService.h
 source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/verificationService.h

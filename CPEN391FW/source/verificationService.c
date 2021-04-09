@@ -1,8 +1,6 @@
 /*
- * verificationService.c
- *
- *  Created on: Apr 4, 2021
- *      Author: Andrew C
+ * This module contains for setting, getting, and verifying the master password
+ * and the HEX display
  */
 
 /*

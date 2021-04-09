@@ -1,11 +1,5 @@
 /*
- * hexService.c
- *
- * This module contains the function for generating random HEX display.
- * It is meant to be called from the main ARM controller.
- *
- *  Created on: April 1, 2021
- *      Author: dannsy
+ * This module contains the function for generating random HEX display and clearing it
  */
 
 #include <stdlib.h>

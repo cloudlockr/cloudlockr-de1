@@ -89,7 +89,7 @@ static void controller(void)
         }
         else if (i == 3)
         {
-            json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":0,\"totalPackets\":3,\"fileData\":\"1234567890abcdef\"}";
+            json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":1,\"totalPackets\":3,\"fileData\":\"1234567890abcdeffedcba0987654321\"}";
             i++;
         }
         else
@@ -176,9 +176,7 @@ static void controller(void)
                 int packet_number = (int)strtol(all_values[2], NULL, 10);
                 int total_packets = (int)strtol(all_values[3], NULL, 10);
 
-                upload(all_values[1], packet_number, total_packets, all_values[4]);
-                // TODO: response_data = upload_data(all_values[1], all_values[2], all_values[3], all_values[4]);
-                response_data = "{\"status\":1,\"localEncryptionComponent\":\"test\"}"; // TODO: remove, placeholder until above function is implemented
+                response_data = upload(all_values[1], packet_number, total_packets, all_values[4]);
             }
             else
             {
@@ -257,6 +255,7 @@ static void controller(void)
             // Send full char message
             printf("Message is: %s\n", response_data);
             // bluetooth_send_message(response_data);
+            free(response_data);
         }
     }
 

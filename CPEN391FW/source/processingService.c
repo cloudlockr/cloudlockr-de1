@@ -1,5 +1,12 @@
+/**
+ * This module contains functions to generate the encryption key
+ * and functions to facilitate the upload/download process of file data to the
+ * server and back.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "constants.h"
 #include "bluetoothService.h"
 #include "JsonParser.h"
@@ -97,38 +104,27 @@ void regenerate_key(int gen_num, unsigned wifi_lat, unsigned wifi_long, unsigned
 }
 
 /**
- * Function to upload file data to the server.
- * Calls other services to generate encryption key and encrypt the file data before calling WiFi service to send to server
- *
+ * Helper function for upload to encrypt fileData.
+ * 
  * Params:
- *  file_id         char array containing the file_id which specifies which file on the server to send encrypted blobs to
- *  packet_number   int to specify which packet we are currently on
- *  total_packets   int to specify how many packets of fileData we have to collect
- *  file_data       char array containing bytes of file data to encrypt and send to server. Maximum size 1MB
- *
- * Returns SOMETHING
+ *  key                 unsigned char array containing the encryption key
+ *  file_data           char array containing bytes of file data to encrypt
+ *  keyexp              int to specify whether to perform key expansion
+ *  entire_ciphertext   dynamically allocated unsigned char array to hold the ciphertext
  */
-int upload(char *file_id, int packet_number, int total_packets, char *file_data)
+void encrypt_helper(unsigned char key[], char *file_data, int keyexp, unsigned char *entire_ciphertext)
 {
-    unsigned char key[16], plaintext[16], ciphertext[16];
-    unsigned wifi_lat = 30;
-    unsigned wifi_long = 90;
+    unsigned char plaintext[16], ciphertext[16];
+    int pad = 0, i = 0;
 
-    // TODO: Call Google geolocation API to acquire wifi_lat and wifi_long
-
-    // Generate encryption key and then encrypt file data
-    generate_key(wifi_lat, wifi_long, key);
-    // SAVE FIRST 4 BYTES AND SEND BACK TO PHONE FOR STORAGE
-
-    int i = 0;
-    while (file_data[i] != '\0' && i < MAX_FILEDATA_SIZE)
+    while (i < MAX_FILEDATA_SIZE)
     {
-        int pad = 0;
         // Copy file data to plaintext array and pad it with 0 if necessary
         for (int j = 0; j < 16; j++)
         {
             if (file_data[i + j] == '\0')
             {
+                // Once null terminating byte is encountered, remaining plaintext will be padded with 0
                 pad = 1;
             }
 
@@ -143,70 +139,117 @@ int upload(char *file_id, int packet_number, int total_packets, char *file_data)
         }
 
         // Encrypt the plaintext
-        encrypt(key, plaintext, ciphertext, 1);
+        encrypt(key, plaintext, ciphertext, keyexp);
 
-        if (pad)
+        for (int j = 0; j < 16; j++)
         {
-            break;
+            entire_ciphertext[i + j] = ciphertext[j];
         }
+
         i += 16;
     }
-
-    while (total_packets - 1 > packet_number)
-    {
-        // bluetooth_send_status(1);
-        // char *json_str = bluetooth_wait_for_data();
-
-        // placeholder json_str
-        char *json_str;
-        json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":1,\"totalPackets\":3,\"fileData\":\"abcdef1234567890\"}";
-
-        jsmntok_t *json_tokens = str_to_json(json_str);
-        int num_fields = 5;
-        char **all_values = get_json_values(json_str, json_tokens, num_fields);
-        packet_number = (int)strtol(all_values[2], NULL, 10);
-        file_data = all_values[4];
-        i = 0;
-
-        while (file_data[i] != '\0' && i < MAX_FILEDATA_SIZE)
-        {
-            int pad = 0;
-            // Copy file data to plaintext array and pad it with 0 if necessary
-            for (int j = 0; j < 16; j++)
-            {
-                if (file_data[i + j] == '\0')
-                {
-                    pad = 1;
-                }
-
-                if (pad)
-                {
-                    plaintext[j] = 0x0;
-                }
-                else
-                {
-                    plaintext[j] = file_data[i + j];
-                }
-            }
-
-            // Encrypt the plaintext
-            encrypt(key, plaintext, ciphertext, 1);
-
-            if (pad)
-            {
-                break;
-            }
-            i += 16;
-        }
-
-        free_json_values_array(all_values, num_fields);
-    }
-    char *response_data = "{\"status\":1,\"networks\":\"[network1,network2]\"}";
-
-    return 1;
 }
 
-int download()
+/**
+ * Function to upload file data to the server.
+ * Calls other services to generate encryption key and encrypt the file data before calling WiFi service to send to server
+ *
+ * Params:
+ *  file_id         char array containing the file_id which specifies which file on the server to send encrypted blobs to
+ *  packet_number   int to specify which packet we are currently on
+ *  total_packets   int to specify how many packets of fileData we have to collect
+ *  file_data       char array containing bytes of file data to encrypt and send to server. Maximum size is MAX_FILEDATA_SOZE
+ *
+ * Returns the response data to return to the user. Should contain the status and part of the encryption key
+ */
+char *upload(char *file_id, int packet_number, int total_packets, char *file_data)
 {
-    return 0;
+    unsigned char key[16];
+    unsigned wifi_lat = 30;
+    unsigned wifi_long = 90;
+
+    // Allocating memory for encrypted file
+    unsigned char *entire_ciphertext = (unsigned char *)malloc(sizeof(char) * MAX_FILEDATA_SIZE);
+
+    // TODO: Call Google geolocation API to acquire wifi_lat and wifi_long
+
+    // Generate encryption key and then encrypt file data
+    generate_key(wifi_lat, wifi_long, key);
+    // SAVE FIRST 4 BYTES AND SEND BACK TO PHONE FOR STORAGE
+
+    char *json_str;
+    jsmntok_t *json_tokens;
+    int num_fields = 5;
+    char **all_values;
+
+    // Multiple packets of file data to receive
+    while (total_packets > packet_number)
+    {
+        encrypt_helper(key, file_data, packet_number == 1, entire_ciphertext);
+
+        if (packet_number > 1)
+        {
+            free_json_values_array(all_values, num_fields);
+        }
+
+        // Notify user that we are ready to receive another packet of fileData
+        // bluetooth_send_status(1);
+
+        // Upload encrypted file data to server
+        // uploadData(file_id, entire_ciphertext);
+
+        // Receive the next packet of fileData to encrypt and upload
+        // json_str = bluetooth_wait_for_data();
+
+        // placeholder json_str
+        if (packet_number == 1)
+        {
+            json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":2,\"totalPackets\":3,\"fileData\":\"abcdef123456789001010101\"}";
+        }
+        else if (packet_number == 2)
+        {
+            json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":3,\"totalPackets\":3,\"fileData\":\"1234567890abcdef\"}";
+        }
+
+        json_tokens = str_to_json(json_str);
+        all_values = get_json_values(json_str, json_tokens, num_fields);
+        packet_number = (int)strtol(all_values[2], NULL, 10);
+        file_data = all_values[4];
+    }
+
+    // Last packet of fileData to receive
+    encrypt_helper(key, file_data, packet_number, entire_ciphertext);
+
+    // Upload last packet of encrypted file data to server
+    // uploadData(file_id, entire_ciphertext);
+
+    if (packet_number > 1)
+    {
+        free_json_values_array(all_values, num_fields);
+    }
+
+    // Forming the response message which contains the success status and part of the encryption key
+    char *response_data = (char *)malloc(sizeof(char) * 52);
+    strcpy(response_data, "{\"status\":1,\"localEncryptionComponent\":");
+
+    char encryption_component[12];
+    encryption_component[0] = '"';
+    for (int i = 0; i < 4; i++)
+    {
+        // Converting key from ascii to hex and then copying to encryption_component
+        sprintf((char *)(encryption_component + (i * 2 + 1)), "%02X", key[i]);
+    }
+
+    // Finalizaing the string and concatenating
+    encryption_component[9] = '"';
+    encryption_component[10] = '}';
+    encryption_component[11] = '\0';
+    strcat(response_data, encryption_component);
+
+    return response_data;
+}
+
+char *download(char *file_id, char *key_portion)
+{
+    return NULL;
 }
