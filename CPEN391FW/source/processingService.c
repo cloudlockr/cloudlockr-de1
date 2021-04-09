@@ -18,7 +18,7 @@
  *
  * Private key will be returned as a 16 elements unsigned char array
  */
-void generateKey(unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
+void generate_key(unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
 {
     // Randomly generated 32 bits
     key[0] = (unsigned char)rand() % 256;
@@ -28,7 +28,7 @@ void generateKey(unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
 
     // 32 bit DE1 master password
     char master_pw[32];
-    getPassword(master_pw);
+    get_password(master_pw);
     key[4] = (unsigned char)master_pw[0];
     key[5] = (unsigned char)master_pw[1];
     key[6] = (unsigned char)master_pw[2];
@@ -63,7 +63,7 @@ void generateKey(unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
  *
  * Private key will be returned as a 16 elements unsigned char array
  */
-void regenerateKey(int gen_num, unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
+void regenerate_key(int gen_num, unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
 {
     // First 32 bits frontend application
     key[0] = (unsigned char)(gen_num >> 24);
@@ -73,7 +73,7 @@ void regenerateKey(int gen_num, unsigned wifi_lat, unsigned wifi_long, unsigned 
 
     // 32 bit DE1 master password
     char master_pw[32];
-    getPassword(master_pw);
+    get_password(master_pw);
     key[4] = (unsigned char)master_pw[0];
     key[5] = (unsigned char)master_pw[1];
     key[6] = (unsigned char)master_pw[2];
@@ -98,14 +98,14 @@ void regenerateKey(int gen_num, unsigned wifi_lat, unsigned wifi_long, unsigned 
  * Calls other services to generate encryption key and encrypt the file data before calling WiFi service to send to server
  *
  * Params:
- *  fileId          char array containing the fileId which specifies which file on the server to send encrypted blobs to
- *  packetNumber    int to specify which packet we are currently on
- *  totalPackets    int to specify how many packets of fileData we have to collect
- *  fileData        char array containing bytes of file data to encrypt and send to server. Maximum size 1MB
+ *  file_id         char array containing the file_id which specifies which file on the server to send encrypted blobs to
+ *  packet_number   int to specify which packet we are currently on
+ *  total_packets   int to specify how many packets of fileData we have to collect
+ *  file_data       char array containing bytes of file data to encrypt and send to server. Maximum size 1MB
  *
  * Returns SOMETHING
  */
-int upload(char *fileId, int packetNumber, int totalPackets, char *fileData)
+int upload(char *file_id, int packet_number, int total_packets, char *file_data)
 {
     unsigned char key[16], plaintext[16], ciphertext[16];
     unsigned wifi_lat = 30;
@@ -114,18 +114,18 @@ int upload(char *fileId, int packetNumber, int totalPackets, char *fileData)
     // TODO: Call Google geolocation API to acquire wifi_lat and wifi_long
 
     // Generate encryption key and then encrypt file data
-    generateKey(wifi_lat, wifi_long, key);
+    generate_key(wifi_lat, wifi_long, key);
     // SAVE FIRST 4 BYTES AND SEND BACK TO PHONE FOR STORAGE
 
     int i = 0;
-    while (fileData[i] != '\0' && i < MAX_FILEDATA_SIZE)
+    while (file_data[i] != '\0' && i < MAX_FILEDATA_SIZE)
     {
         // Copy file data to plaintext array and pad it with 0 if necessary
         for (int j = 0; j < 16; j++)
         {
-            if (fileData[i + j] != '\0')
+            if (file_data[i + j] != '\0')
             {
-                plaintext[j] = fileData[i + j];
+                plaintext[j] = file_data[i + j];
             }
             else
             {

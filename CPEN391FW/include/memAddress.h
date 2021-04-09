@@ -7,7 +7,7 @@
 
 /*------------------- Constants Define -------------------*/
 /* verificationService.c */
-#define MASTER_PW_ADDR (volatile unsigned char *)0x03000000
+#define MASTER_PW_ADDR (volatile unsigned *)0x03000000
 #define HEX_ADDR (volatile unsigned *)0x03010000
 
 /* UART.c */

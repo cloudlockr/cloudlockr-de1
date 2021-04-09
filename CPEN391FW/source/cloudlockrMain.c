@@ -12,14 +12,14 @@
 #include "memAddress.h"
 
 /* Application module headers */
-#include "hpsService.h"
 #include "UART.h"
 #include "WIFI.h"
 #include "bluetoothService.h"
 #include "JsonParser.h"
-#include "verificationService.h"
 #include "hexService.h"
+#include "hpsService.h"
 #include "processingService.h"
+#include "verificationService.h"
 
 /*------------------- Local Function Prototype -------------------*/
 static void init(void);
@@ -62,37 +62,39 @@ static void controller(void)
     time_t t;
     srand((unsigned)time(&t));
     int i = 0;
+    // Controls whether services can be called, ensures correct user control flow
+    int state = 0;
 
     // Controller main loop
     while (1)
     {
         // Wait for a request message to be received
-        // char *jsonString = bluetooth_wait_for_data();
+        // char *json_str = bluetooth_wait_for_data();
         // ====================================================================
-        char *jsonString;
+        char *json_str;
         if (i == 0)
         {
-            jsonString = "{\"type\":7,\"password\":\"1234567890abc\"}";
+            json_str = "{\"type\":7,\"password\":\"1234567890abc\"}";
             i++;
         }
         else if (i == 1)
         {
-            jsonString = "{\"type\":1}";
+            json_str = "{\"type\":1}";
             i++;
         }
         else if (i == 2)
         {
-            jsonString = "{\"type\":2,\"password\":\"1234567890abc\",\"hex\":\"ABCDEF\"}";
+            json_str = "{\"type\":2,\"password\":\"1234567890abc\",\"hex\":\"ABCDEF\"}";
             i++;
         }
         else
         {
             break;
         }
-        jsmntok_t *jsonTokens = str_to_json(jsonString);
+        jsmntok_t *json_tokens = str_to_json(json_str);
 
         // Check for JSON parsing errors
-        if (jsonTokens == NULL)
+        if (json_tokens == NULL)
         {
             // Send error response and abort token processing
             // ====================================================================
@@ -100,61 +102,98 @@ static void controller(void)
             continue;
         }
 
-        // Get the first value to determine messageType
-        char **messageTypeValues = get_json_values(jsonString, jsonTokens, 1);
-        long messageType = strtol(messageTypeValues[0], NULL, 10);
-        free_json_values_array(messageTypeValues, 1);
+        // Get the first value to determine message_type
+        char **message_type_values = get_json_values(json_str, json_tokens, 1);
+        long message_type = strtol(message_type_values[0], NULL, 10);
+        free_json_values_array(message_type_values, 1);
 
         // Direct the request to the appropriate handler function (pure functions that take inputs, not the JSON tokens)
         int status = -1;
-        char *responseData = NULL;
+        char *response_data = NULL;
 
-        char **allValues;
-        int expectedNumValues = 0;
+        char **all_values;
+        int expected_num_values = 0;
 
-        switch (messageType)
+        switch (message_type)
         {
         case 1:
         {
-            generateDisplayHexCode();
-            status = 1;
+            // Request to generate and display HEX code, subsequent requests must include the generated HEX code
+            if (state >= 1)
+            {
+                generate_display_hex_code();
+                status = 1;
+                state = 2;
+            }
+            else
+            {
+                // Master password has not been set, reject request
+                status = 0;
+            }
             break;
         }
         case 2:
         {
-            expectedNumValues = 3;
-            allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+            // Request to verify that the user has included the master password and the generated HEX code
+            if (state >= 2)
+            {
+                expected_num_values = 3;
+                all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
-            status = verify(allValues[1], allValues[2]);
+                status = verify(all_values[1], all_values[2]);
+                state = 3;
+            }
+            else
+            {
+                // No HEX code displayed yet, reject request
+                status = 0;
+            }
             break;
         }
         case 3:
         {
-            expectedNumValues = 6;
-            allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+            // Request to upload new encrypted file data to the server for storage
+            if (state >= 3)
+            {
+                expected_num_values = 5;
+                all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
-            // TODO: responseData = upload_data(allValues[1], allValues[2], allValues[3], allValues[4]);
-            responseData = "{\"status\":1,\"localEncryptionComponent\":\"test\"}"; // TODO: remove, placeholder until above function is implemented
+                // TODO: response_data = upload_data(all_values[1], all_values[2], all_values[3], all_values[4]);
+                response_data = "{\"status\":1,\"localEncryptionComponent\":\"test\"}"; // TODO: remove, placeholder until above function is implemented
+            }
+            else
+            {
+                // User has not been verified yet
+                status = 0;
+            }
             break;
         }
         case 4:
         {
-            expectedNumValues = 4;
-            allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+            if (state >= 3)
+            {
+                expected_num_values = 3;
+                all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
-            // TODO: download_data(allValues[1], allValues[2], allValues[3]);
+                // TODO: download_data(all_values[1], all_values[2], all_values[3]);
+            }
+            else
+            {
+                // User has not been verified yet
+                status = 0;
+            }
             break;
         }
         case 5:
         {
-            // TODO: responseData = get_wifi_networks();
-            responseData = "{\"status\":1,\"networks\":\"[network1,network2]\"}"; // TODO: remove, placeholder until above function is implemented
+            // TODO: response_data = get_wifi_networks();
+            response_data = "{\"status\":1,\"networks\":\"[network1,network2]\"}"; // TODO: remove, placeholder until above function is implemented
             break;
         }
         case 6:
         {
-            expectedNumValues = 3;
-            allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+            expected_num_values = 3;
+            all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
             // TODO: status = set_wifi_config(allValues[1], allValues[2]);
             status = 1; // TODO: remove, placeholder until above function is implemented
@@ -162,43 +201,47 @@ static void controller(void)
         }
         case 7:
         {
-            expectedNumValues = 2;
-            allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+            expected_num_values = 2;
+            all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
-            setPassword(allValues[1]);
+            set_password(all_values[1]);
             status = 1;
+            state = 1;
             break;
         }
         default:
         {
-            // Send error status if messageType is invalid
+            // Send error status if message_type is invalid
             status = 0;
+            state = 0;
         }
         }
 
         // Free values (if they were collected)
-        if (expectedNumValues > 0)
+        if (expected_num_values > 0)
         {
-            free_json_values_array(allValues, expectedNumValues);
+            free_json_values_array(all_values, expected_num_values);
         }
 
         // Pause (to prevent response message from being sent too quickly)
         hps_usleep(1 * 1000 * 1000); // ~0.5 second
 
         // Send the response message (if applicable)
-        // ====================================================================
-        // if (status != -1)
-        // {
-        //     // Send basic status response
-        //     bluetooth_send_status(status);
-        // }
-        // else if (responseData != NULL)
-        // {
-        //     // Send full char message
-        //     bluetooth_send_message(responseData);
-        // }
+        if (status != -1)
+        {
+            // Send basic status response
+            printf("Status is: %d\n", status);
+            // bluetooth_send_status(status);
+        }
+        else if (response_data != NULL)
+        {
+            // Send full char message
+            printf("Message is: %s\n", response_data);
+            // bluetooth_send_message(response_data);
+        }
     }
 
+    reset_hex();
     printf(">>>>>>>>>    CloudLockr Firmware end    <<<<<<<<<\n");
 }
 

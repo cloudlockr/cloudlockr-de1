@@ -23,7 +23,7 @@
  * Params:
  *  password		char array containing the password to set
  */
-void setPassword(char *password)
+void set_password(char *password)
 {
     int i = 0;
 
@@ -42,17 +42,17 @@ void setPassword(char *password)
  * Params:
  *  password		char array to write the master password to
  */
-void getPassword(char *password)
+void get_password(char *password)
 {
     int i = 0;
-    char masterPwChar;
+    char master_pw_char;
 
     do
     {
-        masterPwChar = *(MASTER_PW_ADDR + i);
-        password[i] = masterPwChar;
+        master_pw_char = *(MASTER_PW_ADDR + i);
+        password[i] = master_pw_char;
         i++;
-    } while (masterPwChar != '\0' && i < MAX_PASSWORD_LENGTH);
+    } while (master_pw_char != '\0' && i < MAX_PASSWORD_LENGTH);
 }
 
 /**
@@ -69,28 +69,28 @@ int verify(char *password, char *hex)
 {
     int verified = 1;
     int i = 0;
-    char masterPwChar, pwChar;
+    char master_pw_char, pw_char;
 
     // Verify master password
     do
     {
-        masterPwChar = *(MASTER_PW_ADDR + i);
-        pwChar = password[i];
+        master_pw_char = *(MASTER_PW_ADDR + i);
+        pw_char = password[i];
 
-        if (masterPwChar != pwChar)
+        if (master_pw_char != pw_char)
         {
             verified = 0;
             break;
         }
         i++;
-    } while (masterPwChar != '\0' && pwChar != '\0' && i < MAX_PASSWORD_LENGTH);
+    } while (master_pw_char != '\0' && pw_char != '\0' && i < MAX_PASSWORD_LENGTH);
 
     // Verify HEX display only if password matches
     if (verified)
     {
-        unsigned inputHexCode = (unsigned)strtol(hex, NULL, 16);
-        unsigned correctHexCode = *HEX_ADDR;
-        if (correctHexCode != inputHexCode)
+        unsigned input_hex_code = (unsigned)strtol(hex, NULL, 16);
+        unsigned correct_hex_code = *HEX_ADDR;
+        if (correct_hex_code != input_hex_code)
         {
             verified = 0;
         }

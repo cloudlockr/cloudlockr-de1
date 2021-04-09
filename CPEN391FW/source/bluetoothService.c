@@ -62,8 +62,8 @@ void bluetooth_send_status(int status)
  */
 char *bluetooth_process(char ch)
 {
-	bool fullMessageReceived = false;
-	bool fragmentReceived = false;
+	bool full_message_received = false;
+	bool fragment_received = false;
 	int status = 1;
 
 	// Process passed char (if buffer space is available)
@@ -83,17 +83,17 @@ char *bluetooth_process(char ch)
 		// Check message end conditions
 		if (last_two_data[0] == '\v' && last_two_data[1] == '\n')
 		{
-			fullMessageReceived = true;
+			full_message_received = true;
 		}
 		else if (last_two_data[0] == '\r' && last_two_data[1] == '\n')
 		{
-			fragmentReceived = true;
+			fragment_received = true;
 		}
 	}
 	else if (bluetooth_count >= BUFFER_SIZE)
 	{
 		// Mark a fragmentation error
-		fullMessageReceived = true;
+		full_message_received = true;
 		status = 3;
 
 		// Move the buffer cursor back to "erase" collected fragment data
@@ -101,7 +101,7 @@ char *bluetooth_process(char ch)
 	}
 
 	// Respond to received full messages (either full or a fragment)
-	if (fragmentReceived)
+	if (fragment_received)
 	{
 		fragment_count = 0;
 
@@ -111,7 +111,7 @@ char *bluetooth_process(char ch)
 
 		bluetooth_send_status(status);
 	}
-	else if (fullMessageReceived)
+	else if (full_message_received)
 	{
 		// NULL terminate the buffer
 		bluetooth_data[bluetooth_count] = 0;
@@ -143,11 +143,11 @@ char *bluetooth_wait_for_data(void)
 		if (UART_TestForReceivedData(UART_ePORT_BLUETOOTH))
 		{
 			char ch = (char)UART_getchar(UART_ePORT_BLUETOOTH);
-			char *fullJsonString = bluetooth_process(ch);
+			char *full_json_string = bluetooth_process(ch);
 
-			if (fullJsonString != NULL)
+			if (full_json_string != NULL)
 			{
-				return fullJsonString;
+				return full_json_string;
 			}
 		}
 	}

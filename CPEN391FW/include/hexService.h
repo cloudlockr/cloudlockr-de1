@@ -5,7 +5,7 @@
 #ifndef HEXSERVICE_H_
 #define HEXSERVICE_H_
 
-void generateDisplayHexCode(void);
-void resetHex(void);
+void generate_display_hex_code(void);
+void reset_hex(void);
 
 #endif /* HEXSERVICE_H_ */

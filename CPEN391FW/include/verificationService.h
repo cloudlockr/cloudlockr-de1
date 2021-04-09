@@ -5,8 +5,8 @@
 #ifndef VERIFICATIONSERVICE_H_
 #define VERIFICATIONSERVICE_H_
 
-void setPassword(char *password);
-void getPassword(char *password);
+void set_password(char *password);
+void get_password(char *password);
 int verify(char *password, char *hex);
 
 #endif /* VERIFICATIONSERVICE_H_ */

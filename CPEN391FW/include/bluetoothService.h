@@ -7,7 +7,7 @@
 
 char *bluetooth_wait_for_data(void);
 void bluetooth_send_message(char *data);
-void bluetooth_send_status(int statusCode);
+void bluetooth_send_status(int status);
 char *bluetooth_wait_for_data(void);
 
 #endif /* BLUETOOTHSERVICE_H_ */
