@@ -27,6 +27,7 @@ void generateDisplayHexCode(void)
     *HEX4_5 = random2;
 
     unsigned concat_random = (random2 << 16) + (random1 << 8) + random0;
+    *HEX_ADDR = (unsigned) 0xffffffff;
     *HEX_ADDR = concat_random;
 }
 

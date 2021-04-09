@@ -1,2 +1,10 @@
 source/Bluetooth.o: ../source/Bluetooth.c
-source/Bluetooth.o: C:/Program\ Files/DS-5/sw/ARMCompiler5.05u1/bin/../include/string.h
+source/Bluetooth.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stdio.h
+source/Bluetooth.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/string.h
+source/Bluetooth.o: ../source/TypeDef.h
+source/Bluetooth.o: ../source/HPS.h
+source/Bluetooth.o: ../source/UART.h
+source/Bluetooth.o: ../source/JsonParser.h
+source/Bluetooth.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stddef.h
+source/Bluetooth.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stdlib.h
+source/Bluetooth.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stdint.h
