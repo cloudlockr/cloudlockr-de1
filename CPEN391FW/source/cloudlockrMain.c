@@ -92,6 +92,11 @@ static void controller(void)
             json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":1,\"totalPackets\":3,\"fileData\":\"1234567890abcdeffedcba0987654321\"}";
             i++;
         }
+        else if (i == 4)
+        {
+            json_str = "{\"type\":4,\"localEncryptionComponent\":\"0102ABCD\",\"fileId\":\"123\"}";
+            i++;
+        }
         else
         {
             break;
@@ -192,7 +197,7 @@ static void controller(void)
                 expected_num_values = 3;
                 all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
-                // TODO: download_data(all_values[1], all_values[2], all_values[3]);
+                download(all_values[2], all_values[1]);
             }
             else
             {
@@ -234,6 +239,7 @@ static void controller(void)
         }
         }
 
+        free(json_tokens);
         // Free values (if they were collected)
         if (expected_num_values > 0)
         {
