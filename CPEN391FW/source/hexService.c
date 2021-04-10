@@ -34,31 +34,3 @@ void reset_hex(void)
     *HEX2_3 = (unsigned)0;
     *HEX4_5 = (unsigned)0;
 }
-
-/**
- * Sample usage of the random HEX display generator function
- */
-// #include <stdio.h>
-// #include <time.h>
-
-// int test()
-// {
-//     time_t t;
-
-//     // Set seed as current time, DO THIS BEFORE MAIN CONTROLLER LOOP STARTS
-//     srand((unsigned)time(&t));
-
-//     // Setting HEX 3 times (it will be so fast that you likely won't see it because we reset the HEX right after)
-//     int verification_code0 = random_HEX();
-//     int verification_code1 = random_HEX();
-//     int verification_code2 = random_HEX();
-
-//     printf("Verification code 0 is: %x\n", verification_code0);
-//     printf("Verification code 1 is: %x\n", verification_code1);
-//     printf("Verification code 2 is: %x\n", verification_code2);
-
-//     // Resetting HEX back to 0
-//     reset_HEX();
-
-//     return 0;
-// }

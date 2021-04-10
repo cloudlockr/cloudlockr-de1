@@ -12,6 +12,7 @@ C_SRCS += \
 ../source/hexService.c \
 ../source/hpsService.c \
 ../source/processingService.c \
+../source/tests.c \
 ../source/verificationService.c 
 
 OBJS += \
@@ -23,6 +24,7 @@ OBJS += \
 ./source/hexService.o \
 ./source/hpsService.o \
 ./source/processingService.o \
+./source/tests.o \
 ./source/verificationService.o 
 
 C_DEPS += \
@@ -34,6 +36,7 @@ C_DEPS += \
 ./source/hexService.d \
 ./source/hpsService.d \
 ./source/processingService.d \
+./source/tests.d \
 ./source/verificationService.d 
 
 
