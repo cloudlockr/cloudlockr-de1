@@ -6,7 +6,7 @@
 C_SRCS += \
 ../source/UART.c \
 ../source/WIFI.c \
-../source/aesHwAcc.c \
+../source/aesHwacc.c \
 ../source/bluetoothService.c \
 ../source/cloudlockrMain.c \
 ../source/hexService.c \
@@ -18,7 +18,7 @@ C_SRCS += \
 OBJS += \
 ./source/UART.o \
 ./source/WIFI.o \
-./source/aesHwAcc.o \
+./source/aesHwacc.o \
 ./source/bluetoothService.o \
 ./source/cloudlockrMain.o \
 ./source/hexService.o \
@@ -30,7 +30,7 @@ OBJS += \
 C_DEPS += \
 ./source/UART.d \
 ./source/WIFI.d \
-./source/aesHwAcc.d \
+./source/aesHwacc.d \
 ./source/bluetoothService.d \
 ./source/cloudlockrMain.d \
 ./source/hexService.d \

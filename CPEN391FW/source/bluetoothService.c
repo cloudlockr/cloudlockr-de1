@@ -21,24 +21,66 @@
 #include "UART.h"
 #include "JsonParser.h"
 
-#define BUFFER_SIZE 500500 // 1 mb of data (assuming 2 bytes per char) + 500 bytes of extra data allowance
+#define BUFFER_SIZE 500500	  // 1 mb of data (assuming 2 bytes per char) + 500 bytes of extra data allowance
 #define TIMEOUT_ITER 10000000 // Large number to represent the max number of iterations with no data arriving (~50 sec)
-static int  bluetooth_count = 0;
+static int bluetooth_count = 0;
 static char bluetooth_data[BUFFER_SIZE];
 
 /* Mocking settings */
-#define MOCK_BLUETOOTH 0
+#define MOCK_BLUETOOTH 1
 static int mock_idx = 0;
+
+char *mock_bluetooth_wait_for_data(void)
+{
+	char *json_str = NULL;
+	if (mock_idx == 0)
+	{
+		json_str = "{\"type\":7,\"password\":\"1234567890abc\"}";
+		mock_idx++;
+	}
+	else if (mock_idx == 1)
+	{
+		json_str = "{\"type\":6,\"networkName\":\"networkName\",\"networkPassword\":\"networkPassword\"}";
+		mock_idx++;
+	}
+	else if (mock_idx == 2)
+	{
+		json_str = "{\"type\":1}";
+		mock_idx++;
+	}
+	else if (mock_idx == 3)
+	{
+		json_str = "{\"type\":2,\"password\":\"1234567890abc\",\"hex\":\"ABCDEF\"}";
+		mock_idx++;
+	}
+	else if (mock_idx == 4)
+	{
+		json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":1,\"totalPackets\":3,\"location\":\"37.422|-122.084|5.285\",\"fileData\":\"1234567890abcdeffedcba0987654321\"}";
+		mock_idx++;
+	}
+	else if (mock_idx == 5)
+	{
+		json_str = "{\"type\":4,\"localEncryptionComponent\":\"0102ABCD\",\"fileId\":\"123\",\"location\":\"37.422|-122.084|5.285\"}";
+		mock_idx++;
+	}
+	else
+	{
+		printf(">>>>>>>>>    CloudLockr Firmware end    <<<<<<<<<\n");
+		exit(0);
+	}
+
+	return json_str;
+}
 
 /*
  * Sends a JSON message to the phone over bluetooth. Assumes that the string has already been
  * properly formatted as a valid JSON object and has special characters like quotations backslashed.
  * Must have "\v\n" at the end of the data string.
  */
-void bluetooth_send_message( char* data )
+void bluetooth_send_message(char *data)
 {
 #if !MOCK_BLUETOOTH
-	UART_puts( UART_ePORT_BLUETOOTH, data );
+	UART_puts(UART_ePORT_BLUETOOTH, data);
 #endif
 }
 
@@ -46,20 +88,20 @@ void bluetooth_send_message( char* data )
  * Special communication method for sending a specific status code
  * (most communications only require this)
  */
-void bluetooth_send_status( int status )
+void bluetooth_send_status(int status)
 {
 #if !MOCK_BLUETOOTH
 	// Format message and send
 	char res_buffer[18];
 	snprintf(res_buffer, sizeof(res_buffer), "{\"status\":%d}\v\n", status);
-	UART_puts( UART_ePORT_BLUETOOTH, res_buffer );
+	UART_puts(UART_ePORT_BLUETOOTH, res_buffer);
 #endif
 }
 
 /*
  * Waits for an entire bluetooth message to be received and processed
  */
-char* bluetooth_wait_for_data( void )
+char *bluetooth_wait_for_data(void)
 {
 #if MOCK_BLUETOOTH
 	return mock_bluetooth_wait_for_data();
@@ -69,13 +111,13 @@ char* bluetooth_wait_for_data( void )
 	bluetooth_count = 0;
 	int i = 0;
 	char c = ' ';
-	
+
 	// Wait for initial data to arrive
 	while (1)
 	{
-		if ( UART_TestForReceivedData( UART_ePORT_BLUETOOTH ) )
+		if (UART_TestForReceivedData(UART_ePORT_BLUETOOTH))
 		{
-			c = (char)UART_getchar( UART_ePORT_BLUETOOTH );
+			c = (char)UART_getchar(UART_ePORT_BLUETOOTH);
 			bluetooth_data[bluetooth_count] = c;
 			bluetooth_count++;
 			break;
@@ -85,9 +127,9 @@ char* bluetooth_wait_for_data( void )
 	// Process all subsequent data (timing out if too much waiting elapses)
 	while (i < TIMEOUT_ITER && c != '\n')
 	{
-		if ( UART_TestForReceivedData( UART_ePORT_BLUETOOTH ) )
+		if (UART_TestForReceivedData(UART_ePORT_BLUETOOTH))
 		{
-			c = (char)UART_getchar( UART_ePORT_BLUETOOTH );
+			c = (char)UART_getchar(UART_ePORT_BLUETOOTH);
 			bluetooth_data[bluetooth_count] = c;
 
 			bluetooth_count++;
@@ -98,7 +140,7 @@ char* bluetooth_wait_for_data( void )
 
 		i++;
 	}
-	
+
 	// Return NULL if timeout occurs
 	if (c != '\n')
 	{
@@ -111,40 +153,4 @@ char* bluetooth_wait_for_data( void )
 
 	return bluetooth_data;
 #endif
-}
-
-char* mock_bluetooth_wait_for_data( void )
-{
-	char *json_str = NULL;
-	if (mock_idx == 0)
-	{
-		json_str = "{\"type\":7,\"password\":\"1234567890abc\"}";
-		mock_idx++;
-	}
-	else if (mock_idx == 1)
-	{
-		json_str = "{\"type\":1}";
-		mock_idx++;
-	}
-	else if (mock_idx == 2)
-	{
-		json_str = "{\"type\":2,\"password\":\"1234567890abc\",\"hex\":\"ABCDEF\"}";
-		mock_idx++;
-	}
-	else if (mock_idx == 3)
-	{
-		json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":1,\"totalPackets\":3,\"location\":\"37.422|-122.084|5.285\",\"fileData\":\"1234567890abcdeffedcba0987654321\"}";
-		mock_idx++;
-	}
-	else if (mock_idx == 4)
-	{
-		json_str = "{\"type\":4,\"localEncryptionComponent\":\"0102ABCD\",\"fileId\":\"123\",\"location\":\"37.422|-122.084|5.285\"}";
-		mock_idx++;
-	}
-	else
-	{
-		mock_idx = 0;
-	}
-
-	return json_str;
 }

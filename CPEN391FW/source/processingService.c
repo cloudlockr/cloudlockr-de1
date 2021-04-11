@@ -36,7 +36,7 @@ unsigned char hash_four_characters(unsigned char char0, unsigned char char1, uns
 /**
  * Hash function to generate a unique unsigned character through some arithmetic
  */
-unsigned char hash_time(float first, float second, float third)
+unsigned char hash_location(float first, float second, float third)
 {
     int combined = (int)(first * second * third - first * second + third - first);
     unsigned char hashed = (unsigned char)combined;
@@ -87,9 +87,9 @@ void generate_key(char *location, unsigned char key[])
     long_float = longitude == NULL ? key[5] : strtof(longitude, NULL);
     alt_float = altitude == NULL ? key[6] : strtof(altitude, NULL);
 
-    key[8] = hash_time(lat_float, long_float, alt_float);
-    key[9] = hash_time(long_float, alt_float, lat_float);
-    key[10] = hash_time(alt_float, lat_float, long_float);
+    key[8] = hash_location(lat_float, long_float, alt_float);
+    key[9] = hash_location(long_float, alt_float, lat_float);
+    key[10] = hash_location(alt_float, lat_float, long_float);
 
     // Get state of switches
     unsigned char switches = (unsigned char)*SWITCHES;
@@ -144,9 +144,9 @@ void regenerate_key(char *encryption_component, char *location, unsigned char ke
     long_float = longitude == NULL ? key[5] : strtof(longitude, NULL);
     alt_float = altitude == NULL ? key[6] : strtof(altitude, NULL);
 
-    key[8] = hash_time(lat_float, long_float, alt_float);
-    key[9] = hash_time(long_float, alt_float, lat_float);
-    key[10] = hash_time(alt_float, lat_float, long_float);
+    key[8] = hash_location(lat_float, long_float, alt_float);
+    key[9] = hash_location(long_float, alt_float, lat_float);
+    key[10] = hash_location(alt_float, lat_float, long_float);
 
     // Get state of switches
     unsigned char switches = (unsigned char)*SWITCHES;
@@ -249,6 +249,7 @@ void decrypt_helper(unsigned char key[], unsigned char *encrypted_data, int keye
  *  file_id         char array containing the file_id which specifies which file on the server to send encrypted blobs to
  *  packet_number   int to specify which packet we are currently on
  *  total_packets   int to specify how many packets of fileData we have to collect
+ *  location                char array containing the latitude, longitude, and altitude of user location
  *  file_data       char array containing bytes of file data to encrypt and send to server. Maximum size is MAX_FILEDATA_SOZE
  *
  * Returns the response data to return to the user. Should contain the status and part of the encryption key
@@ -282,13 +283,12 @@ char *upload(char *file_id, int packet_number, int total_packets, char *location
         }
 
         // Notify user that we are ready to receive another packet of fileData
-        // bluetooth_send_status(1);
+        bluetooth_send_status(1);
 
         // Upload encrypted file data to server
-        // upload_data(file_id, entire_ciphertext);
         char packet_num[sizeof(int)];
         sprintf(packet_num, "%i", packet_number);
-        uploadData(file_id, packet_num, entire_ciphertext);
+        // upload_data(file_id, packet_num, entire_ciphertext);
 
         // Receive the next packet of fileData to encrypt and upload
         // json_str = bluetooth_wait_for_data();
@@ -327,21 +327,16 @@ char *upload(char *file_id, int packet_number, int total_packets, char *location
 
     // Forming the response message which contains the success status and part of the encryption key
     char *response_data = (char *)malloc(sizeof(char) * 52);
-    strcpy(response_data, "{\"status\":1,\"localEncryptionComponent\":");
+    strcpy(response_data, "{\"status\":1,\"localEncryptionComponent\":\"");
 
-    char encryption_component[12];
-    encryption_component[0] = '"';
+    char encryption_component[9];
     for (int i = 0; i < 4; i++)
     {
         // Converting key from ascii to hex and then copying to encryption_component
-        sprintf((char *)(encryption_component + (i * 2 + 1)), "%02X", key[i]);
+        sprintf((char *)(encryption_component + (i * 2)), "%02X", key[i]);
     }
-
-    // Finalizaing the string and concatenating
-    encryption_component[9] = '"';
-    encryption_component[10] = '}';
-    encryption_component[11] = '\0';
-    strcat(response_data, encryption_component);
+    sprintf(response_data, "{\"status\":1,\"localEncryptionComponent\":\"%s\"}", encryption_component);
+    printf("%s\n", response_data);
 
     return response_data;
 }
@@ -353,6 +348,7 @@ char *upload(char *file_id, int packet_number, int total_packets, char *location
  * Params:
  *  file_id                 char array containing the file_id which specifies which file on the server to download from
  *  encryption_component    char array containing part of the encryption key
+ *  location                char array containing the latitude, longitude, and altitude of user location
  */
 void download(char *file_id, char *encryption_component, char *location)
 {
@@ -366,17 +362,17 @@ void download(char *file_id, char *encryption_component, char *location)
 
     // Generate encryption key and then encrypt file data
     // int total_packets = get_file_metadata(file_id);
-    int total_packets = getFileMetadata(file_id);
-    int packet_number = 0;
+    int total_packets = 3;
+    int packet_number = 1;
     int status = 0;
 
     while (total_packets >= packet_number)
     {
         // Get a file blob/packet and decrypt it
         // get_file_blob(file_id, packet_number, encrypted_data);
-    	char packet_num[sizeof(int)];
-    	sprintf(packet_num, "%i", packet_number);
-    	sprintf(encrypted_data, "%s", getBlob(file_id, packet_num));
+        // char packet_num[sizeof(int)];
+        // sprintf(packet_num, "%i", packet_number);
+        // sprintf(encrypted_data, "%s", get_blob(file_id, packet_num - 1));
         // TODO: remove this, only temporary entire_plaintext
         for (int i = 0; i < MAX_FILEDATA_SIZE; i++)
         {
@@ -386,17 +382,9 @@ void download(char *file_id, char *encryption_component, char *location)
         entire_plaintext[MAX_FILEDATA_SIZE] = '\0';
 
         // Form response data and send to user
-        strcpy(response_data, "{\"packetNumber\":");
-        char temp_char[] = {packet_number + '0', '\0'};
-        strcat(response_data, temp_char);
-        strcat(response_data, ",\"totalPackets\":");
-        temp_char[0] = total_packets + '0';
-        strcat(response_data, temp_char);
-        strcat(response_data, ",\"fileData\":\"");
-        strcat(response_data, entire_plaintext);
-        strcat(response_data, "\"}");
+        sprintf(response_data, "{\"packetNumber\":%c,\"totalPackets\":%c,\"fileData\":\"%s\"}", packet_number + '0', total_packets + '0', entire_plaintext);
 
-        // bluetooth_send_message(response_data);
+        bluetooth_send_message(response_data);
         printf("%s\n", response_data);
 
         // Wait for user to be ready to receive another response

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "constants.h"
 #include "WIFI.h"
 #include "UART.h"
 #include "hpsService.h"
@@ -70,8 +71,6 @@ static bool esp8266_send_command(const char *cmd)
 
 static bool esp8266_send_data(const char *data, int length, char *buffer)
 {
-    int count = 0;
-
     // Send command to WIFI UART port.
     sprintf(buffer, "%s\r\n", data);
     UART_puts(UART_ePORT_WIFI, buffer);
@@ -96,13 +95,15 @@ static bool close_tcp()
     return success;
 }
 
-int uploadData(char *fileId, char *packetNumber, char *fileData)
+int upload_data(char *fileId, char *packetNumber, char *fileData)
 {
     char cmd_buffer[100];
     char request[1000];
     char response[1000];
+    char req_body[1000];
     printf("Begin upload data call\n");
-    sprintf(request, "POST /file/%s/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n{\"fileData\":\"%s\"}", fileId, packetNumber, fileData);
+    sprintf(req_body, "{\"fileData\":\"%s\"}", fileData);
+    sprintf(request, "POST /file/%s/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\nContent-Type: application/json\r\nContent-Length: %i\r\n\r\n%s", fileId, packetNumber, strlen(req_body), req_body);
     if (initiate_tcp("cloudlockr.herokuapp.com"))
     {
         sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command
@@ -136,7 +137,7 @@ int uploadData(char *fileId, char *packetNumber, char *fileData)
                 // }
                 close_tcp();
                 jsmntok_t *tokens = str_to_json(body);
-                char **values = get_json_values(body,tokens,1);
+                char **values = get_json_values(body, tokens, 1);
                 free(tokens);
                 return atoi(values[0]);
             }
@@ -150,34 +151,12 @@ int uploadData(char *fileId, char *packetNumber, char *fileData)
     return -1;
 }
 
-//char* get_wifi_networks( void ) {
-//	bool success = true;
-//	char buffer[1000];
-//	char response[2000];
-//
-//    esp8266_send_command("AT+CWMODE_CUR=1");
-//    hps_usleep( 3000000 );
-//    esp8266_send_command("AT+CWLAPOPT=1,0x2");
-//    hps_usleep( 3000000 );
-////    hps_usleep(1000000);
-//    success = esp8266_send_command("AT+CWLAP");
-//	if (success) {
-//		// +CWLAP:<ecn>, <ssid>, <rssi>, <mac>, <ch>, <freq offset>, <freq calibration>
-//		// <ecn>, <rssi>, <mac>, <ch>, <freq offset>, <freq calibration>: not used
-//		// <ssid>: name of WiFi network
-//
-//		// sprintf(response, "{\"status\":1,\"networks\":\"");
-//	}
-//	return NULL;
-//}
-
 int set_wifi_config(char *networkName, char *networkPassword)
 {
     char cmd[1000];
-    int handshake_count = 5;
     int mode_set, connected;
 
-    for (int i = 0; i < handshake_count; i++)
+    for (int i = 0; i < HANDSHAKE; i++)
     {
         mode_set = esp8266_send_command("AT+CWMODE=3");
         if (mode_set)
@@ -187,11 +166,12 @@ int set_wifi_config(char *networkName, char *networkPassword)
     }
 
     sprintf(cmd, "AT+CWJAP=\"%s\",\"%s\"", networkName, networkPassword);
-    for (int i = 0; i < handshake_count && mode_set; i++)
+    for (int i = 0; i < HANDSHAKE && mode_set; i++)
     {
         connected = esp8266_send_command(cmd);
         if (connected)
         {
+            printf("Connected to router\n");
             break;
         }
     }
@@ -199,7 +179,7 @@ int set_wifi_config(char *networkName, char *networkPassword)
     return connected;
 }
 
-int getFileMetadata(char *fileId)
+int get_file_metadata(char *fileId)
 {
     char cmd_buffer[100];
     char request[1000];
@@ -241,7 +221,7 @@ int getFileMetadata(char *fileId)
                 // }
                 close_tcp();
                 jsmntok_t *tokens = str_to_json(body);
-                char **values = get_json_values(body,tokens,1);
+                char **values = get_json_values(body, tokens, 1);
                 free(tokens);
                 return atoi(values[0]);
             }
@@ -255,7 +235,7 @@ int getFileMetadata(char *fileId)
     return -1;
 }
 
-char *getBlob(char *fileId, char *blobNumber)
+char *get_blob(char *fileId, char *blobNumber)
 {
     char cmd_buffer[100];
     char request[1000];
@@ -291,7 +271,7 @@ char *getBlob(char *fileId, char *blobNumber)
                 printf("%s\n", body);
                 close_tcp();
                 jsmntok_t *tokens = str_to_json(body);
-                char **values = get_json_values(body,tokens,1);
+                char **values = get_json_values(body, tokens, 1);
                 free(tokens);
                 return values[0];
             }

@@ -43,14 +43,6 @@ static void init(void)
     // Initialize UART ports.
     UART_Init(UART_ePORT_WIFI);
     UART_Init(UART_ePORT_BLUETOOTH);
-
-    // Initialize WIFI interface.
-    // while ( WIFI_Init() == false)
-    // WIFI_Init();
-    // {
-    // We need a sleep function.
-    //    HPS_usleep(3 * 1000 * 1000); // 3 seconds
-    // }
 }
 
 /**
@@ -61,6 +53,7 @@ static void controller(void)
     // Set seed as current time, used for random display HEX code
     time_t t;
     srand((unsigned)time(&t));
+    reset_hex();
 
     // Controls whether services can be called, ensures correct user control flow
     int state = 0;
@@ -94,88 +87,91 @@ static void controller(void)
 
         switch (message_type)
         {
-			case 1:
-			{
-				// Request to generate and display HEX code
-				if (state >= 1)
-				{
-					generate_display_hex_code();
-					status = 1;
-					state = 2;
-				}
-				else
-				{
-					// Master password has not been set, reject request
-					status = 0;
-				}
-				break;
-			}
-			case 2:
-			{
-				// Request to verify that the user has included the master password and the generated HEX code
-				if (state >= 2)
-				{
-					expected_num_values = 3;
-					all_values = get_json_values(json_str, json_tokens, expected_num_values);
+        case 1:
+        {
+            // Request to generate and display HEX code
+            if (state >= 1)
+            {
+                generate_display_hex_code();
+                status = 1;
+                state = 2;
+            }
+            else
+            {
+                // Master password has not been set, reject request
+                status = 9;
+            }
+            break;
+        }
+        case 2:
+        {
+            // Request to verify that the user has included the master password and the generated HEX code
+            if (state >= 2)
+            {
+                expected_num_values = 3;
+                all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
-					status = verify(all_values[1], all_values[2]);
+                status = verify(all_values[1], all_values[2]);
 
-					if (status)
-					{
-						state = 3;
-					}
-					else
-					{
-						state = 2;
-					}
-				}
-				else
-				{
-					// No HEX code displayed yet, reject request
-					status = 0;
-				}
-				break;
-			}
-			case 3:
-			{
-				// Request to upload new encrypted file data to the server for storage
-				if (state >= 3)
-				{
-					expected_num_values = 6;
-					all_values = get_json_values(json_str, json_tokens, expected_num_values);
-					int packet_number = (int)strtol(all_values[2], NULL, 10);
-					int total_packets = (int)strtol(all_values[3], NULL, 10);
+                // TODO: remove this
+                status = 1;
 
-					response_data = upload(all_values[1], packet_number, total_packets, all_values[4], all_values[5]);
-				}
-				else
-				{
-					// User has not been verified yet
-					status = 0;
-				}
-				break;
-			}
-			case 4:
-			{
-				// Request to download encrypted file data from the server and send to the app
-				if (state >= 3)
-				{
-					expected_num_values = 4;
-					all_values = get_json_values(json_str, json_tokens, expected_num_values);
+                if (status)
+                {
+                    state = 3;
+                }
+                else
+                {
+                    state = 2;
+                }
+            }
+            else
+            {
+                // No HEX code displayed yet, reject request
+                status = 0;
+            }
+            break;
+        }
+        case 3:
+        {
+            // Request to upload new encrypted file data to the server for storage
+            if (state >= 3)
+            {
+                expected_num_values = 6;
+                all_values = get_json_values(json_str, json_tokens, expected_num_values);
+                int packet_number = (int)strtol(all_values[2], NULL, 10);
+                int total_packets = (int)strtol(all_values[3], NULL, 10);
 
-					download(all_values[2], all_values[1], all_values[3]);
-				}
-				else
-				{
-					// User has not been verified yet
-					status = 0;
-				}
-				break;
-			}
-			case 6:
-			{
-				expected_num_values = 3;
-				all_values = get_json_values(json_str, json_tokens, expected_num_values);
+                response_data = upload(all_values[1], packet_number, total_packets, all_values[4], all_values[5]);
+            }
+            else
+            {
+                // User has not been verified yet
+                status = 0;
+            }
+            break;
+        }
+        case 4:
+        {
+            // Request to download encrypted file data from the server and send to the app
+            if (state >= 3)
+            {
+                expected_num_values = 4;
+                all_values = get_json_values(json_str, json_tokens, expected_num_values);
+
+                download(all_values[2], all_values[1], all_values[3]);
+            }
+            else
+            {
+                // User has not been verified yet
+                status = 0;
+            }
+            break;
+        }
+        case 6:
+        {
+            expected_num_values = 3;
+            all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
             status = set_wifi_config(all_values[1], all_values[2]);
             break;
@@ -185,17 +181,17 @@ static void controller(void)
             expected_num_values = 2;
             all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
-				set_password(all_values[1]);
-				status = 1;
-				state = 1;
-				break;
-			}
-			default:
-			{
-				// Send error status if message_type is invalid
-				status = 0;
-				state = 0;
-			}
+            set_password(all_values[1]);
+            status = 1;
+            state = 1;
+            break;
+        }
+        default:
+        {
+            // Send error status if message_type is invalid
+            status = 0;
+            state = 0;
+        }
         }
 
         free(json_tokens);
@@ -207,7 +203,7 @@ static void controller(void)
         }
 
         // Pause (to prevent response message from being sent too quickly, a nice subtle bug)
-        hps_usleep(1 * 1000 * 1000); // ~0.5 second
+        hps_usleep(1 * 1000 * 2000); // ~1 second
 
         // Send the response message (if applicable)
         if (status != -1)
@@ -222,8 +218,6 @@ static void controller(void)
             free(response_data);
         }
     }
-
-    reset_hex();
 }
 
 /**
@@ -234,22 +228,22 @@ static void controller(void)
 int main(void)
 {
     printf(">>>>>>>>>    CloudLockr Firmware start    <<<<<<<<<\n");
-    
-	init();
+
+    init();
     controller();
-	
+
     // int successful = set_wifi_config("networkName", "networkPassword");
     // if (!successful) {
     // 	printf("Couldn't connect to WiFi");
     // 	return 1;
     // }
-    // getFileMetadata("783cf156-aa19-4110-8484-732f1b0a1068");
-    // getBlob("783cf156-aa19-4110-8484-732f1b0a1068","0");
-    // getBlob("783cf156-aa19-4110-8484-732f1b0a1068","1");
-    // getBlob("783cf156-aa19-4110-8484-732f1b0a1068","2");
-    // getBlob("783cf156-aa19-4110-8484-732f1b0a1068","3");
-    // uploadData("783cf156-aa19-4110-8484-732f1b0a1068", "4", "greatestBlob");
-    // getBlob("783cf156-aa19-4110-8484-732f1b0a1068","4");
+    // get_file_metadata("783cf156-aa19-4110-8484-732f1b0a1068");
+    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","0");
+    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","1");
+    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","2");
+    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","3");
+    // upload_data("783cf156-aa19-4110-8484-732f1b0a1068", "4", "greatestBlob");
+    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","4");
 
     printf(">>>>>>>>>    CloudLockr Firmware end    <<<<<<<<<\n");
     return 0;

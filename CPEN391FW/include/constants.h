@@ -15,4 +15,7 @@
 // Buffer size for bluetooth
 #define BUFFER_SIZE 1024
 
+// Number of times to attempt connecting to router
+#define HANDSHAKE 5
+
 #endif /* CONSTANTS_H_ */

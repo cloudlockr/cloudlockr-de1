@@ -13,7 +13,7 @@
 #ifndef WIFI_H_
 #define WIFI_H_
 int set_wifi_config(char *network_name, char *network_password);
-int getFileMetadata(char *fileId);
-int uploadData(char *fileId, char *packetNumber, char *fileData);
-char *getBlob(char *fileId, char *blobNumber);
+int get_file_metadata(char *fileId);
+int upload_data(char *fileId, char *packetNumber, char *fileData);
+char *get_blob(char *fileId, char *blobNumber);
 #endif // WIFI_H_
