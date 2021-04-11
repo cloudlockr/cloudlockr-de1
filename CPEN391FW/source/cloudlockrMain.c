@@ -87,111 +87,111 @@ static void controller(void)
 
         switch (message_type)
         {
-        case 1:
-        {
-            // Request to generate and display HEX code
-            if (state >= 1)
+            case 1:
             {
-                generate_display_hex_code();
-                status = 1;
-                state = 2;
+                // Request to generate and display HEX code
+                if (state >= 1)
+                {
+                    generate_display_hex_code();
+                    status = 1;
+                    state = 2;
+                }
+                else
+                {
+                    // Master password has not been set, reject request
+                    status = 9;
+                }
+                break;
             }
-            else
+            case 2:
             {
-                // Master password has not been set, reject request
-                status = 9;
+                // Request to verify that the user has included the master password and the generated HEX code
+                if (state >= 2)
+                {
+                    expected_num_values = 3;
+                    all_values = get_json_values(json_str, json_tokens, expected_num_values);
+
+                    status = verify(all_values[1], all_values[2]);
+
+                    // TODO: remove this
+                    status = 1;
+
+                    if (status)
+                    {
+                        state = 3;
+                    }
+                    else
+                    {
+                        state = 2;
+                    }
+                }
+                else
+                {
+                    // No HEX code displayed yet, reject request
+                    status = 0;
+                }
+                break;
             }
-            break;
-        }
-        case 2:
-        {
-            // Request to verify that the user has included the master password and the generated HEX code
-            if (state >= 2)
+            case 3:
+            {
+                // Request to upload new encrypted file data to the server for storage
+                if (state >= 3)
+                {
+                    expected_num_values = 6;
+                    all_values = get_json_values(json_str, json_tokens, expected_num_values);
+                    int packet_number = (int)strtol(all_values[2], NULL, 10);
+                    int total_packets = (int)strtol(all_values[3], NULL, 10);
+
+                    response_data = upload(all_values[1], packet_number, total_packets, all_values[4], all_values[5]);
+                }
+                else
+                {
+                    // User has not been verified yet
+                    status = 0;
+                }
+                break;
+            }
+            case 4:
+            {
+                // Request to download encrypted file data from the server and send to the app
+                if (state >= 3)
+                {
+                    expected_num_values = 4;
+                    all_values = get_json_values(json_str, json_tokens, expected_num_values);
+
+                    download(all_values[2], all_values[1], all_values[3]);
+                }
+                else
+                {
+                    // User has not been verified yet
+                    status = 0;
+                }
+                break;
+            }
+            case 6:
             {
                 expected_num_values = 3;
                 all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
-                status = verify(all_values[1], all_values[2]);
+                    status = set_wifi_config(all_values[1], all_values[2]);
+                    break;
+                }
+                case 7:
+                {
+                    expected_num_values = 2;
+                    all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
-                // TODO: remove this
+                set_password(all_values[1]);
                 status = 1;
-
-                if (status)
-                {
-                    state = 3;
-                }
-                else
-                {
-                    state = 2;
-                }
+                state = 1;
+                break;
             }
-            else
+            default:
             {
-                // No HEX code displayed yet, reject request
+                // Send error status if message_type is invalid
                 status = 0;
+                state = 0;
             }
-            break;
-        }
-        case 3:
-        {
-            // Request to upload new encrypted file data to the server for storage
-            if (state >= 3)
-            {
-                expected_num_values = 6;
-                all_values = get_json_values(json_str, json_tokens, expected_num_values);
-                int packet_number = (int)strtol(all_values[2], NULL, 10);
-                int total_packets = (int)strtol(all_values[3], NULL, 10);
-
-                response_data = upload(all_values[1], packet_number, total_packets, all_values[4], all_values[5]);
-            }
-            else
-            {
-                // User has not been verified yet
-                status = 0;
-            }
-            break;
-        }
-        case 4:
-        {
-            // Request to download encrypted file data from the server and send to the app
-            if (state >= 3)
-            {
-                expected_num_values = 4;
-                all_values = get_json_values(json_str, json_tokens, expected_num_values);
-
-                download(all_values[2], all_values[1], all_values[3]);
-            }
-            else
-            {
-                // User has not been verified yet
-                status = 0;
-            }
-            break;
-        }
-        case 6:
-        {
-            expected_num_values = 3;
-            all_values = get_json_values(json_str, json_tokens, expected_num_values);
-
-            status = set_wifi_config(all_values[1], all_values[2]);
-            break;
-        }
-        case 7:
-        {
-            expected_num_values = 2;
-            all_values = get_json_values(json_str, json_tokens, expected_num_values);
-
-            set_password(all_values[1]);
-            status = 1;
-            state = 1;
-            break;
-        }
-        default:
-        {
-            // Send error status if message_type is invalid
-            status = 0;
-            state = 0;
-        }
         }
 
         free(json_tokens);
