@@ -282,6 +282,7 @@ void UART_puts( UART_ePORT ePort, char *buffer )
 char* UART_gets( UART_ePORT ePort, char* buffer, int length, int mode )
 {
     int count = 0;
+    int temp_count = 0;
     
     // Initialize buffer with NULL.
     memset( buffer, '\0', length );
@@ -317,10 +318,12 @@ char* UART_gets( UART_ePORT ePort, char* buffer, int length, int mode )
             else if (mode == 2) {
                 if ( count > 2 && buffer[count-3] == '\r' && buffer[count-2] == '\n' && buffer[count-1] == '\r' && buffer[count] == '\n' )
                 {
-                    break;
+//                    break;
+                	temp_count = count + 43;
+                	mode = 3;
                 }
             } else {
-            	if (count >= 43) {
+            	if (count >= temp_count) {
             		break;
             	}
             }

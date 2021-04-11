@@ -179,11 +179,11 @@ char* getFileMetadata(char* fileId) {
 						}
 					}
 				}
-//				printf("%s", response);
-				while ( UART_gets( UART_ePORT_WIFI, body, 1000, 3) != NULL )
-				{
-					printf("%s", body);
-				}
+				printf("%s", response);
+//				while ( UART_gets( UART_ePORT_WIFI, body, 1000, 3) != NULL )
+//				{
+//					printf("%s", body);
+//				}
 //				printf("%s", body);
 				return "{\"status\": 1}";
 			}
