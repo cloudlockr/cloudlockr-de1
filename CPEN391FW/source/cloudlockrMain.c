@@ -243,13 +243,13 @@ int main(void)
     // 	printf("Couldn't connect to WiFi");
     // 	return 1;
     // }
-    // getFileMetadata("783cf156-aa19-4110-8484-732f1b0a1068");
-    // getBlob("783cf156-aa19-4110-8484-732f1b0a1068","0");
-    // getBlob("783cf156-aa19-4110-8484-732f1b0a1068","1");
-    // getBlob("783cf156-aa19-4110-8484-732f1b0a1068","2");
-    // getBlob("783cf156-aa19-4110-8484-732f1b0a1068","3");
-    // uploadData("783cf156-aa19-4110-8484-732f1b0a1068", "4", "greatestBlob");
-    // getBlob("783cf156-aa19-4110-8484-732f1b0a1068","4");
+    // get_file_metadata("783cf156-aa19-4110-8484-732f1b0a1068");
+    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","0");
+    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","1");
+    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","2");
+    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","3");
+    // upload_data("783cf156-aa19-4110-8484-732f1b0a1068", "4", "greatestBlob");
+    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","4");
 
     printf(">>>>>>>>>    CloudLockr Firmware end    <<<<<<<<<\n");
     return 0;

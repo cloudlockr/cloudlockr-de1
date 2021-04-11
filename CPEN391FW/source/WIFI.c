@@ -96,7 +96,7 @@ static bool close_tcp()
     return success;
 }
 
-int uploadData(char *fileId, char *packetNumber, char *fileData)
+int upload_data(char *fileId, char *packetNumber, char *fileData)
 {
     char cmd_buffer[100];
     char request[1000];
@@ -199,7 +199,7 @@ int set_wifi_config(char *networkName, char *networkPassword)
     return connected;
 }
 
-int getFileMetadata(char *fileId)
+int get_file_metadata(char *fileId)
 {
     char cmd_buffer[100];
     char request[1000];
@@ -255,7 +255,7 @@ int getFileMetadata(char *fileId)
     return -1;
 }
 
-char *getBlob(char *fileId, char *blobNumber)
+char *get_blob(char *fileId, char *blobNumber)
 {
     char cmd_buffer[100];
     char request[1000];
