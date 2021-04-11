@@ -15,4 +15,5 @@
 int set_wifi_config(char *network_name, char *network_password);
 char *getFileMetadata(char *fileId);
 char *uploadData(char *email, char *fileId, char *packetNumber, char *totalPackets, char *fileData);
+char *getBlob(char *fileId, char *blobNumber);
 #endif // WIFI_H_
