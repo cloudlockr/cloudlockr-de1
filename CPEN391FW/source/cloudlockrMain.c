@@ -178,13 +178,13 @@ static void controller(void)
 				expected_num_values = 3;
 				all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
-            status = set_wifi_config(all_values[1], all_values[2]);
-            break;
-        }
-        case 7:
-        {
-            expected_num_values = 2;
-            all_values = get_json_values(json_str, json_tokens, expected_num_values);
+				status = set_wifi_config(all_values[1], all_values[2]);
+				break;
+			}
+			case 7:
+			{
+				expected_num_values = 2;
+				all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
 				set_password(all_values[1]);
 				status = 1;
@@ -197,7 +197,7 @@ static void controller(void)
 				status = 0;
 				state = 0;
 			}
-        }
+		}
 
         free(json_tokens);
 
