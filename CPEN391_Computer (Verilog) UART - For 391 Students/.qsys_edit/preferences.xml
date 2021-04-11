@@ -10,7 +10,8 @@
    <inputclock preferredWidth="149" />
   </columns>
  </systemtable>
- <library expandedCategories="Project,Library" />
+ <library
+   expandedCategories="Library/Interface Protocols,Library/University Program/Generic IO,Library/University Program,Library/Basic Functions/Bridges and Adaptors/Memory Mapped,Project,Library/Basic Functions,Library/Basic Functions/On Chip Memory,Library/Interface Protocols/Serial,Library/Basic Functions/Configuration and Programming,Library,Library/Basic Functions/Bridges and Adaptors" />
  <window width="1936" height="1176" x="-8" y="-8" />
  <generation synthesis="VERILOG" path="_PROJECT_NAME_" simulation="NONE" />
 </preferences>

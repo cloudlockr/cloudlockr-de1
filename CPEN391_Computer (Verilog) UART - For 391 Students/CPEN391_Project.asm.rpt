@@ -1,5 +1,5 @@
 Assembler report for CPEN391_Project
-Sat Apr 03 03:28:16 2021
+Sun Apr 11 13:49:38 2021
 Quartus II 64-Bit Version 15.0.0 Build 145 04/22/2015 SJ Web Edition
 
 
@@ -11,7 +11,7 @@ Quartus II 64-Bit Version 15.0.0 Build 145 04/22/2015 SJ Web Edition
   3. Assembler Settings
   4. Assembler Encrypted IP Cores Summary
   5. Assembler Generated Files
-  6. Assembler Device Options: C:/Users/danie/Documents/school/cpen391/AES/CPEN391_Computer (Verilog) UART - For 391 Students/CPEN391_Project.sof
+  6. Assembler Device Options: D:/Github/CPEN391Computer_Rev1/cloudlockr-de1/CPEN391_Computer (Verilog) UART - For 391 Students/CPEN391_Project.sof
   7. Assembler Messages
 
 
@@ -39,7 +39,7 @@ agreement for further details.
 +---------------------------------------------------------------+
 ; Assembler Summary                                             ;
 +-----------------------+---------------------------------------+
-; Assembler Status      ; Successful - Sat Apr 03 03:28:16 2021 ;
+; Assembler Status      ; Successful - Sun Apr 11 13:49:38 2021 ;
 ; Revision Name         ; CPEN391_Project                       ;
 ; Top-level Entity Name ; MyComputer_Verilog                    ;
 ; Family                ; Cyclone V                             ;
@@ -64,24 +64,24 @@ agreement for further details.
 +--------+------------------------+--------------+
 
 
-+--------------------------------------------------------------------------------------------------------------------+
-; Assembler Generated Files                                                                                          ;
-+--------------------------------------------------------------------------------------------------------------------+
-; File Name                                                                                                          ;
-+--------------------------------------------------------------------------------------------------------------------+
-; C:/Users/danie/Documents/school/cpen391/AES/CPEN391_Computer (Verilog) UART - For 391 Students/CPEN391_Project.sof ;
-+--------------------------------------------------------------------------------------------------------------------+
++----------------------------------------------------------------------------------------------------------------------+
+; Assembler Generated Files                                                                                            ;
++----------------------------------------------------------------------------------------------------------------------+
+; File Name                                                                                                            ;
++----------------------------------------------------------------------------------------------------------------------+
+; D:/Github/CPEN391Computer_Rev1/cloudlockr-de1/CPEN391_Computer (Verilog) UART - For 391 Students/CPEN391_Project.sof ;
++----------------------------------------------------------------------------------------------------------------------+
 
 
-+----------------------------------------------------------------------------------------------------------------------------------------------+
-; Assembler Device Options: C:/Users/danie/Documents/school/cpen391/AES/CPEN391_Computer (Verilog) UART - For 391 Students/CPEN391_Project.sof ;
-+----------------+-----------------------------------------------------------------------------------------------------------------------------+
-; Option         ; Setting                                                                                                                     ;
-+----------------+-----------------------------------------------------------------------------------------------------------------------------+
-; Device         ; 5CSEMA5F31C6                                                                                                                ;
-; JTAG usercode  ; 0x0A542F01                                                                                                                  ;
-; Checksum       ; 0x0A542F01                                                                                                                  ;
-+----------------+-----------------------------------------------------------------------------------------------------------------------------+
++------------------------------------------------------------------------------------------------------------------------------------------------+
+; Assembler Device Options: D:/Github/CPEN391Computer_Rev1/cloudlockr-de1/CPEN391_Computer (Verilog) UART - For 391 Students/CPEN391_Project.sof ;
++----------------+-------------------------------------------------------------------------------------------------------------------------------+
+; Option         ; Setting                                                                                                                       ;
++----------------+-------------------------------------------------------------------------------------------------------------------------------+
+; Device         ; 5CSEMA5F31C6                                                                                                                  ;
+; JTAG usercode  ; 0x0A6B61FF                                                                                                                    ;
+; Checksum       ; 0x0A6B61FF                                                                                                                    ;
++----------------+-------------------------------------------------------------------------------------------------------------------------------+
 
 
 +--------------------+
@@ -90,14 +90,14 @@ agreement for further details.
 Info: *******************************************************************
 Info: Running Quartus II 64-Bit Assembler
     Info: Version 15.0.0 Build 145 04/22/2015 SJ Web Edition
-    Info: Processing started: Sat Apr 03 03:27:56 2021
+    Info: Processing started: Sun Apr 11 13:49:16 2021
 Info: Command: quartus_asm --read_settings_files=off --write_settings_files=off CPEN391_Project -c CPEN391_Project
 Info (115030): Assembler is generating device programming files
 Info (11878): Hard Processor Subsystem configuration has not changed and a Preloader software update is not required
 Info: Quartus II 64-Bit Assembler was successful. 0 errors, 0 warnings
-    Info: Peak virtual memory: 5159 megabytes
-    Info: Processing ended: Sat Apr 03 03:28:16 2021
-    Info: Elapsed time: 00:00:20
-    Info: Total CPU time (on all processors): 00:00:20
+    Info: Peak virtual memory: 5172 megabytes
+    Info: Processing ended: Sun Apr 11 13:49:39 2021
+    Info: Elapsed time: 00:00:23
+    Info: Total CPU time (on all processors): 00:00:22
 
 

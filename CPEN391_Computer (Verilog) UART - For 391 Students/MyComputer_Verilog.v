@@ -284,6 +284,12 @@ module MyComputer_Verilog (
 			.sdram_we_n                      (DRAM_WE_N),                     //                     .we_n
 			.sdram_clk_clk                   (DRAM_CLK),                   	//            sdram_clk.clk
 			.slider_switches_export          (SW),          						//      slider_switches.export
+			
+			.spi_0_MISO								(GPIO_1[27]),                    //                spi_0.MISO
+		   .spi_0_MOSI                      (GPIO_1[13]), 							//                     .MOSI
+		   .spi_0_SCLK								(GPIO_1[11]),                    //                     .SCLK
+		   .spi_0_SS_n								(GPIO_1[26]),                    //                     .SS_n
+			
 			.system_pll_ref_clk_clk          (CLOCK_50),          				//   system_pll_ref_clk.clk
 			.system_pll_ref_reset_reset      (0)       								// system_pll_ref_reset.reset
 		);
@@ -379,7 +385,7 @@ module MyComputer_Verilog (
 				 
 				 
 				 .GPS_RxData 					(GPIO_1[28]),
-				 .GPS_TxData 					(GPIO_1[26]),
+				 .GPS_TxData 					(GPIO_1[30]),
 
 				 //.BlueTooth_RxData 			(GPIO_1[32]),
 				 //.BlueTooth_TxData 			(GPIO_1[34]),
@@ -416,8 +422,8 @@ module MyComputer_Verilog (
 		assign GPIO_1[7] = LCD_WIRE[7] ;
 		
 		// RS, EN and R/W connections and contrast pin
-		assign GPIO_1[11] = LCD_WIRE[8] ;			// LCD_RS
-		assign GPIO_1[13] = LCD_WIRE[9] ;			// LCD_EN
+		// assign GPIO_1[11] = LCD_WIRE[8] ;			// LCD_RS
+		// assign GPIO_1[13] = LCD_WIRE[9] ;			// LCD_EN
 		//assign GPIO_1[15] = LCD_WIRE[10] ;			// LCD_RW
 		// Change LCD_WIRE[10] to GPIO_1[29] so that WIFI signal works. But, LCD will not work.
 		assign GPIO_1[29] = LCD_WIRE[10] ;			// LCD_RW

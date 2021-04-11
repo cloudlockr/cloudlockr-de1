@@ -336,6 +336,14 @@
          type = "boolean";
       }
    }
+   element spi_0
+   {
+      datum _sortIndex
+      {
+         value = "21";
+         type = "int";
+      }
+   }
 }
 ]]></parameter>
  <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
@@ -1224,6 +1232,22 @@
  <module name="aes_decrypt_0" kind="aes_decrypt" version="1.0" enabled="1" />
  <module name="aes_encrypt_0" kind="aes_encrypt" version="1.0" enabled="1" />
  <module name="bit_flipper_0" kind="bit_flipper" version="1.0" enabled="1" />
+ <module name="spi_0" kind="altera_avalon_spi" version="15.0" enabled="1">
+  <parameter name="avalonSpec" value="2.0" />
+  <parameter name="clockPhase" value="0" />
+  <parameter name="clockPolarity" value="0" />
+  <parameter name="dataWidth" value="8" />
+  <parameter name="disableAvalonFlowControl" value="false" />
+  <parameter name="inputClockRate" value="50000000" />
+  <parameter name="insertDelayBetweenSlaveSelectAndSClk" value="false" />
+  <parameter name="insertSync" value="false" />
+  <parameter name="lsbOrderedFirst" value="false" />
+  <parameter name="masterSPI" value="true" />
+  <parameter name="numberOfSlaves" value="1" />
+  <parameter name="syncRegDepth" value="2" />
+  <parameter name="targetClockRate" value="1000000" />
+  <parameter name="targetSlaveSelectToSClkDelay" value="0.0" />
+ </module>
  <connection
    kind="avalon"
    version="15.0"
@@ -1380,6 +1404,15 @@
  <connection
    kind="avalon"
    version="15.0"
+   start="ARM_A9_HPS.h2f_lw_axi_master"
+   end="spi_0.spi_control_port">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x2060" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="15.0"
    start="JTAG_To_FPGA_Bridge.master"
    end="IO_Bridge.avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -1522,6 +1555,15 @@
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
+   kind="avalon"
+   version="15.0"
+   start="JTAG_To_FPGA_Bridge.master"
+   end="spi_0.spi_control_port">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0xff202060" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
    kind="clock"
    version="15.0"
    start="System_PLL.sys_clk"
@@ -1592,6 +1634,11 @@
    version="15.0"
    start="System_PLL.sys_clk"
    end="LCD_0.clk" />
+ <connection
+   kind="clock"
+   version="15.0"
+   start="System_PLL.sys_clk"
+   end="spi_0.clk" />
  <connection
    kind="clock"
    version="15.0"
@@ -1756,6 +1803,11 @@
    kind="reset"
    version="15.0"
    start="ARM_A9_HPS.h2f_reset"
+   end="spi_0.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_reset"
    end="Onchip_SRAM.reset1" />
  <connection
    kind="reset"
@@ -1847,6 +1899,11 @@
    version="15.0"
    start="System_PLL.reset_source"
    end="aes_decrypt_0.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="System_PLL.reset_source"
+   end="spi_0.reset" />
  <connection
    kind="reset"
    version="15.0"
