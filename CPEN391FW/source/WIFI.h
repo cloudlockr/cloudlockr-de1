@@ -10,9 +10,7 @@
  * This module implement wifi related functionalities.
  */
 
-
 // Exported functions
-bool WIFI_Init( void );
-void WIFI_Process( void );
-void WIFI_Receive( char ch );
-
+bool WIFI_Init(void);
+void WIFI_Process(void);
+void WIFI_Receive(char ch);
