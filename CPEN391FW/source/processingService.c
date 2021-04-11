@@ -19,20 +19,40 @@
 unsigned char encryption_store[3][32];
 
 /**
+ * Hash function to generate unique unsigned characters through some arithmetic
+ */
+unsigned char hash_four_characters(unsigned char char0, unsigned char char1, unsigned char2, unsigned char3)
+{
+    int combined0 = (int)char0 * char1;
+    int combined1 = (int)char2 * char3;
+    int combined2 = (int)char1 * char2;
+    int combined3 = combined0 + combined1 - combined2 + (int)char0 - (int)char3;
+
+    unsigned char hashed = (unsigned char)combined3;
+    return hashed;
+}
+
+/**
+ * Hash function to generate a unique unsigned character through some arithmetic
+ */
+unsigned char hash_time(float first, float second, float third)
+{
+    int combined = (int)(first * second * third - first * second + third - first);
+    unsigned char hashed = (unsigned char)combined;
+    return hashed;
+}
+
+/**
  * Function to generate private key.
  * 32 bits of randomly generated number that should be sent back to frontend application.
  * 32 bits from DE1 master password (must be at least 4 characters long).
  * 64 bits from DE1 sensor inputs (WiFi location, switches, NESW orientation, angular velocity)
  *
  * Params:
- * 	wifi_lat		Latitude of geolocation from google maps API
- * 	wifi_long		Longitude of geolocation from google maps API
- *
+ *  location        char array containing the latitude, longitude, and altitude of user location
  * 	key				unsigned char array of size 16, will be filled with private key after function execution
- *
- * Private key will be returned as a 16 elements unsigned char array
  */
-void generate_key(unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
+void generate_key(char *location, unsigned char key[])
 {
     // Randomly generated 32 bits
     key[0] = (unsigned char)rand() % 256;
@@ -48,23 +68,34 @@ void generate_key(unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
     // 32 bit DE1 master password
     char master_pw[32];
     get_password(master_pw);
-    key[4] = (unsigned char)master_pw[0];
-    key[5] = (unsigned char)master_pw[1];
-    key[6] = (unsigned char)master_pw[2];
-    key[7] = (unsigned char)master_pw[3];
+    key[4] = hash_four_characters(master_pw[0], master_pw[1], master_pw[2], master_pw[3]);
+    key[5] = hash_four_characters(master_pw[1], master_pw[2], master_pw[3], master_pw[0]);
+    key[6] = hash_four_characters(master_pw[2], master_pw[3], master_pw[0], master_pw[1]);
+    key[7] = hash_four_characters(master_pw[3], master_pw[0], master_pw[1], master_pw[2]);
 
-    // WiFi location, latitude is between -90 and +90, normalize to 0 to 180,
-    // longitude is between -180 and +180, normalize to 0 to 360
-    key[8] = (unsigned char)wifi_lat;
-    key[9] = (unsigned char)wifi_long;
+    // Split location into latitude, longitude, and altitude. Then generate unique characters with these inputs
+    char location_buffer[30];
+    strcpy(location_buffer, location);
+
+    char *latitude = strtok(location_buffer, "|");
+    char *longitude = strtok(NULL, "|");
+    char *altitude = strtok(NULL, "|");
+
+    float lat_float, long_float, alt_float;
+    lat_float = latitude == NULL ? key[4] : strtof(latitude, NULL);
+    long_float = longitude == NULL ? key[5] : strtof(longitude, NULL);
+    alt_float = altitude == NULL ? key[6] : strtof(altitude, NULL);
+
+    key[8] = hash_time(lat_float, long_float, alt_float);
+    key[9] = hash_time(long_float, alt_float, lat_float);
+    key[10] = hash_time(alt_float, lat_float, long_float);
 
     // Get state of switches
     unsigned char switches = (unsigned char)*SWITCHES;
     *LEDS = switches;
-    key[10] = switches;
+    key[11] = switches;
 
     // Don't know how NESW and angular velocity will be like yet, so leave empty
-    key[11] = 0;
     key[12] = 0;
     key[13] = 0;
     key[14] = 0;
@@ -78,14 +109,11 @@ void generate_key(unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
  * 64 bits from DE1 sensor inputs (switches, WiFi location, NESW orientation, angular velocity)
  *
  * Params:
- * 	encryption_component    32 bit integer that the frontend application sends, also the first 32 bits of the private key
- * 	wifi_lat		        Latitude of geolocation from google maps API
- * 	wifi_long		        Longitude of geolocation from google maps API
+ * 	encryption_component    char array containint the first 32 bits of the private key
+ *  location                char array containing the latitude, longitude, and altitude of user location
  * 	key				        unsigned char array of size 16, will be filled with the regenerated private key after function execution
- *
- * Private key will be returned as a 16 elements unsigned char array
  */
-void regenerate_key(char *encryption_component, unsigned wifi_lat, unsigned wifi_long, unsigned char key[])
+void regenerate_key(char *encryption_component, char *location, unsigned char key[])
 {
     // First 32 bits encryption component from the frontend
     int encryption_int = (int)strtol(encryption_component, NULL, 16);
@@ -97,23 +125,34 @@ void regenerate_key(char *encryption_component, unsigned wifi_lat, unsigned wifi
     // 32 bit DE1 master password
     char master_pw[32];
     get_password(master_pw);
-    key[4] = (unsigned char)master_pw[0];
-    key[5] = (unsigned char)master_pw[1];
-    key[6] = (unsigned char)master_pw[2];
-    key[7] = (unsigned char)master_pw[3];
+    key[4] = hash_four_characters(master_pw[0], master_pw[1], master_pw[2], master_pw[3]);
+    key[5] = hash_four_characters(master_pw[1], master_pw[2], master_pw[3], master_pw[0]);
+    key[6] = hash_four_characters(master_pw[2], master_pw[3], master_pw[0], master_pw[1]);
+    key[7] = hash_four_characters(master_pw[3], master_pw[0], master_pw[1], master_pw[2]);
 
-    // WiFi location, latitude is between -90 and +90, normalize to 0 to 180,
-    // longitude is between -180 and +180, normalize to 0 to 360
-    key[8] = (unsigned char)wifi_lat;
-    key[9] = (unsigned char)wifi_long;
+    // Split location into latitude, longitude, and altitude. Then generate unique characters with these inputs
+    char location_buffer[30];
+    strcpy(location_buffer, location);
+
+    char *latitude = strtok(location_buffer, "|");
+    char *longitude = strtok(NULL, "|");
+    char *altitude = strtok(NULL, "|");
+
+    float lat_float, long_float, alt_float;
+    lat_float = latitude == NULL ? key[4] : strtof(latitude, NULL);
+    long_float = longitude == NULL ? key[5] : strtof(longitude, NULL);
+    alt_float = altitude == NULL ? key[6] : strtof(altitude, NULL);
+
+    key[8] = hash_time(lat_float, long_float, alt_float);
+    key[9] = hash_time(long_float, alt_float, lat_float);
+    key[10] = hash_time(alt_float, lat_float, long_float);
 
     // Get state of switches
     unsigned char switches = (unsigned char)*SWITCHES;
     *LEDS = switches;
-    key[10] = switches;
+    key[11] = switches;
 
     // Don't know how NESW and angular velocity will be like yet, so leave empty
-    key[11] = 0;
     key[12] = 0;
     key[13] = 0;
     key[14] = 0;
@@ -213,23 +252,17 @@ void decrypt_helper(unsigned char key[], unsigned char *encrypted_data, int keye
  *
  * Returns the response data to return to the user. Should contain the status and part of the encryption key
  */
-char *upload(char *file_id, int packet_number, int total_packets, char *file_data)
+char *upload(char *file_id, int packet_number, int total_packets, char *location, char *file_data)
 {
     unsigned char key[16];
-    unsigned wifi_lat = 30;
-    unsigned wifi_long = 90;
-
-    // Allocating memory for encrypted file
     unsigned char entire_ciphertext[MAX_FILEDATA_SIZE];
 
-    // TODO: Call Google geolocation API to acquire wifi_lat and wifi_long
-
     // Generate encryption key and then encrypt file data
-    generate_key(wifi_lat, wifi_long, key);
+    generate_key(location, key);
 
     char *json_str;
     jsmntok_t *json_tokens;
-    int num_fields = 5;
+    int num_fields = 6;
     char **all_values;
 
     // Multiple packets of file data to receive
@@ -259,18 +292,18 @@ char *upload(char *file_id, int packet_number, int total_packets, char *file_dat
         // placeholder json_str
         if (packet_number == 1)
         {
-            json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":2,\"totalPackets\":3,\"fileData\":\"abcdef123456789001010101\"}";
+            json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":2,\"totalPackets\":3,\"location\":\"37.422|-122.084|5.285\",\"fileData\":\"abcdef123456789001010101\"}";
         }
         else if (packet_number == 2)
         {
-            json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":3,\"totalPackets\":3,\"fileData\":\"1234567890abcdef\"}";
+            json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":3,\"totalPackets\":3,\"location\":\"37.422|-122.084|5.285\",\"fileData\":\"1234567890abcdef\"}";
         }
 
         json_tokens = str_to_json(json_str);
         all_values = get_json_values(json_str, json_tokens, num_fields);
         free(json_tokens);
         packet_number = (int)strtol(all_values[2], NULL, 10);
-        file_data = all_values[4];
+        file_data = all_values[5];
     }
 
     // Last packet of fileData to receive
@@ -317,13 +350,11 @@ char *upload(char *file_id, int packet_number, int total_packets, char *file_dat
  *  file_id                 char array containing the file_id which specifies which file on the server to download from
  *  encryption_component    char array containing part of the encryption key
  */
-void download(char *file_id, char *encryption_component)
+void download(char *file_id, char *encryption_component, char *location)
 {
     unsigned char key[16];
-    unsigned wifi_lat = 30;
-    unsigned wifi_long = 90;
 
-    regenerate_key(encryption_component, wifi_lat, wifi_long, key);
+    regenerate_key(encryption_component, location, key);
 
     unsigned char encrypted_data[MAX_FILEDATA_SIZE];
     char entire_plaintext[MAX_FILEDATA_SIZE + 1];

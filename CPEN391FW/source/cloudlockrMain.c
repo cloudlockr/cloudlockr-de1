@@ -89,12 +89,12 @@ static void controller(void)
         }
         else if (i == 3)
         {
-            json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":1,\"totalPackets\":3,\"fileData\":\"1234567890abcdeffedcba0987654321\"}";
+            json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":1,\"totalPackets\":3,\"location\":\"37.422|-122.084|5.285\",\"fileData\":\"1234567890abcdeffedcba0987654321\"}";
             i++;
         }
         else if (i == 4)
         {
-            json_str = "{\"type\":4,\"localEncryptionComponent\":\"0102ABCD\",\"fileId\":\"123\"}";
+            json_str = "{\"type\":4,\"localEncryptionComponent\":\"0102ABCD\",\"fileId\":\"123\",\"location\":\"37.422|-122.084|5.285\"}";
             i++;
         }
         else
@@ -128,7 +128,7 @@ static void controller(void)
         {
         case 1:
         {
-            // Request to generate and display HEX code, subsequent requests must include the generated HEX code
+            // Request to generate and display HEX code
             if (state >= 1)
             {
                 generate_display_hex_code();
@@ -152,7 +152,7 @@ static void controller(void)
 
                 status = verify(all_values[1], all_values[2]);
 
-                // JUST FOR TESTING, REMOVE FOLLOWING LINE LATER
+                // TODO: JUST FOR TESTING, REMOVE FOLLOWING LINE LATER
                 status = 1;
 
                 if (status)
@@ -176,12 +176,12 @@ static void controller(void)
             // Request to upload new encrypted file data to the server for storage
             if (state >= 3)
             {
-                expected_num_values = 5;
+                expected_num_values = 6;
                 all_values = get_json_values(json_str, json_tokens, expected_num_values);
                 int packet_number = (int)strtol(all_values[2], NULL, 10);
                 int total_packets = (int)strtol(all_values[3], NULL, 10);
 
-                response_data = upload(all_values[1], packet_number, total_packets, all_values[4]);
+                response_data = upload(all_values[1], packet_number, total_packets, all_values[4], all_values[5]);
             }
             else
             {
@@ -192,12 +192,13 @@ static void controller(void)
         }
         case 4:
         {
+            // Request to download encrypted file data from the server and send to frontend
             if (state >= 3)
             {
-                expected_num_values = 3;
+                expected_num_values = 4;
                 all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
-                download(all_values[2], all_values[1]);
+                download(all_values[2], all_values[1], all_values[3]);
             }
             else
             {
