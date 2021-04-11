@@ -8,6 +8,9 @@
 /*
  * Description:
  * This module implements bluetooth related functionalities.
+ *
+ * Author:
+ * zfrantzen
  */
 
 #include <stdio.h>
@@ -18,24 +21,19 @@
 #include "UART.h"
 #include "JsonParser.h"
 
-#define BUFFER_SIZE 500100 // 1 mb of data (assuming 2 bytes per char) + 100 bytes of extra data allowance
+#define BUFFER_SIZE 500500 // 1 mb of data (assuming 2 bytes per char) + 500 bytes of extra data allowance
 #define TIMEOUT_ITER 10000000 // Large number to represent the max number of iterations with no data arriving (~50 sec)
 static int  bluetooth_count = 0;
-static int  fragment_count = 0;
 static char bluetooth_data[BUFFER_SIZE];
-static char last_two_data[2] = "";
 
 /*
  * Sends a JSON message to the phone over bluetooth. Assumes that the string has already been
  * properly formatted as a valid JSON object and has special characters like quotations backslashed.
- *
- * The main purpose of this function is to fragment the messages and send them in the
- * expected format.
+ * Must have "\v\n" at the end of the data string.
  */
 void bluetooth_send_message( char* data )
 {
-	// TODO: need to still implement
-	(void) data;
+	UART_puts( UART_ePORT_BLUETOOTH, data );
 }
 
 /*
@@ -51,106 +49,53 @@ void bluetooth_send_status( int status )
 }
 
 /*
- * Returns a parsed json token after all data has been processed. NULL otherwise.
- */
-char* bluetooth_process( char ch )
-{
-	bool fullMessageReceived = false;
-	bool fragmentReceived = false;
-	int status = 1;
-
-	// Process passed char (if buffer space is available)
-	if ( bluetooth_count < BUFFER_SIZE )
-	{
-		// Save only valid chars to the bluetooth_data buffer
-		if ( ch != '\n' && ch != '\r' && ch != '\v')
-		{
-			bluetooth_data[bluetooth_count] = ch;
-			bluetooth_count++;
-			fragment_count++;
-		}
-
-		last_two_data[0] = last_two_data[1];
-		last_two_data[1] = ch;
-
-		// Check message end conditions
-		if ( last_two_data[0] == '\v' && last_two_data[1] == '\n' )
-			fullMessageReceived = true;
-		else if ( last_two_data[0] == '\r' && last_two_data[1] == '\n' )
-			fragmentReceived = true;
-	}
-	else if ( bluetooth_count >= BUFFER_SIZE )
-	{   
-		// Mark a fragmentation error
-		fullMessageReceived = true;
-		status = 3;
-
-		// Move the buffer cursor back to "erase" collected fragment data
-		bluetooth_count -= fragment_count;
-	}
-
-	// Respond to received full messages (either full or a fragment)
-	if ( fragmentReceived )
-	{
-		fragment_count = 0;
-
-		if ( status == 1 )
-			// Assign the correct OK status
-			status = 2;
-
-		bluetooth_send_status(status);
-	}
-	else if ( fullMessageReceived )
-	{
-		// NULL terminate the buffer
-		bluetooth_data[bluetooth_count] = 0;
-
-		// Acknowledge the fragment
-		bluetooth_send_status(2);
-
-		printf( "msg received:\n" );
-		printf( bluetooth_data );
-		printf( "\n" );
-
-		return bluetooth_data;
-	}
-
-	return NULL;
-}
-
-/*
  * Waits for an entire bluetooth message to be received and processed
  */
 char* bluetooth_wait_for_data( void )
 {
 	// Reset state
 	bluetooth_count = 0;
-	fragment_count = 0;
 	int i = 0;
+	char c = ' ';
 	
+	// Wait for initial data to arrive
 	while (1)
 	{
 		if ( UART_TestForReceivedData( UART_ePORT_BLUETOOTH ) )
 		{
-			i = 0;
-			
-			char ch = (char)UART_getchar( UART_ePORT_BLUETOOTH );
-			char* fullJsonString = bluetooth_process( ch );
-
-			if ( fullJsonString != NULL )
-			{
-				return fullJsonString;
-			}
-			
-			continue;
-		}
-		
-		// Timeout if UART has been waiting for expected data but never receives it
-		if ( i > TIMEOUT_ITER )
-		{
+			c = (char)UART_getchar( UART_ePORT_BLUETOOTH );
+			bluetooth_data[bluetooth_count] = c;
+			bluetooth_count++;
 			break;
 		}
 	}
+
+	// Process all subsequent data (timing out if too much waiting elapses)
+	while (i < TIMEOUT_ITER && c != '\n')
+	{
+		if ( UART_TestForReceivedData( UART_ePORT_BLUETOOTH ) )
+		{
+			c = (char)UART_getchar( UART_ePORT_BLUETOOTH );
+			bluetooth_data[bluetooth_count] = c;
+
+			bluetooth_count++;
+			i = 0;
+
+			continue;
+		}
+
+		i++;
+	}
 	
-	return NULL;
+	// Return NULL if timeout occurs
+	if (c != '\n')
+	{
+		return NULL;
+	}
+
+	// Otherwise, acknowledge the fragment and null terminate (and truncate line endings)
+	bluetooth_send_status(2);
+	bluetooth_data[bluetooth_count - 2] = 0;
+
+	return bluetooth_data;
 }

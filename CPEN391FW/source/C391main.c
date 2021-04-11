@@ -115,7 +115,7 @@ static void controller( void )
 				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
 
 				// TODO: responseData = upload_data(allValues[1], allValues[2], allValues[3], allValues[4], allValues[5]);
-				responseData = "{\"status\":1,\"localEncryptionComponent\":\"test\"}"; // TODO: remove, placeholder until above function is implemented
+				responseData = "{\"status\":1,\"localEncryptionComponent\":\"test\"}\v\n"; // TODO: remove, placeholder until above function is implemented
 				break;
 			}
 			case 4:
@@ -129,7 +129,7 @@ static void controller( void )
 			case 5:
 			{
 				// TODO: responseData = get_wifi_networks();
-				responseData = "{\"status\":1,\"networks\":\"[network1,network2]\"}"; // TODO: remove, placeholder until above function is implemented
+				responseData = "{\"status\":1,\"networks\":\"[network1,network2]\"}\v\n"; // TODO: remove, placeholder until above function is implemented
 				break;
 			}
 			case 6:
