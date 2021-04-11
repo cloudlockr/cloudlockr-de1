@@ -281,11 +281,17 @@ int main(void)
     init();
     // controller();
     int successful = set_wifi_config("networkName", "networkPassword");
+    if (!successful) {
+    	printf("Couldn't connect to WiFi");
+    	return 1;
+    }
     getFileMetadata("783cf156-aa19-4110-8484-732f1b0a1068");
     getBlob("783cf156-aa19-4110-8484-732f1b0a1068","0");
     getBlob("783cf156-aa19-4110-8484-732f1b0a1068","1");
     getBlob("783cf156-aa19-4110-8484-732f1b0a1068","2");
     getBlob("783cf156-aa19-4110-8484-732f1b0a1068","3");
+    uploadData("email@cool.com", "783cf156-aa19-4110-8484-732f1b0a1068", "4", "5", "greatestBlob");
+    getBlob("783cf156-aa19-4110-8484-732f1b0a1068","4");
 
     printf(">>>>>>>>>    CloudLockr Firmware end    <<<<<<<<<\n");
     return 0;

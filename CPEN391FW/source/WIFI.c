@@ -78,11 +78,6 @@ static bool esp8266_send_data(const char *data, int length, char *buffer)
     return true;
 }
 
-char *uploadData(char *email, char *fileId, char *packetNumber, char *totalPackets, char *fileData)
-{
-    return NULL;
-}
-
 static bool initiate_tcp(char *domain)
 {
     bool success;
@@ -98,6 +93,57 @@ static bool close_tcp()
     char *cmd_buffer = "AT+CIPCLOSE";
     success = esp8266_send_command(cmd_buffer);
     return success;
+}
+
+char *uploadData(char *email, char *fileId, char *packetNumber, char *totalPackets, char *fileData)
+{
+    char cmd_buffer[100];
+    char request[1000];
+    char response[1000];
+    printf("Begin upload data call\n");
+    sprintf(request, "POST /file/%s/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n{\"fileData\":%s}", fileId, packetNumber, fileData);
+    if (initiate_tcp("cloudlockr.herokuapp.com"))
+    {
+        sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command
+        if (esp8266_send_command(cmd_buffer))
+        {
+            if (esp8266_send_data(request, strlen(request), response))
+            {
+                while (1)
+                {
+                    if (UART_gets(UART_ePORT_WIFI, response, sizeof(response), 1) != NULL)
+                    {
+                        if (strstr(response, "+IPD") != NULL)
+                        {
+                            int length = strlen(response);
+                            while (1)
+                            {
+                                if (UART_gets(UART_ePORT_WIFI, response + length, sizeof(response) - length, 2) != NULL)
+                                {
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                char *body = strstr(response, "\r\n\r\n");
+                printf("%s\n", body);
+                // while (UART_gets(UART_ePORT_WIFI, response, 9, 1) != NULL)
+                // {
+                //     printf("%s", response);
+                // }
+                close_tcp();
+                return "{\"status\": 1}";
+            }
+            printf("Send data failed\n");
+            return "{\"status\": 0}";
+        }
+        printf("Send command failed\n");
+        return NULL;
+    }
+    printf("Initiate tcp failed\n");
+    return NULL;
 }
 
 //char* get_wifi_networks( void ) {
@@ -207,6 +253,7 @@ char *getBlob(char *fileId, char *blobNumber)
     char cmd_buffer[100];
     char request[1000];
     char response[1000];
+    printf("Begin get blob call\n");
     sprintf(request, "GET /file/%s/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n", fileId, blobNumber);
     if (initiate_tcp("cloudlockr.herokuapp.com"))
     {
