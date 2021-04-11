@@ -10,6 +10,7 @@
  * UART module.
  */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -247,45 +248,71 @@ void UART_puts(UART_ePORT ePort, char *buffer)
 char *UART_gets(UART_ePORT ePort, char *buffer, int length, int mode)
 {
     int count = 0;
+    int temp_count = 0;
+    char temp_buffer[100];
 
     // Initialize buffer with NULL.
     memset(buffer, NULL, length);
 
     while (count < (length - 1))
     {
-        if (UART_TestForReceivedData(ePort))
+        buffer[count] = UART_getchar(ePort);
+
+        if (mode == 0)
         {
-            buffer[count] = UART_getchar(ePort);
-
-            if (mode == 0)
+            if (count > 0 && buffer[count - 1] == '\r' && buffer[count] == '\n')
             {
-                if (count > 0 && buffer[count - 1] == '\r' && buffer[count] == '\n')
-                {
-                    //printf("[e0]");
-                    break;
-                }
-
-                if (buffer[count] == 0)
-                {
-                    //printf("[e1]");
-                    break;
-                }
-            }
-            else
-            {
-                if (buffer[count] == '\n' || buffer[count] == '\r' || buffer[count] == 0)
-                {
-                    break;
-                }
+                //printf("[e0]");
+                break;
             }
 
-            count++;
+            if (buffer[count] == 0)
+            {
+                //printf("[e1]");
+                break;
+            }
         }
-        // this affects comm a lot.
+        else if (mode == 1)
+        {
+            if (buffer[count] == '\n' || buffer[count] == '\r' || buffer[count] == 0)
+            {
+                break;
+            }
+        }
+        else if (mode == 2)
+        {
+            // Get request to server
+            if (count > 2 && buffer[count - 3] == '\r' && buffer[count - 2] == '\n' && buffer[count - 1] == '\r' && buffer[count] == '\n')
+            {
+                // Finding the Content-Length response header
+                char *content_length_key = strstr(buffer, "Content-Length");
+                int index = content_length_key - buffer;
+                // Calculating where the Content-Length value is
+                char *content_length_start = buffer + index + 16;
+                // Finding where the Content-Length value ends
+                char *content_length_end = strstr(content_length_start, "\r");
+                // Extracting the Content-Length value and storing it in temp_buffer
+                int content_length_length = content_length_end - content_length_start;
+                for (int i = 0; i < content_length_length; i++)
+                {
+                    temp_buffer[i] = content_length_start[i];
+                }
+                temp_buffer[content_length_length] = '\0';
+                // Converting from string to int
+                int content_length = (int)strtol(temp_buffer, NULL, 10);
+                temp_count = count + content_length;
+                mode = 3;
+            }
+        }
         else
         {
-            //break;
+            if (count >= temp_count)
+            {
+                break;
+            }
         }
+
+        count++;
     }
 
     if (count == 0)

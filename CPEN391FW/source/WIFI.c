@@ -1,221 +1,10 @@
-/*
- * WIFI.c
- *
- *  Created on: Mar 12, 2021
- *      Author: Jason Bai
- */
-
-/*
- * Description
- * Wifi module.
- */
-
 #include <stdio.h>
 #include <string.h>
-
-#include "TypeDef.h"
-#include "hpsService.h"
-#include "UART.h"
+#include <stdlib.h>
+#include <stdbool.h>
 #include "WIFI.h"
-
-/*------------------- Constants Define -------------------*/
-#define BUFFER_SIZE 128 // 128 is enough?
-
-/*------------------- Type Define -------------------*/
-typedef enum
-{
-    WIFI_eMSG_INIT = 0,
-    WIFI_eMSG_QUERY,
-    // ...
-
-} WIFI_eMSG;
-
-/*------------------- Local Data -------------------*/
-int wifi_Count = 0;
-char wifi_Data[BUFFER_SIZE];
-
-const char *time_server_domain = "demo.terasic.com";
-const char *get_time_request = "GET /time/ HTTP/1.1\r\nHost: demo.terasic.com\r\nUser-Agent: terasic-rfs\r\n\r\n";
-#if 0
-const char *get_time_request =
-        "GET /time/ HTTP/1.1\r\n\
-Host: demo.terasic.com\r\n\
-User-Agent: terasic-rfs\r\n\
-\r\n\
-";
-#endif
-
-/*------------------- Local Function Prototype -------------------*/
-static WIFI_eMSG Wifi_ParseMessage(void);
-static char *get_time(char *str);
-static bool esp8266_send_command(const char *cmd);
-static bool esp8266_send_data(const char *data, int length);
-static void esp8266_dump_rx(void);
-
-/*------------------- Local Function -------------------*/
-
-char *get_time(char *str)
-{
-    bool success = true;
-    char cmd_buffer[100];
-    char buffer[1000];
-
-    // format string into buffer
-    sprintf(cmd_buffer, "AT+CIPSTART=\"TCP\",\"%s\",80", time_server_domain); // start TCP connection at domain with port 80
-    success = esp8266_send_command(cmd_buffer);
-
-    if (success)
-    {
-        sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(get_time_request)); // specify length of GET command
-        success = esp8266_send_command(cmd_buffer);
-    }
-
-    //hps_usleep(10);
-
-    printf("--- Sending http command...\n");
-
-    if (success)
-    {
-        success = esp8266_send_data(get_time_request, strlen(get_time_request));
-    }
-
-    int length = 0;
-    if (success)
-    {
-        while (1)
-        {
-            if (UART_gets(UART_ePORT_WIFI, buffer, sizeof(buffer), 1) != NULL)
-            {
-                printf("get_time() Rx: %s", buffer + length);
-
-                if (strstr(buffer, "+IPD") != NULL)
-                {
-#if 1
-                    length = strlen(buffer);
-                    while (1)
-                    {
-                        if (UART_gets(UART_ePORT_WIFI, buffer + length, sizeof(buffer) - length, 0) != NULL)
-                        {
-                            //printf( "wifi Rx: %s\n", buffer + length );
-
-                            //if (strcmp(buffer + length, "\r\n") == 0)
-                            //    break;
-
-                            //length += strlen(buffer + length);
-
-                            break;
-                        }
-                    }
-#endif
-                    //break;
-                }
-            }
-        }
-
-        while (UART_gets(UART_ePORT_WIFI, buffer, 9, 1) != NULL)
-        {
-            printf("time: %s\n", buffer);
-        }
-    }
-
-    if (success)
-    {
-        strcpy(str, buffer);
-        return str;
-    }
-    else
-    {
-        return NULL;
-    }
-}
-
-// for sending AT command
-bool esp8266_send_command(const char *cmd)
-{
-    int length = 0;
-    char buffer[1000];
-
-    // Send command to WIFI UART port.
-    sprintf(buffer, "%s\r\n", cmd);
-    UART_puts(UART_ePORT_WIFI, buffer);
-
-    memset(buffer, 0, 1000);
-
-    hps_usleep(3000);
-
-    while (1)
-    {
-        if (UART_gets(UART_ePORT_WIFI, buffer + length, sizeof(buffer) - length, 0) != NULL)
-        {
-            if (strstr(buffer + length, "OK") != NULL)
-            {
-                printf("wifi Rx: %s\n", buffer + length);
-                //if (strcmp("AT+CWLAP", cmd) == 0) { printf("%s", buffer); }
-                return true;
-            }
-            else if (strstr(buffer + length, "ERROR") != NULL)
-            {
-                printf("wifi Rx: %s\n", buffer + length);
-                return false;
-            }
-            else if (strstr(buffer + length, "FAIL") != NULL)
-            {
-                printf("wifi Rx: %s\n", buffer + length);
-                return false;
-            }
-            else if (strstr(buffer + length, "CLOSED") != NULL)
-            {
-                printf("wifi Rx: %s\n", buffer + length);
-                return false;
-            }
-
-            length += strlen(buffer + length);
-        }
-    }
-
-    return false;
-}
-
-/**************************************************************************
-** For sending HTTP command
-**
-***************************************************************************/
-bool esp8266_send_data(const char *data, int length)
-{
-    char buffer[1000];
-    int count = 0;
-
-    // Send command to WIFI UART port.
-    sprintf(buffer, "%s\r\n", data);
-    UART_puts(UART_ePORT_WIFI, buffer);
-
-    while (1)
-    {
-        if (UART_gets(UART_ePORT_WIFI, buffer + count, sizeof(buffer) - count, 0) != NULL)
-        {
-            if (strstr(buffer + count, "SEND OK") != NULL)
-            {
-                printf("%s", buffer);
-                return true;
-            }
-            else if (strstr(buffer + count, "SEND FAIL") != NULL)
-            {
-                printf("%s", buffer);
-                return false;
-            }
-            else if (strstr(buffer + count, "CLOSED") != NULL)
-            {
-                printf("%s", buffer);
-                return false;
-            }
-            count += strlen(buffer + count);
-        }
-
-        //HPS_usleep(10);
-    }
-
-    return false;
-}
+#include "UART.h"
+#include "hpsService.h"
 
 static void esp8266_dump_rx(void)
 {
@@ -226,7 +15,7 @@ static void esp8266_dump_rx(void)
         if (UART_TestForReceivedData(UART_ePORT_WIFI))
         {
             ch = UART_getchar(UART_ePORT_WIFI);
-            printf("dump Rx: %c\n", ch);
+            // printf("dump Rx: %c\n", ch);
         }
         else
         {
@@ -237,134 +26,201 @@ static void esp8266_dump_rx(void)
     UART_Flush(UART_ePORT_WIFI);
 }
 
-/*------------------- API Function -------------------*/
-
-/**************************************************************************
-** Initialize WIFI module.
-**
-***************************************************************************/
-bool WIFI_Init(void)
+static bool esp8266_send_command(const char *cmd)
 {
-    bool bSuccess = true;
-    char ssid[] = "wifi network name";
-    char passwd[] = "wifi network password";
-    char cmd[100];
+    int length = 0;
+    char buffer[1000];
 
-#if 0
-    - The code below enables digital IO pin of esp8266 module.
-    - Is it necessary? If yes, what is this digital IO signal?
-    if (reset) {
-        IOWR_ALTERA_AVALON_PIO_DATA(PIO_WIFI_RESET_BASE, 0);
-        usleep(50);
-        IOWR_ALTERA_AVALON_PIO_DATA(PIO_WIFI_RESET_BASE, 1);
-        usleep(3 * 1000 * 1000);
-        esp8266_dump_rx();
-    }
-#endif
+    // Send command to WIFI UART port.
+    sprintf(buffer, "%s\r\n", cmd);
+    UART_puts(UART_ePORT_WIFI, buffer);
 
-    esp8266_dump_rx();
+    memset(buffer, 0, 1000);
 
-#if 0
-    // Set up server mode.
-    esp8266_send_command("AT+CWSAP_CUR=\"Terasic_RFS\",\"1234567890\",5,3");
-    esp8266_send_command("AT+CWMODE_CUR=2");
-    esp8266_send_command("AT+CWLIF");
-#endif
-
-#if 1
-    esp8266_send_command("AT+CWMODE_CUR=1");
-    esp8266_send_command("AT+CWLAPOPT=1,0x2");
-
-    printf("Connecting to WiFi AP (SSID: %s)\n", ssid);
-
-    sprintf(cmd, "AT+CWJAP_CUR=\"%s\",\"%s\"", ssid, passwd);
-    bSuccess = esp8266_send_command(cmd);
-    if (bSuccess)
+    while (1)
     {
-        printf("Connect to WiFi AP successfully\n");
-    }
-    else
-    {
-        printf("Connect to WiFi AP failed\n");
-    }
-#endif
-
-    return bSuccess;
-}
-
-/**************************************************************************
-** Take each character received and process it if a command is received.
-**
-** Note: TBD.
-**
-***************************************************************************/
-void WIFI_Receive(char ch)
-{
-    if (wifi_Count < BUFFER_SIZE)
-    {
-        wifi_Data[wifi_Count] = ch;
-
-        if (wifi_Count == BUFFER_SIZE)
+        if (UART_gets(UART_ePORT_WIFI, buffer + length, sizeof(buffer) - length, 0) != NULL)
         {
-            // WIFI processing...
+            if (strstr(buffer + length, "OK") != NULL)
+            {
+                return true;
+            }
+            else if (strstr(buffer + length, "ERROR") != NULL)
+            {
+                return false;
+            }
+            else if (strstr(buffer + length, "FAIL") != NULL)
+            {
+                return false;
+            }
+            else if (strstr(buffer + length, "CLOSED") != NULL)
+            {
+                printf("ESP CLOSED\n");
+                esp8266_dump_rx();
+                return false;
+            }
 
-            wifi_Count = 0;
+            length += strlen(buffer + length);
         }
     }
+
+    return false;
 }
 
-/**************************************************************************
-** Process WIFI messages.
-**
-***************************************************************************/
-void WIFI_Process(void)
+static bool esp8266_send_data(const char *data, int length, char *buffer)
 {
-    WIFI_eMSG eMsg;
+    int count = 0;
 
-    // Get network time:
-    char str[100];
-    int time;
-    int hour, minute, second;
+    // Send command to WIFI UART port.
+    sprintf(buffer, "%s\r\n", data);
+    UART_puts(UART_ePORT_WIFI, buffer);
 
-#if 0
-    if ( get_time(str) != NULL )
+    return true;
+}
+
+char *uploadData(char *email, char *fileId, char *packetNumber, char *totalPackets, char *fileData)
+{
+    return NULL;
+}
+
+static bool initiate_tcp(char *domain)
+{
+    bool success;
+    char cmd_buffer[100];
+    sprintf(cmd_buffer, "AT+CIPSTART=\"TCP\",\"%s\",80,7200", domain); // start TCP connection at domain with port 80
+    success = esp8266_send_command(cmd_buffer);
+    return success;
+}
+
+static bool close_tcp()
+{
+    bool success;
+    char *cmd_buffer = "AT+CIPCLOSE";
+    success = esp8266_send_command(cmd_buffer);
+    return success;
+}
+
+//char* get_wifi_networks( void ) {
+//	bool success = true;
+//	char buffer[1000];
+//	char response[2000];
+//
+//    esp8266_send_command("AT+CWMODE_CUR=1");
+//    hps_usleep( 3000000 );
+//    esp8266_send_command("AT+CWLAPOPT=1,0x2");
+//    hps_usleep( 3000000 );
+////    hps_usleep(1000000);
+//    success = esp8266_send_command("AT+CWLAP");
+//	if (success) {
+//		// +CWLAP:<ecn>, <ssid>, <rssi>, <mac>, <ch>, <freq offset>, <freq calibration>
+//		// <ecn>, <rssi>, <mac>, <ch>, <freq offset>, <freq calibration>: not used
+//		// <ssid>: name of WiFi network
+//
+//		// sprintf(response, "{\"status\":1,\"networks\":\"");
+//	}
+//	return NULL;
+//}
+
+int set_wifi_config(char *networkName, char *networkPassword)
+{
+    char cmd[1000];
+    int handshake_count = 5;
+    int mode_set, connected;
+
+    for (int i = 0; i < handshake_count; i++)
     {
-        printf( "Network time: %s\n", str );
-
-#if 0
-        if (sscanf(str, "%d:%d:%d", &hour, &minute, &second) == 3) {
-            time = hour * 10000 + minute * 100 + second;
-            SEG7_Decimal(time, 0);
+        mode_set = esp8266_send_command("AT+CWMODE=3");
+        if (mode_set)
+        {
+            break;
         }
-#endif
     }
-#endif
 
-#if 0
-    - Comment out for now.
-    eMsg = Wifi_ParseMessage();
+    sprintf(cmd, "AT+CWJAP=\"%s\",\"%s\"", networkName, networkPassword);
+    for (int i = 0; i < handshake_count && mode_set; i++)
+    {
+        connected = esp8266_send_command(cmd);
+        if (connected)
+        {
+            break;
+        }
+    }
 
-    if ( eMsg == WIFI_eMSG_INIT )
-    {
-        // what to do...
-    }
-    else if ( eMsg == WIFI_eMSG_QUERY )
-    {
-        // what to do...
-    }
-#endif
+    return connected;
 }
 
-/**************************************************************************
-** Parse WIFI messages.
-**
-***************************************************************************/
-static WIFI_eMSG Wifi_ParseMessage(void)
+char *getFileMetadata(char *fileId)
 {
-    WIFI_eMSG eMsg;
+    char cmd_buffer[100];
+    char request[1000];
+    char response[1000];
+    printf("Begin file metadata call\n");
+    sprintf(request, "GET /file/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n", fileId);
+    // sprintf(request, "GET /time/ HTTP/1.1\r\nHost: demo.terasic.com\r\nUser-Agent: terasic-rfs\r\n\r\n");
+    if (initiate_tcp("cloudlockr.herokuapp.com"))
+    // if (initiate_tcp("demo.terasic.com"))
+    {
+        sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command
+        if (esp8266_send_command(cmd_buffer))
+        {
+            if (esp8266_send_data(request, strlen(request), response))
+            {
+                while (1)
+                {
+                    if (UART_gets(UART_ePORT_WIFI, response, sizeof(response), 1) != NULL)
+                    {
+                        if (strstr(response, "+IPD") != NULL)
+                        {
+                            int length = strlen(response);
+                            while (1)
+                            {
+                                if (UART_gets(UART_ePORT_WIFI, response + length, sizeof(response) - length, 2) != NULL)
+                                {
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                char *body = strstr(response, "\r\n\r\n");
+                printf("%s\n", body);
+                // while (UART_gets(UART_ePORT_WIFI, response, 9, 1) != NULL)
+                // {
+                //     printf("%s", response);
+                // }
+                close_tcp();
+                return "{\"status\": 1}";
+            }
+            printf("Send data failed\n");
+            return "{\"status\": 0}";
+        }
+        printf("Send command failed\n");
+        return NULL;
+    }
+    printf("Initiate tcp failed\n");
+    return NULL;
+}
 
-    // go through wifi_Data and parse wifi commands.
-    // ....
-
-    return eMsg;
+char *getBlob(char *fileId, char *blobNumber)
+{
+    char cmd_buffer[100];
+    char request[1000];
+    char response[1000];
+    sprintf(request, "GET /file/%s/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\nUser-Agent: terasic-rfs\r\n\r\n", fileId, blobNumber);
+    if (initiate_tcp("https://cloudlockr.herokuapp.com/"))
+    {
+        sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command
+        if (esp8266_send_command(cmd_buffer))
+        {
+            if (esp8266_send_data(request, strlen(request), response))
+            {
+                // do something with response
+                return "{\"status\": 1}";
+            }
+            return "{\"status\": 0}";
+        }
+        return NULL;
+    }
+    return NULL;
 }

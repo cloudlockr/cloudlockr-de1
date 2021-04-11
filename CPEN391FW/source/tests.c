@@ -154,7 +154,7 @@ void aes_test0()
     printf("\n");
     if (wrong)
     {
-        printf("Failed AES test 0\n", wrong);
+        printf("Failed AES test 0\n");
     }
     else
     {

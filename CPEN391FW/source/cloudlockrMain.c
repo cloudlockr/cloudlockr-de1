@@ -45,12 +45,12 @@ static void init(void)
     UART_Init(UART_ePORT_BLUETOOTH);
 
     // Initialize WIFI interface.
-    //while ( WIFI_Init() == false)
-    //WIFI_Init();
-    //{
+    // while ( WIFI_Init() == false)
+    // WIFI_Init();
+    // {
     // We need a sleep function.
     //    HPS_usleep(3 * 1000 * 1000); // 3 seconds
-    //}
+    // }
 }
 
 /**
@@ -267,7 +267,6 @@ static void controller(void)
     }
 
     reset_hex();
-    printf(">>>>>>>>>    CloudLockr Firmware end    <<<<<<<<<\n");
 }
 
 /**
@@ -279,7 +278,17 @@ int main(void)
 {
     printf(">>>>>>>>>    CloudLockr Firmware start    <<<<<<<<<\n");
     // ====================================================================
-    // init();
-    controller();
+    init();
+    // controller();
+    int successful = set_wifi_config("networkName", "networkPassword");
+    getFileMetadata("783cf156-aa19-4110-8484-732f1b0a1068/0");
+    // successful = set_wifi_config("GorgeousGuests", "ilmhvm555");
+    getFileMetadata("783cf156-aa19-4110-8484-732f1b0a1068/1");
+    // successful = set_wifi_config("GorgeousGuests", "ilmhvm555");
+    getFileMetadata("783cf156-aa19-4110-8484-732f1b0a1068/2");
+    // successful = set_wifi_config("GorgeousGuests", "ilmhvm555");
+    getFileMetadata("783cf156-aa19-4110-8484-732f1b0a1068/3");
+
+    printf(">>>>>>>>>    CloudLockr Firmware end    <<<<<<<<<\n");
     return 0;
 }
