@@ -146,11 +146,12 @@ char* getFileMetadata(char* fileId) {
     char cmd_buffer[100];
     char request[1000];
     char response[1000];
+    char body[1000];
     printf("Begin file metadata calls\n");
-//    sprintf(request, "GET /file/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\nUser-Agent: terasic-rfs\r\n\r\n", fileId);
-    sprintf(request, "GET /time/ HTTP/1.1\r\nHost: demo.terasic.com\r\nUser-Agent: terasic-rfs\r\n");
-//	if (initiate_tcp("cloudlockr.herokuapp.com")) {
-	if (initiate_tcp("demo.terasic.com")) {
+    sprintf(request, "GET / HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n", fileId);
+//    sprintf(request, "GET /time/ HTTP/1.1\r\nHost: demo.terasic.com\r\nUser-Agent: terasic-rfs\r\n\r\n");
+	if (initiate_tcp("cloudlockr.herokuapp.com")) {
+//	if (initiate_tcp("demo.terasic.com")) {
         sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command
 //        HPS_usleep(60000000);
 		if (esp8266_send_command(cmd_buffer)) {
@@ -169,7 +170,7 @@ char* getFileMetadata(char* fileId) {
 //							printf("%s", response + length);
 							while (1)
 							{
-								if ( UART_gets( UART_ePORT_WIFI, response + length, sizeof(response) - length, 0) != NULL )
+								if ( UART_gets( UART_ePORT_WIFI, response + length, sizeof(response) - length, 2) != NULL )
 								{
 									break;
 								}
@@ -178,11 +179,12 @@ char* getFileMetadata(char* fileId) {
 						}
 					}
 				}
-//				while ( UART_gets( UART_ePORT_WIFI, response, 9, 1) != NULL )
-//				{
-////					printf("%s", response);
-//				}
-				printf("%s", response);
+//				printf("%s", response);
+				while ( UART_gets( UART_ePORT_WIFI, body, 1000, 3) != NULL )
+				{
+					printf("%s", body);
+				}
+//				printf("%s", body);
 				return "{\"status\": 1}";
 			}
 			return "{\"status\": 0}";

@@ -44,7 +44,7 @@ static void controller( void );
 // int verify(char* devicePassword, char* hexCode);
 // char* upload_data(char* email, char* fileId, char* packetNumber, char* totalPackets, char* fileData);
 // void download_data(char* localEncrpytionComponent, char* email, char* fileId);
-// char* get_wifi_networks( void );
+// char* get_wifi_networks( void ); // Look at AT+CWLAP
 // int set_wifi_config(char* networkName, char* networkPassword);
 // int set_device_password(char* password);
 
@@ -77,7 +77,8 @@ static void controller( void )
 	while (1)
 	{
 		// Wait for a request message to be received
-		char* jsonString = bluetooth_wait_for_data();
+		// char* jsonString = bluetooth_wait_for_data();
+		char* jsonString = "";
 		jsmntok_t* jsonTokens = str_to_json(jsonString);
 
 		// Check for JSON parsing errors
@@ -88,9 +89,10 @@ static void controller( void )
 		}
 
 		// Get the first value to determine messageType
-		char** messageTypeValues = get_json_values(jsonString, jsonTokens, 1);
-		long messageType = strtol(messageTypeValues[0], NULL, 10);
-		free_json_values_array(messageTypeValues, 1);
+//		char** messageTypeValues = get_json_values(jsonString, jsonTokens, 1);
+		// long messageType = strtol(messageTypeValues[0], NULL, 10);
+		long messageType = 4;
+//		free_json_values_array(messageTypeValues, 1);
 
 		// Direct the request to the appropriate handler function (pure functions that take inputs, not the JSON tokens)
 		int status = -1;
@@ -110,7 +112,7 @@ static void controller( void )
 			case 2:
 			{
 				expectedNumValues = 3;
-				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+//				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
 
 				//TODO: status = verify(allValues[1], allValues[2]);
 				status = 1; // TODO: remove, placeholder until above function is implemented
@@ -119,7 +121,7 @@ static void controller( void )
 			case 3:
 			{
 				expectedNumValues = 6;
-				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+//				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
 
 				// TODO: responseData = upload_data(allValues[1], allValues[2], allValues[3], allValues[4], allValues[5]);
 				responseData = "{\"status\":1,\"localEncryptionComponent\":\"test\"}"; // TODO: remove, placeholder until above function is implemented
@@ -128,30 +130,33 @@ static void controller( void )
 			case 4:
 			{
 				expectedNumValues = 4;
-				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+//				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
 
 				// TODO: download_data(allValues[1], allValues[2], allValues[3]);
+				set_wifi_config("networkName", "networkPassword");
+				printf("%s\n",getFileMetadata("wejjfasjdkfhawjek"));
 				break;
 			}
 			case 5:
 			{
 				// TODO: responseData = get_wifi_networks();
+//				get_wifi_networks();
 				responseData = "{\"status\":1,\"networks\":\"[network1,network2]\"}"; // TODO: remove, placeholder until above function is implemented
 				break;
 			}
 			case 6:
 			{
 				expectedNumValues = 3;
-				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+//				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
 
 				// TODO: status = set_wifi_config(allValues[1], allValues[2]);
-				status = 1; // TODO: remove, placeholder until above function is implemented
+				status = set_wifi_config(allValues[1], allValues[2]); // TODO: remove, placeholder until above function is implemented
 				break;
 			}
 			case 7:
 			{
 				expectedNumValues = 2;
-				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
+//				allValues = get_json_values(jsonString, jsonTokens, expectedNumValues);
 
 				// TODO: status = set_device_password(allValues[1]);
 				status = 1; // TODO: remove, placeholder until above function is implemented
@@ -174,16 +179,16 @@ static void controller( void )
 		HPS_usleep(1 * 1000 * 1000); // ~0.5 second
 
 		// Send the response message (if applicable)
-		if ( status != -1 )
-		{
-			// Send basic status response
-			bluetooth_send_status(status);
-		}
-		else if ( responseData != NULL )
-		{
-			// Send full char message
-			bluetooth_send_message(responseData);
-		}
+//		if ( status != -1 )
+//		{
+//			// Send basic status response
+//			bluetooth_send_status(status);
+//		}
+//		else if ( responseData != NULL )
+//		{
+//			// Send full char message
+//			bluetooth_send_message(responseData);
+//		}
 	}
 }
 

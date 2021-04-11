@@ -292,6 +292,7 @@ char* UART_gets( UART_ePORT ePort, char* buffer, int length, int mode )
 //	    {
 	        buffer[count] = UART_getchar( ePort );
 
+//	        printf("%c", buffer[count]);
             if ( mode == 0 )
             {
                 if ( count > 0 && buffer[count-1] == '\r' && buffer[count] == '\n' )
@@ -306,12 +307,22 @@ char* UART_gets( UART_ePORT ePort, char* buffer, int length, int mode )
                     break;
                 }
             }
-            else
+            else if (mode == 1)
             {
                 if ( buffer[count] == '\n' || buffer[count] == '\r' || buffer[count] == 0 )
                 {
                     break;
                 }
+            }
+            else if (mode == 2) {
+                if ( count > 2 && buffer[count-3] == '\r' && buffer[count-2] == '\n' && buffer[count-1] == '\r' && buffer[count] == '\n' )
+                {
+                    break;
+                }
+            } else {
+            	if (count >= 43) {
+            		break;
+            	}
             }
 
             count++;
