@@ -95,13 +95,13 @@ static bool close_tcp()
     return success;
 }
 
-char *uploadData(char *email, char *fileId, char *packetNumber, char *totalPackets, char *fileData)
+char *uploadData(char *fileId, char *packetNumber, char *fileData)
 {
     char cmd_buffer[100];
     char request[1000];
     char response[1000];
     printf("Begin upload data call\n");
-    sprintf(request, "POST /file/%s/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n{\"fileData\":%s}", fileId, packetNumber, fileData);
+    sprintf(request, "POST /file/%s/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n{\"fileData\":\"%s\"}", fileId, packetNumber, fileData);
     if (initiate_tcp("cloudlockr.herokuapp.com"))
     {
         sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command

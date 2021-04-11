@@ -290,7 +290,7 @@ int main(void)
     getBlob("783cf156-aa19-4110-8484-732f1b0a1068","1");
     getBlob("783cf156-aa19-4110-8484-732f1b0a1068","2");
     getBlob("783cf156-aa19-4110-8484-732f1b0a1068","3");
-    uploadData("email@cool.com", "783cf156-aa19-4110-8484-732f1b0a1068", "4", "5", "greatestBlob");
+    uploadData("783cf156-aa19-4110-8484-732f1b0a1068", "4", "greatestBlob");
     getBlob("783cf156-aa19-4110-8484-732f1b0a1068","4");
 
     printf(">>>>>>>>>    CloudLockr Firmware end    <<<<<<<<<\n");
