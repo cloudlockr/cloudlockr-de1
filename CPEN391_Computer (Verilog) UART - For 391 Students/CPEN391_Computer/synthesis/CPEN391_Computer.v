@@ -105,6 +105,7 @@ module CPEN391_Computer (
 		output wire        spi_0_MOSI,                      //                     .MOSI
 		output wire        spi_0_SCLK,                      //                     .SCLK
 		output wire        spi_0_SS_n,                      //                     .SS_n
+		
 		input  wire        system_pll_ref_clk_clk,          //   system_pll_ref_clk.clk
 		input  wire        system_pll_ref_reset_reset       // system_pll_ref_reset.reset
 	);
@@ -340,6 +341,7 @@ module CPEN391_Computer (
 	wire         irq_mapper_receiver1_irq;                                            // PushButtons:irq -> irq_mapper:receiver1_irq
 	wire         irq_mapper_receiver2_irq;                                            // JTAG_UART_for_ARM_0:av_irq -> irq_mapper:receiver2_irq
 	wire         irq_mapper_receiver3_irq;                                            // Interval_Timer:irq -> irq_mapper:receiver3_irq
+	wire         irq_mapper_receiver4_irq;                                            // spi_0:irq -> irq_mapper:receiver4_irq
 	wire  [31:0] arm_a9_hps_f2h_irq0_irq;                                             // irq_mapper:sender_irq -> ARM_A9_HPS:f2h_irq_p0
 	wire         irq_mapper_001_receiver0_irq;                                        // JTAG_UART_for_ARM_1:av_irq -> irq_mapper_001:receiver0_irq
 	wire  [31:0] arm_a9_hps_f2h_irq1_irq;                                             // irq_mapper_001:sender_irq -> ARM_A9_HPS:f2h_irq_p1
@@ -814,11 +816,11 @@ module CPEN391_Computer (
 		.read_n        (~mm_interconnect_0_spi_0_spi_control_port_read),      //                 .read_n
 		.spi_select    (mm_interconnect_0_spi_0_spi_control_port_chipselect), //                 .chipselect
 		.write_n       (~mm_interconnect_0_spi_0_spi_control_port_write),     //                 .write_n
-		.irq           (),                                                    //              irq.irq
-		.MISO          (),                                                    //         external.export
-		.MOSI          (),                                                    //                 .export
-		.SCLK          (),                                                    //                 .export
-		.SS_n          ()                                                     //                 .export
+		.irq           (irq_mapper_receiver4_irq),                            //              irq.irq
+		.MISO          (spi_0_MISO),                                          //         external.export
+		.MOSI          (spi_0_MOSI),                                          //                 .export
+		.SCLK          (spi_0_SCLK),                                          //                 .export
+		.SS_n          (spi_0_SS_n)                                           //                 .export
 	);
 
 	CPEN391_Computer_mm_interconnect_0 mm_interconnect_0 (
@@ -1068,6 +1070,7 @@ module CPEN391_Computer (
 		.receiver1_irq (irq_mapper_receiver1_irq), // receiver1.irq
 		.receiver2_irq (irq_mapper_receiver2_irq), // receiver2.irq
 		.receiver3_irq (irq_mapper_receiver3_irq), // receiver3.irq
+		.receiver4_irq (irq_mapper_receiver4_irq), // receiver4.irq
 		.sender_irq    (arm_a9_hps_f2h_irq0_irq)   //    sender.irq
 	);
 

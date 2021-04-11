@@ -34,6 +34,7 @@ preplace inst CPEN391_Computer.JTAG_To_HPS_Bridge.p2b_adapter -pg 1
 preplace inst CPEN391_Computer.ARM_A9_HPS.timer0 -pg 1
 preplace inst CPEN391_Computer.JTAG_To_FPGA_Bridge.jtag_phy_embedded_in_jtag_master -pg 1
 preplace inst CPEN391_Computer.ARM_A9_HPS.gpio1 -pg 1
+preplace inst CPEN391_Computer.spi_0 -pg 1 -lvl 4 -y 230
 preplace inst CPEN391_Computer.ARM_A9_HPS.sdrctl -pg 1
 preplace inst CPEN391_Computer.ARM_A9_HPS.timer1 -pg 1
 preplace inst CPEN391_Computer.ARM_A9_HPS.nand0 -pg 1
@@ -79,7 +80,7 @@ preplace inst CPEN391_Computer.ARM_A9_HPS.qspi -pg 1
 preplace inst CPEN391_Computer.ARM_A9_HPS -pg 1 -lvl 3 -y 720
 preplace inst CPEN391_Computer.JTAG_UART_for_ARM_1 -pg 1 -lvl 5 -y 750
 preplace inst CPEN391_Computer.HEX4_5 -pg 1 -lvl 5 -y 230
-preplace inst CPEN391_Computer.JTAG_To_FPGA_Bridge -pg 1 -lvl 4 -y 1020
+preplace inst CPEN391_Computer.JTAG_To_FPGA_Bridge -pg 1 -lvl 4 -y 960
 preplace inst CPEN391_Computer.SDRAM -pg 1 -lvl 5 -y 1070
 preplace inst CPEN391_Computer.JTAG_To_HPS_Bridge.transacto -pg 1
 preplace inst CPEN391_Computer.JTAG_To_HPS_Bridge.clk_rst -pg 1
@@ -93,25 +94,25 @@ preplace inst CPEN391_Computer.LEDS -pg 1 -lvl 5 -y 970
 preplace inst CPEN391_Computer.JTAG_To_HPS_Bridge.p2b -pg 1
 preplace inst CPEN391_Computer.ARM_A9_HPS.dma -pg 1
 preplace inst CPEN391_Computer.ARM_A9_HPS.dcan0 -pg 1
-preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)CPEN391_Computer.hps_io,(SLAVE)ARM_A9_HPS.hps_io) 1 0 3 NJ 770 NJ 770 NJ
-preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)CPEN391_Computer.hex2_3,(SLAVE)HEX2_3.external_connection) 1 0 5 NJ 160 NJ 160 NJ 160 NJ 160 NJ
+preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)CPEN391_Computer.slider_switches,(SLAVE)Slider_Switches.external_connection) 1 0 5 NJ 1480 NJ 1480 NJ 1480 NJ 1480 NJ
+preplace netloc POINT_TO_POINT<net_container>CPEN391_Computer</net_container>(SLAVE)JTAG_UART_for_ARM_1.irq,(MASTER)ARM_A9_HPS.f2h_irq1) 1 3 2 NJ 750 1320
 preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)CPEN391_Computer.hex0_1,(SLAVE)HEX0_1.external_connection) 1 0 5 NJ 60 NJ 60 NJ 60 NJ 60 NJ
-preplace netloc POINT_TO_POINT<net_container>CPEN391_Computer</net_container>(MASTER)ARM_A9_HPS.f2h_irq1,(SLAVE)JTAG_UART_for_ARM_1.irq) 1 3 2 1060 800 NJ
-preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)CPEN391_Computer.io,(SLAVE)IO_Bridge.external_interface) 1 0 5 NJ 480 NJ 480 NJ 480 NJ 480 NJ
-preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)CPEN391_Computer.hex4_5,(SLAVE)HEX4_5.external_connection) 1 0 5 NJ 260 NJ 260 NJ 260 NJ 260 NJ
-preplace netloc INTERCONNECT<net_container>CPEN391_Computer</net_container>(SLAVE)aes_encrypt_0.reset,(SLAVE)Interval_Timer.reset,(SLAVE)PushButtons.reset,(SLAVE)JTAG_UART_for_ARM_0.reset,(SLAVE)JTAG_UART_for_ARM_1.reset,(SLAVE)aes_decrypt_0.reset,(SLAVE)IO_Bridge.reset,(SLAVE)JTAG_To_FPGA_Bridge.clk_reset,(SLAVE)Onchip_SRAM.reset1,(SLAVE)HEX0_1.reset,(SLAVE)Slider_Switches.reset,(MASTER)ARM_A9_HPS.h2f_reset,(SLAVE)SDRAM.reset,(SLAVE)LCD_0.reset,(SLAVE)LEDS.reset,(SLAVE)SysID.reset,(MASTER)System_PLL.reset_source,(SLAVE)HEX4_5.reset,(SLAVE)bit_flipper_0.reset,(SLAVE)JTAG_To_HPS_Bridge.clk_reset,(SLAVE)HEX2_3.reset) 1 1 4 410 1040 NJ 1040 1020 1120 1400
-preplace netloc INTERCONNECT<net_container>CPEN391_Computer</net_container>(SLAVE)Onchip_SRAM.s1,(SLAVE)IO_Bridge.avalon_slave,(SLAVE)aes_decrypt_0.slave,(MASTER)JTAG_To_FPGA_Bridge.master,(SLAVE)Interval_Timer.s1,(SLAVE)PushButtons.s1,(SLAVE)LCD_0.s1,(SLAVE)HEX2_3.s1,(SLAVE)JTAG_UART_for_ARM_0.avalon_jtag_slave,(SLAVE)Slider_Switches.s1,(SLAVE)JTAG_UART_for_ARM_1.avalon_jtag_slave,(MASTER)ARM_A9_HPS.h2f_axi_master,(SLAVE)HEX4_5.s1,(SLAVE)SysID.control_slave,(SLAVE)SDRAM.s1,(SLAVE)aes_encrypt_0.slave,(MASTER)ARM_A9_HPS.h2f_lw_axi_master,(SLAVE)bit_flipper_0.avalon_slave_0,(SLAVE)HEX0_1.s1,(SLAVE)LEDS.s1) 1 3 2 1080 750 1340
-preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)CPEN391_Computer.system_pll_ref_clk,(SLAVE)System_PLL.ref_clk) 1 0 1 NJ
-preplace netloc FAN_OUT<net_container>CPEN391_Computer</net_container>(MASTER)System_PLL.sys_clk,(SLAVE)SDRAM.clk,(SLAVE)HEX0_1.clk,(SLAVE)aes_decrypt_0.clock,(SLAVE)SysID.clk,(SLAVE)bit_flipper_0.clock,(SLAVE)HEX2_3.clk,(SLAVE)HEX4_5.clk,(SLAVE)JTAG_To_FPGA_Bridge.clk,(SLAVE)aes_encrypt_0.clock,(SLAVE)Slider_Switches.clk,(SLAVE)JTAG_UART_for_ARM_1.clk,(SLAVE)JTAG_To_HPS_Bridge.clk,(SLAVE)Interval_Timer.clk,(SLAVE)ARM_A9_HPS.h2f_axi_clock,(SLAVE)ARM_A9_HPS.h2f_lw_axi_clock,(SLAVE)IO_Bridge.clk,(SLAVE)Onchip_SRAM.clk1,(SLAVE)ARM_A9_HPS.f2h_axi_clock,(SLAVE)LEDS.clk,(SLAVE)PushButtons.clk,(SLAVE)LCD_0.clk,(SLAVE)JTAG_UART_for_ARM_0.clk) 1 1 4 390 920 650 880 1040 900 1320
-preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)CPEN391_Computer.system_pll_ref_reset,(SLAVE)System_PLL.ref_reset) 1 0 1 NJ
-preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)Slider_Switches.external_connection,(SLAVE)CPEN391_Computer.slider_switches) 1 0 5 NJ 1480 NJ 1480 NJ 1480 NJ 1480 NJ
-preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(MASTER)System_PLL.sdram_clk,(MASTER)CPEN391_Computer.sdram_clk) 1 1 5 NJ 1260 NJ 1260 NJ 1260 NJ 1260 NJ
+preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)System_PLL.ref_clk,(SLAVE)CPEN391_Computer.system_pll_ref_clk) 1 0 1 NJ
+preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)HEX2_3.external_connection,(SLAVE)CPEN391_Computer.hex2_3) 1 0 5 NJ 160 NJ 160 NJ 160 NJ 160 NJ
+preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)IO_Bridge.external_interface,(SLAVE)CPEN391_Computer.io) 1 0 5 NJ 590 NJ 590 NJ 590 NJ 590 NJ
+preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)System_PLL.ref_reset,(SLAVE)CPEN391_Computer.system_pll_ref_reset) 1 0 1 NJ
+preplace netloc INTERCONNECT<net_container>CPEN391_Computer</net_container>(SLAVE)JTAG_To_FPGA_Bridge.clk_reset,(SLAVE)HEX4_5.reset,(SLAVE)PushButtons.reset,(SLAVE)LEDS.reset,(SLAVE)Onchip_SRAM.reset1,(MASTER)System_PLL.reset_source,(SLAVE)SDRAM.reset,(SLAVE)Slider_Switches.reset,(MASTER)ARM_A9_HPS.h2f_reset,(SLAVE)JTAG_To_HPS_Bridge.clk_reset,(SLAVE)HEX2_3.reset,(SLAVE)aes_encrypt_0.reset,(SLAVE)HEX0_1.reset,(SLAVE)aes_decrypt_0.reset,(SLAVE)Interval_Timer.reset,(SLAVE)JTAG_UART_for_ARM_1.reset,(SLAVE)IO_Bridge.reset,(SLAVE)spi_0.reset,(SLAVE)SysID.reset,(SLAVE)bit_flipper_0.reset,(SLAVE)JTAG_UART_for_ARM_0.reset,(SLAVE)LCD_0.reset) 1 1 4 410 920 NJ 920 1000 1040 1420
+preplace netloc FAN_OUT<net_container>CPEN391_Computer</net_container>(SLAVE)PushButtons.irq,(MASTER)ARM_A9_HPS.f2h_irq0,(SLAVE)IO_Bridge.interrupt,(SLAVE)JTAG_UART_for_ARM_0.irq,(SLAVE)Interval_Timer.irq) 1 3 2 1040 610 1340
+preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(MASTER)CPEN391_Computer.sdram_clk,(MASTER)System_PLL.sdram_clk) 1 1 5 NJ 1260 NJ 1260 NJ 1260 NJ 1260 NJ
+preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)PushButtons.external_connection,(SLAVE)CPEN391_Computer.pushbuttons) 1 0 5 NJ 880 NJ 880 NJ 900 NJ 900 NJ
+preplace netloc INTERCONNECT<net_container>CPEN391_Computer</net_container>(SLAVE)HEX0_1.s1,(SLAVE)SysID.control_slave,(SLAVE)SDRAM.s1,(SLAVE)aes_encrypt_0.slave,(SLAVE)LEDS.s1,(SLAVE)JTAG_UART_for_ARM_0.avalon_jtag_slave,(SLAVE)IO_Bridge.avalon_slave,(SLAVE)LCD_0.s1,(SLAVE)spi_0.spi_control_port,(SLAVE)PushButtons.s1,(SLAVE)bit_flipper_0.avalon_slave_0,(MASTER)ARM_A9_HPS.h2f_axi_master,(SLAVE)Interval_Timer.s1,(SLAVE)HEX4_5.s1,(SLAVE)JTAG_UART_for_ARM_1.avalon_jtag_slave,(SLAVE)HEX2_3.s1,(SLAVE)Slider_Switches.s1,(MASTER)ARM_A9_HPS.h2f_lw_axi_master,(SLAVE)Onchip_SRAM.s1,(MASTER)JTAG_To_FPGA_Bridge.master,(SLAVE)aes_decrypt_0.slave) 1 3 2 1060 630 1360
 preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)LEDS.external_connection,(SLAVE)CPEN391_Computer.leds) 1 0 5 NJ 1100 NJ 1100 NJ 1100 NJ 1100 NJ
 preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)LCD_0.external_connection,(SLAVE)CPEN391_Computer.lcd) 1 0 5 NJ 360 NJ 360 NJ 360 NJ 360 NJ
-preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)CPEN391_Computer.pushbuttons,(SLAVE)PushButtons.external_connection) 1 0 5 NJ 900 NJ 900 NJ 900 NJ 920 NJ
+preplace netloc FAN_OUT<net_container>CPEN391_Computer</net_container>(SLAVE)PushButtons.clk,(SLAVE)HEX2_3.clk,(SLAVE)LEDS.clk,(SLAVE)HEX0_1.clk,(SLAVE)spi_0.clk,(SLAVE)IO_Bridge.clk,(SLAVE)JTAG_To_HPS_Bridge.clk,(SLAVE)JTAG_UART_for_ARM_1.clk,(SLAVE)ARM_A9_HPS.f2h_axi_clock,(SLAVE)bit_flipper_0.clock,(SLAVE)Interval_Timer.clk,(SLAVE)ARM_A9_HPS.h2f_lw_axi_clock,(SLAVE)LCD_0.clk,(SLAVE)SDRAM.clk,(SLAVE)Slider_Switches.clk,(SLAVE)SysID.clk,(SLAVE)Onchip_SRAM.clk1,(SLAVE)aes_decrypt_0.clock,(SLAVE)ARM_A9_HPS.h2f_axi_clock,(SLAVE)JTAG_To_FPGA_Bridge.clk,(SLAVE)HEX4_5.clk,(SLAVE)aes_encrypt_0.clock,(SLAVE)JTAG_UART_for_ARM_0.clk,(MASTER)System_PLL.sys_clk) 1 1 4 390 900 670 880 1020 920 1400
 preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)CPEN391_Computer.memory,(SLAVE)ARM_A9_HPS.memory) 1 0 3 NJ 830 NJ 830 NJ
-preplace netloc POINT_TO_POINT<net_container>CPEN391_Computer</net_container>(SLAVE)ARM_A9_HPS.f2h_axi_slave,(MASTER)JTAG_To_HPS_Bridge.master) 1 2 1 670
-preplace netloc FAN_OUT<net_container>CPEN391_Computer</net_container>(SLAVE)IO_Bridge.interrupt,(MASTER)ARM_A9_HPS.f2h_irq0,(SLAVE)Interval_Timer.irq,(SLAVE)PushButtons.irq,(SLAVE)JTAG_UART_for_ARM_0.irq) 1 3 2 N 730 1380
+preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)HEX4_5.external_connection,(SLAVE)CPEN391_Computer.hex4_5) 1 0 5 NJ 220 NJ 220 NJ 220 NJ 220 NJ
+preplace netloc POINT_TO_POINT<net_container>CPEN391_Computer</net_container>(SLAVE)ARM_A9_HPS.f2h_axi_slave,(MASTER)JTAG_To_HPS_Bridge.master) 1 2 1 690
 preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)SDRAM.wire,(SLAVE)CPEN391_Computer.sdram) 1 0 5 NJ 1140 NJ 1140 NJ 1140 NJ 1140 NJ
+preplace netloc EXPORT<net_container>CPEN391_Computer</net_container>(SLAVE)ARM_A9_HPS.hps_io,(SLAVE)CPEN391_Computer.hps_io) 1 0 3 NJ 770 NJ 770 NJ
 levelinfo -pg 1 0 140 1720
 levelinfo -hier CPEN391_Computer 150 230 490 810 1160 1480 1630

@@ -5,11 +5,11 @@
  version="1.0"
  fabric="QSYS">
  <!-- Format version 15.0 145 (Future versions may contain additional information.) -->
- <!-- 2021.04.11.13:26:23 -->
+ <!-- 2021.04.11.16:11:11 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1618172782</value>
+  <value>1618182670</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -16727,6 +16727,13 @@ parameters are a RESULT of the module parameters. -->
     <slaveName>irq</slaveName>
     <name>Interval_Timer.irq</name>
     <interruptNumber>0</interruptNumber>
+   </interrupt>
+   <interrupt>
+    <isBridge>false</isBridge>
+    <moduleName>spi_0</moduleName>
+    <slaveName>irq</slaveName>
+    <name>spi_0.irq</name>
+    <interruptNumber>3</interruptNumber>
    </interrupt>
   </interface>
   <interface name="f2h_irq1" kind="interrupt_receiver" version="15.0">
@@ -47100,6 +47107,13 @@ parameters are a RESULT of the module parameters. -->
     <slaveName>irq</slaveName>
     <name>Interval_Timer.irq</name>
     <interruptNumber>0</interruptNumber>
+   </interrupt>
+   <interrupt>
+    <isBridge>false</isBridge>
+    <moduleName>spi_0</moduleName>
+    <slaveName>irq</slaveName>
+    <name>spi_0.irq</name>
+    <interruptNumber>3</interruptNumber>
    </interrupt>
   </interface>
   <interface
@@ -85498,7 +85512,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1618172782</value>
+   <value>1618182670</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -85518,7 +85532,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1618172782</value>
+   <value>1618182670</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -85534,7 +85548,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1618172782</value>
+   <value>1618182670</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -101389,6 +101403,41 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>irq</endConnectionPoint>
  </connection>
  <connection
+   name="ARM_A9_HPS_arm_gic_0.f2h_irq_0_irq_rx_offset_40/spi_0.irq"
+   kind="interrupt"
+   version="15.0"
+   start="ARM_A9_HPS_arm_gic_0.f2h_irq_0_irq_rx_offset_40"
+   end="spi_0.irq">
+  <parameter name="irqNumber">
+   <type>int</type>
+   <value>3</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>ARM_A9_HPS_arm_gic_0</startModule>
+  <startConnectionPoint>f2h_irq_0_irq_rx_offset_40</startConnectionPoint>
+  <endModule>spi_0</endModule>
+  <endConnectionPoint>irq</endConnectionPoint>
+ </connection>
+ <connection
    name="ARM_A9_HPS_arm_gic_0.f2h_irq_32_irq_rx_offset_72/JTAG_UART_for_ARM_1.irq"
    kind="interrupt"
    version="15.0"
@@ -102976,7 +103025,7 @@ parameters are a RESULT of the module parameters. -->
   <version>15.0</version>
  </plugin>
  <plugin>
-  <instanceCount>37</instanceCount>
+  <instanceCount>38</instanceCount>
   <name>interrupt</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IConnection</subtype>
