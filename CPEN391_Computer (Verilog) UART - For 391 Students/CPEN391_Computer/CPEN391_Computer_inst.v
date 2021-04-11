@@ -66,7 +66,6 @@
 		.io_rw                           (<connected-to-io_rw>),                           //                     .rw
 		.io_write_data                   (<connected-to-io_write_data>),                   //                     .write_data
 		.io_read_data                    (<connected-to-io_read_data>),                    //                     .read_data
-		.lcd_export                      (<connected-to-lcd_export>),                      //                  lcd.export
 		.leds_export                     (<connected-to-leds_export>),                     //                 leds.export
 		.memory_mem_a                    (<connected-to-memory_mem_a>),                    //               memory.mem_a
 		.memory_mem_ba                   (<connected-to-memory_mem_ba>),                   //                     .mem_ba

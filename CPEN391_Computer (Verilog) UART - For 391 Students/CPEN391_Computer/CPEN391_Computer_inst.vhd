@@ -67,7 +67,6 @@
 			io_rw                           : out   std_logic;                                        -- rw
 			io_write_data                   : out   std_logic_vector(15 downto 0);                    -- write_data
 			io_read_data                    : in    std_logic_vector(15 downto 0) := (others => 'X'); -- read_data
-			lcd_export                      : inout std_logic_vector(15 downto 0) := (others => 'X'); -- export
 			leds_export                     : out   std_logic_vector(9 downto 0);                     -- export
 			memory_mem_a                    : out   std_logic_vector(14 downto 0);                    -- mem_a
 			memory_mem_ba                   : out   std_logic_vector(2 downto 0);                     -- mem_ba
@@ -171,7 +170,6 @@
 			io_rw                           => CONNECTED_TO_io_rw,                           --                     .rw
 			io_write_data                   => CONNECTED_TO_io_write_data,                   --                     .write_data
 			io_read_data                    => CONNECTED_TO_io_read_data,                    --                     .read_data
-			lcd_export                      => CONNECTED_TO_lcd_export,                      --                  lcd.export
 			leds_export                     => CONNECTED_TO_leds_export,                     --                 leds.export
 			memory_mem_a                    => CONNECTED_TO_memory_mem_a,                    --               memory.mem_a
 			memory_mem_ba                   => CONNECTED_TO_memory_mem_ba,                   --                     .mem_ba

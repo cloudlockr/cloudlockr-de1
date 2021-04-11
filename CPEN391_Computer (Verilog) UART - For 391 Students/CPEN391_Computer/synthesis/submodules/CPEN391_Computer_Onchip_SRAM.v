@@ -29,6 +29,7 @@ module CPEN391_Computer_Onchip_SRAM (
                                        clk,
                                        clken,
                                        clken2,
+                                       freeze,
                                        reset,
                                        reset_req,
                                        write,
@@ -56,6 +57,7 @@ module CPEN391_Computer_Onchip_SRAM (
   input            clk;
   input            clken;
   input            clken2;
+  input            freeze;
   input            reset;
   input            reset_req;
   input            write;
@@ -63,13 +65,14 @@ module CPEN391_Computer_Onchip_SRAM (
   input   [ 31: 0] writedata;
   input   [ 31: 0] writedata2;
 
-  wire             clocken0;
-  wire             not_clken;
-  wire             not_clken2;
-  wire    [ 31: 0] readdata;
-  wire    [ 31: 0] readdata2;
-  wire             wren;
-  wire             wren2;
+
+wire             clocken0;
+wire             not_clken;
+wire             not_clken2;
+wire    [ 31: 0] readdata;
+wire    [ 31: 0] readdata2;
+wire             wren;
+wire             wren2;
   assign wren = chipselect & write & clken;
   assign not_clken = ~clken;
   assign not_clken2 = ~clken2;

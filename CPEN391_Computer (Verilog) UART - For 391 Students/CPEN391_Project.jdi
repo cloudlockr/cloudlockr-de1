@@ -1,6 +1,6 @@
 <sld_project_info>
   <project>
-    <hash md5_digest_80b="63de22edad7cd21a753b"/>
+    <hash md5_digest_80b="6bc0365f55df0f06a084"/>
   </project>
   <file_info>
     <file device="5CSEMA5F31C6" path="CPEN391_Project.sof" usercode="0xFFFFFFFF"/>
@@ -173,8 +173,8 @@
         <assignment name="send_width" type="dec" value="3"/>
         <assignment name="receive_width" type="dec" value="24"/>
         <assignment name="num_clocks" type="dec" value="0"/>
-        <assignment name="settings" type="string" value="{fabric sld dir agent mfr_code 110 type_code 128 version 1 instance -1 ir_width 1 prefer_host { } psig f63706bb}"/>
-        <assignment name=" constraint(settings)" type="string" value="1 to 112"/>
+        <assignment name="settings" type="string" value="{fabric sld dir agent mfr_code 110 type_code 128 version 1 instance -1 ir_width 1 bridge_agent 0 prefer_host { } psig 9b67919e}"/>
+        <assignment name=" constraint(settings)" type="string" value="1 to 127"/>
         <assignment name=" constraint(send)" type="string" value="2 downto 0"/>
         <assignment name=" constraint(receive)" type="string" value="23 downto 0"/>
       </parameters>
@@ -187,15 +187,15 @@
         <assignment name="send_width" type="dec" value="3"/>
         <assignment name="receive_width" type="dec" value="24"/>
         <assignment name="num_clocks" type="dec" value="0"/>
-        <assignment name="settings" type="string" value="{fabric sld dir agent mfr_code 110 type_code 128 version 1 instance -1 ir_width 1 prefer_host { } psig f63706bb}"/>
-        <assignment name=" constraint(settings)" type="string" value="1 to 112"/>
+        <assignment name="settings" type="string" value="{fabric sld dir agent mfr_code 110 type_code 128 version 1 instance -1 ir_width 1 bridge_agent 0 prefer_host { } psig 9b67919e}"/>
+        <assignment name=" constraint(settings)" type="string" value="1 to 127"/>
         <assignment name=" constraint(send)" type="string" value="2 downto 0"/>
         <assignment name=" constraint(receive)" type="string" value="23 downto 0"/>
       </parameters>
     </sld_info>
     <sld_info hpath="CPEN391_Computer:u0" name="u0">
       <assignment_values>
-        <assignment_value text="QSYS_NAME CPEN391_Computer HAS_SOPCINFO 1 GENERATION_ID 1617390970"/>
+        <assignment_value text="QSYS_NAME CPEN391_Computer HAS_SOPCINFO 1 GENERATION_ID 1618179365"/>
       </assignment_values>
       <parameters/>
     </sld_info>

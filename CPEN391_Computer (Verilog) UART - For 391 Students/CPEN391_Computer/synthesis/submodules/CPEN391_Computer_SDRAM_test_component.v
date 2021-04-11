@@ -40,9 +40,10 @@ module CPEN391_Computer_SDRAM_test_component_ram_module (
   input            wrclock;
   input            wren;
 
-  reg     [ 15: 0] mem_array [33554431: 0];
-  wire    [ 15: 0] q;
-  reg     [ 24: 0] read_address;
+
+reg     [ 15: 0] mem_array [33554431: 0];
+wire    [ 15: 0] q;
+reg     [ 24: 0] read_address;
 
 //synthesis translate_off
 //////////////// SIMULATION-ONLY CONTENTS
@@ -138,38 +139,39 @@ module CPEN391_Computer_SDRAM_test_component (
   input            zs_ras_n;
   input            zs_we_n;
 
-  wire    [ 23: 0] CODE;
-  wire    [ 12: 0] a;
-  wire    [  9: 0] addr_col;
-  reg     [ 14: 0] addr_crb;
-  wire    [  1: 0] ba;
-  wire             cas_n;
-  wire             cke;
-  wire    [  2: 0] cmd_code;
-  wire             cs_n;
-  wire    [  1: 0] dqm;
-  wire    [  2: 0] index;
-  reg     [  2: 0] latency;
-  wire    [  1: 0] mask;
-  wire    [ 15: 0] mem_bytes;
-  wire             ras_n;
-  reg     [ 24: 0] rd_addr_pipe_0;
-  reg     [ 24: 0] rd_addr_pipe_1;
-  reg     [ 24: 0] rd_addr_pipe_2;
-  reg     [  1: 0] rd_mask_pipe_0;
-  reg     [  1: 0] rd_mask_pipe_1;
-  reg     [  1: 0] rd_mask_pipe_2;
-  reg     [  2: 0] rd_valid_pipe;
-  wire    [ 24: 0] read_addr;
-  wire    [ 15: 0] read_data;
-  wire    [  1: 0] read_mask;
-  wire    [ 15: 0] read_temp;
-  wire             read_valid;
-  wire    [ 15: 0] rmw_temp;
-  wire    [ 24: 0] test_addr;
-  wire    [ 23: 0] txt_code;
-  wire             we_n;
-  wire    [ 15: 0] zs_dq;
+
+wire    [ 23: 0] CODE;
+wire    [ 12: 0] a;
+wire    [  9: 0] addr_col;
+reg     [ 14: 0] addr_crb;
+wire    [  1: 0] ba;
+wire             cas_n;
+wire             cke;
+wire    [  2: 0] cmd_code;
+wire             cs_n;
+wire    [  1: 0] dqm;
+wire    [  2: 0] index;
+reg     [  2: 0] latency;
+wire    [  1: 0] mask;
+wire    [ 15: 0] mem_bytes;
+wire             ras_n;
+reg     [ 24: 0] rd_addr_pipe_0;
+reg     [ 24: 0] rd_addr_pipe_1;
+reg     [ 24: 0] rd_addr_pipe_2;
+reg     [  1: 0] rd_mask_pipe_0;
+reg     [  1: 0] rd_mask_pipe_1;
+reg     [  1: 0] rd_mask_pipe_2;
+reg     [  2: 0] rd_valid_pipe;
+wire    [ 24: 0] read_addr;
+wire    [ 15: 0] read_data;
+wire    [  1: 0] read_mask;
+wire    [ 15: 0] read_temp;
+wire             read_valid;
+wire    [ 15: 0] rmw_temp;
+wire    [ 24: 0] test_addr;
+wire    [ 23: 0] txt_code;
+wire             we_n;
+wire    [ 15: 0] zs_dq;
 initial
   begin
     $write("\n");

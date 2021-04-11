@@ -67,7 +67,6 @@ module CPEN391_Computer (
 	io_rw,
 	io_write_data,
 	io_read_data,
-	lcd_export,
 	leds_export,
 	memory_mem_a,
 	memory_mem_ba,
@@ -167,7 +166,6 @@ module CPEN391_Computer (
 	output		io_rw;
 	output	[15:0]	io_write_data;
 	input	[15:0]	io_read_data;
-	inout	[15:0]	lcd_export;
 	output	[9:0]	leds_export;
 	output	[14:0]	memory_mem_a;
 	output	[2:0]	memory_mem_ba;

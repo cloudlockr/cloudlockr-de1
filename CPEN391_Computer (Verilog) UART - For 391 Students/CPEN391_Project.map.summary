@@ -1,17 +1,17 @@
-Analysis & Synthesis Status : Successful - Sat Apr 03 03:22:55 2021
-Quartus II 64-Bit Version : 15.0.0 Build 145 04/22/2015 SJ Web Edition
+Analysis & Synthesis Status : Successful - Sun Apr 11 15:45:38 2021
+Quartus Prime Version : 16.1.0 Build 196 10/24/2016 SJ Lite Edition
 Revision Name : CPEN391_Project
 Top-level Entity Name : MyComputer_Verilog
 Family : Cyclone V
 Logic utilization (in ALMs) : N/A
-Total registers : 11905
+Total registers : 11041
 Total pins : 338
 Total virtual pins : 0
-Total block memory bits : 3,184,448
+Total block memory bits : 37,184
 Total DSP Blocks : 0
 Total HSSI RX PCSs : 0
 Total HSSI PMA RX Deserializers : 0
 Total HSSI TX PCSs : 0
 Total HSSI PMA TX Serializers : 0
-Total PLLs : 2
+Total PLLs : 1
 Total DLLs : 1

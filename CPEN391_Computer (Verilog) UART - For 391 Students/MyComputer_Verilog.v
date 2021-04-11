@@ -249,7 +249,7 @@ module MyComputer_Verilog (
 			.io_read_data    						(IO_Read_Data_WIRE),
 
 			// 2x24 LCD Display Connections to 16 bit PIO port
-			.lcd_export								(LCD_WIRE),
+			//.lcd_export								(LCD_WIRE),
 
 			
 			// Red LED connections
@@ -329,7 +329,7 @@ module MyComputer_Verilog (
 	  // Instantiate an instance of the graphics and video controller circuit drawn as a schematic
 	  ///////////////////////////////////////////////////////////////////////////////////////////////
 			
-		Graphics_and_Video_Controller		GraphicsController1 ( 
+		/* Graphics_and_Video_Controller		GraphicsController1 ( 
 				.Reset_L							(RESET_L_WIRE),
 				.Clock_50Mhz 					(CLOCK_50),
 				.Address 						(IO_Address_WIRE),
@@ -349,7 +349,7 @@ module MyComputer_Verilog (
 				.VGA_VSync						(VGA_VS),
 				.VGA_Blanking 					(VGA_BLANK_N),
 				.VGA_SYNC						(VGA_SYNC_N)
-		 );
+		 ); */
 		
 	
 		///////////////////////////////////////////////////////////////////////////////////////////////
@@ -378,16 +378,16 @@ module MyComputer_Verilog (
 				 .RS232_TxData					(GPIO_1[15]),
 				 
 				 
-				 .GPS_RxData 					(GPIO_1[28]),
-				 .GPS_TxData 					(GPIO_1[26]),
+				 //.GPS_RxData 					(GPIO_1[28]),
+				 //.GPS_TxData 					(GPIO_1[26]),
 
 				 //.BlueTooth_RxData 			(GPIO_1[32]),
 				 //.BlueTooth_TxData 			(GPIO_1[34]),
 				 .BlueTooth_RxData 			(GPIO_1[18]),
 				 .BlueTooth_TxData 			(GPIO_1[19]),				
 				 
-				 .TouchScreen_RxData 		(GPIO_0[11]),
-				 .TouchScreen_TxData 		(GPIO_0[10])
+				 //.TouchScreen_RxData 		(GPIO_0[11]),
+				 //.TouchScreen_TxData 		(GPIO_0[10])
 		);
 		
 		// Map 16 bit memory upper and lower data byte strobes to individual wires
@@ -406,7 +406,7 @@ module MyComputer_Verilog (
 		// wire the LCD wires to the GPIO Header pins
 		// data bits 0 - 7
 		
-		assign GPIO_1[0] = LCD_WIRE[0] ;
+		/* assign GPIO_1[0] = LCD_WIRE[0] ;
 		assign GPIO_1[1] = LCD_WIRE[1] ;
 		assign GPIO_1[2] = LCD_WIRE[2] ;
 		assign GPIO_1[3] = LCD_WIRE[3] ;
@@ -420,7 +420,7 @@ module MyComputer_Verilog (
 		assign GPIO_1[13] = LCD_WIRE[9] ;			// LCD_EN
 		//assign GPIO_1[15] = LCD_WIRE[10] ;			// LCD_RW
 		// Change LCD_WIRE[10] to GPIO_1[29] so that WIFI signal works. But, LCD will not work.
-		assign GPIO_1[29] = LCD_WIRE[10] ;			// LCD_RW
+		assign GPIO_1[29] = LCD_WIRE[10] ;			// LCD_RW */
 		
 		// connect contrast pin on 24x2 LCD display to ground	
 		//assign GPIO_1[10] = 1'b0;								
