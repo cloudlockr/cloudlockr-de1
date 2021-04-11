@@ -59,15 +59,6 @@
 			hps_io_hps_io_gpio_inst_GPIO53  : inout std_logic                     := 'X';             -- hps_io_gpio_inst_GPIO53
 			hps_io_hps_io_gpio_inst_GPIO54  : inout std_logic                     := 'X';             -- hps_io_gpio_inst_GPIO54
 			hps_io_hps_io_gpio_inst_GPIO61  : inout std_logic                     := 'X';             -- hps_io_gpio_inst_GPIO61
-			io_acknowledge                  : in    std_logic                     := 'X';             -- acknowledge
-			io_irq                          : in    std_logic                     := 'X';             -- irq
-			io_address                      : out   std_logic_vector(15 downto 0);                    -- address
-			io_bus_enable                   : out   std_logic;                                        -- bus_enable
-			io_byte_enable                  : out   std_logic_vector(1 downto 0);                     -- byte_enable
-			io_rw                           : out   std_logic;                                        -- rw
-			io_write_data                   : out   std_logic_vector(15 downto 0);                    -- write_data
-			io_read_data                    : in    std_logic_vector(15 downto 0) := (others => 'X'); -- read_data
-			lcd_export                      : inout std_logic_vector(15 downto 0) := (others => 'X'); -- export
 			leds_export                     : out   std_logic_vector(9 downto 0);                     -- export
 			memory_mem_a                    : out   std_logic_vector(14 downto 0);                    -- mem_a
 			memory_mem_ba                   : out   std_logic_vector(2 downto 0);                     -- mem_ba
@@ -86,6 +77,17 @@
 			memory_mem_dm                   : out   std_logic_vector(3 downto 0);                     -- mem_dm
 			memory_oct_rzqin                : in    std_logic                     := 'X';             -- oct_rzqin
 			pushbuttons_export              : in    std_logic_vector(3 downto 0)  := (others => 'X'); -- export
+			rs232_modem_cts_n               : in    std_logic                     := 'X';             -- cts_n
+			rs232_modem_rts_n               : out   std_logic;                                        -- rts_n
+			rs232_modem_dsr_n               : in    std_logic                     := 'X';             -- dsr_n
+			rs232_modem_dcd_n               : in    std_logic                     := 'X';             -- dcd_n
+			rs232_modem_ri_n                : in    std_logic                     := 'X';             -- ri_n
+			rs232_modem_dtr_n               : out   std_logic;                                        -- dtr_n
+			rs232_modem_out1_n              : out   std_logic;                                        -- out1_n
+			rs232_modem_out2_n              : out   std_logic;                                        -- out2_n
+			rs232_serial_sin                : in    std_logic                     := 'X';             -- sin
+			rs232_serial_sout               : out   std_logic;                                        -- sout
+			rs232_serial_sout_oe            : out   std_logic;                                        -- sout_oe
 			sdram_addr                      : out   std_logic_vector(12 downto 0);                    -- addr
 			sdram_ba                        : out   std_logic_vector(1 downto 0);                     -- ba
 			sdram_cas_n                     : out   std_logic;                                        -- cas_n
@@ -98,7 +100,8 @@
 			sdram_clk_clk                   : out   std_logic;                                        -- clk
 			slider_switches_export          : in    std_logic_vector(9 downto 0)  := (others => 'X'); -- export
 			system_pll_ref_clk_clk          : in    std_logic                     := 'X';             -- clk
-			system_pll_ref_reset_reset      : in    std_logic                     := 'X'              -- reset
+			system_pll_ref_reset_reset      : in    std_logic                     := 'X';             -- reset
+			wifi_rst_n_export               : out   std_logic                                         -- export
 		);
 	end component CPEN391_Computer;
 

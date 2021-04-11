@@ -10,7 +10,8 @@
    <inputclock preferredWidth="149" />
   </columns>
  </systemtable>
- <library expandedCategories="Project,Library" />
+ <library
+   expandedCategories="Library/Interface Protocols/Serial,Library/Interface Protocols,Project,Library/University Program/Audio &amp; Video,Library/University Program,Library/Processors and Peripherals/Peripherals,Library,Library/Processors and Peripherals" />
  <window width="1936" height="1176" x="-8" y="-8" />
  <generation synthesis="VERILOG" path="_PROJECT_NAME_" simulation="NONE" />
 </preferences>

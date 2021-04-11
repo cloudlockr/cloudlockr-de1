@@ -121,7 +121,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -307,6 +307,14 @@
          type = "boolean";
       }
    }
+   element a_16550_uart_0
+   {
+      datum _sortIndex
+      {
+         value = "22";
+         type = "int";
+      }
+   }
    element aes_decrypt_0
    {
       datum _sortIndex
@@ -332,8 +340,16 @@
       }
       datum sopceditor_expanded
       {
-         value = "1";
+         value = "0";
          type = "boolean";
+      }
+   }
+   element wifi_rst_n
+   {
+      datum _sortIndex
+      {
+         value = "21";
+         type = "int";
       }
    }
 }
@@ -373,16 +389,8 @@
    type="conduit"
    dir="end" />
  <interface name="hps_io" internal="ARM_A9_HPS.hps_io" type="conduit" dir="end" />
- <interface
-   name="io"
-   internal="IO_Bridge.external_interface"
-   type="conduit"
-   dir="end" />
- <interface
-   name="lcd"
-   internal="LCD_0.external_connection"
-   type="conduit"
-   dir="end" />
+ <interface name="io" internal="IO_Bridge.external_interface" />
+ <interface name="lcd" internal="LCD_0.external_connection" />
  <interface
    name="leds"
    internal="LEDS.external_connection"
@@ -392,6 +400,16 @@
  <interface
    name="pushbuttons"
    internal="PushButtons.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="rs232_modem"
+   internal="a_16550_uart_0.RS_232_Modem"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="rs232_serial"
+   internal="a_16550_uart_0.RS_232_Serial"
    type="conduit"
    dir="end" />
  <interface name="sdram" internal="SDRAM.wire" type="conduit" dir="end" />
@@ -414,6 +432,11 @@
    name="system_pll_ref_reset"
    internal="System_PLL.ref_reset"
    type="reset"
+   dir="end" />
+ <interface
+   name="wifi_rst_n"
+   internal="wifi_rst_n.external_connection"
+   type="conduit"
    dir="end" />
  <module name="ARM_A9_HPS" kind="altera_hps" version="15.0" enabled="1">
   <parameter name="ABSTRACT_REAL_COMPARE_TEST" value="false" />
@@ -987,7 +1010,7 @@
    name="IO_Bridge"
    kind="altera_up_avalon_to_external_bus_bridge"
    version="15.0"
-   enabled="1">
+   enabled="0">
   <parameter name="AUTO_CLK_CLOCK_RATE" value="50000000" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="addr_size" value="64" />
@@ -1076,7 +1099,7 @@
   <parameter name="writeBufferDepth" value="64" />
   <parameter name="writeIRQThreshold" value="8" />
  </module>
- <module name="LCD_0" kind="altera_avalon_pio" version="15.0" enabled="1">
+ <module name="LCD_0" kind="altera_avalon_pio" version="15.0" enabled="0">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="false" />
@@ -1221,9 +1244,37 @@
   <parameter name="gui_refclk" value="50.0" />
   <parameter name="other_boards" value="None" />
  </module>
+ <module
+   name="a_16550_uart_0"
+   kind="altera_16550_uart"
+   version="15.0"
+   enabled="1">
+  <parameter name="DMA_EXTRA" value="0" />
+  <parameter name="FAMILY" value="Cyclone V" />
+  <parameter name="FIFO_DEPTH" value="128" />
+  <parameter name="FIFO_HWFC" value="1" />
+  <parameter name="FIFO_MODE" value="1" />
+  <parameter name="FIFO_SWFC" value="0" />
+  <parameter name="FIFO_WATERMARK" value="0" />
+  <parameter name="clockRate" value="50000000" />
+ </module>
  <module name="aes_decrypt_0" kind="aes_decrypt" version="1.0" enabled="1" />
  <module name="aes_encrypt_0" kind="aes_encrypt" version="1.0" enabled="1" />
  <module name="bit_flipper_0" kind="bit_flipper" version="1.0" enabled="1" />
+ <module name="wifi_rst_n" kind="altera_avalon_pio" version="15.0" enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="direction" value="Output" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="1" />
+ </module>
  <connection
    kind="avalon"
    version="15.0"
@@ -1265,6 +1316,15 @@
    version="15.0"
    start="ARM_A9_HPS.h2f_lw_axi_master"
    end="IO_Bridge.avalon_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00010000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_lw_axi_master"
+   end="a_16550_uart_0.avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00010000" />
   <parameter name="defaultConnection" value="false" />
@@ -1363,6 +1423,15 @@
    kind="avalon"
    version="15.0"
    start="ARM_A9_HPS.h2f_lw_axi_master"
+   end="wifi_rst_n.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0060" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_lw_axi_master"
    end="aes_encrypt_0.slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x3000" />
@@ -1382,6 +1451,15 @@
    version="15.0"
    start="JTAG_To_FPGA_Bridge.master"
    end="IO_Bridge.avalon_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0xff210000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="15.0"
+   start="JTAG_To_FPGA_Bridge.master"
+   end="a_16550_uart_0.avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0xff210000" />
   <parameter name="defaultConnection" value="false" />
@@ -1507,6 +1585,15 @@
    kind="avalon"
    version="15.0"
    start="JTAG_To_FPGA_Bridge.master"
+   end="wifi_rst_n.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0xff200060" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="15.0"
+   start="JTAG_To_FPGA_Bridge.master"
    end="aes_encrypt_0.slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0xff203000" />
@@ -1596,6 +1683,11 @@
    kind="clock"
    version="15.0"
    start="System_PLL.sys_clk"
+   end="wifi_rst_n.clk" />
+ <connection
+   kind="clock"
+   version="15.0"
+   start="System_PLL.sys_clk"
    end="Onchip_SRAM.clk1" />
  <connection
    kind="clock"
@@ -1612,6 +1704,11 @@
    version="15.0"
    start="System_PLL.sys_clk"
    end="aes_decrypt_0.clock" />
+ <connection
+   kind="clock"
+   version="15.0"
+   start="System_PLL.sys_clk"
+   end="a_16550_uart_0.clock" />
  <connection
    kind="clock"
    version="15.0"
@@ -1654,6 +1751,13 @@
    start="ARM_A9_HPS.f2h_irq0"
    end="Interval_Timer.irq">
   <parameter name="irqNumber" value="0" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="15.0"
+   start="ARM_A9_HPS.f2h_irq0"
+   end="a_16550_uart_0.irq_sender">
+  <parameter name="irqNumber" value="3" />
  </connection>
  <connection
    kind="interrupt"
@@ -1756,7 +1860,17 @@
    kind="reset"
    version="15.0"
    start="ARM_A9_HPS.h2f_reset"
+   end="wifi_rst_n.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_reset"
    end="Onchip_SRAM.reset1" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_reset"
+   end="a_16550_uart_0.reset_sink" />
  <connection
    kind="reset"
    version="15.0"
@@ -1851,7 +1965,17 @@
    kind="reset"
    version="15.0"
    start="System_PLL.reset_source"
+   end="wifi_rst_n.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="System_PLL.reset_source"
    end="Onchip_SRAM.reset1" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="System_PLL.reset_source"
+   end="a_16550_uart_0.reset_sink" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

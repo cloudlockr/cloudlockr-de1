@@ -58,15 +58,6 @@
 		.hps_io_hps_io_gpio_inst_GPIO53  (<connected-to-hps_io_hps_io_gpio_inst_GPIO53>),  //                     .hps_io_gpio_inst_GPIO53
 		.hps_io_hps_io_gpio_inst_GPIO54  (<connected-to-hps_io_hps_io_gpio_inst_GPIO54>),  //                     .hps_io_gpio_inst_GPIO54
 		.hps_io_hps_io_gpio_inst_GPIO61  (<connected-to-hps_io_hps_io_gpio_inst_GPIO61>),  //                     .hps_io_gpio_inst_GPIO61
-		.io_acknowledge                  (<connected-to-io_acknowledge>),                  //                   io.acknowledge
-		.io_irq                          (<connected-to-io_irq>),                          //                     .irq
-		.io_address                      (<connected-to-io_address>),                      //                     .address
-		.io_bus_enable                   (<connected-to-io_bus_enable>),                   //                     .bus_enable
-		.io_byte_enable                  (<connected-to-io_byte_enable>),                  //                     .byte_enable
-		.io_rw                           (<connected-to-io_rw>),                           //                     .rw
-		.io_write_data                   (<connected-to-io_write_data>),                   //                     .write_data
-		.io_read_data                    (<connected-to-io_read_data>),                    //                     .read_data
-		.lcd_export                      (<connected-to-lcd_export>),                      //                  lcd.export
 		.leds_export                     (<connected-to-leds_export>),                     //                 leds.export
 		.memory_mem_a                    (<connected-to-memory_mem_a>),                    //               memory.mem_a
 		.memory_mem_ba                   (<connected-to-memory_mem_ba>),                   //                     .mem_ba
@@ -97,6 +88,18 @@
 		.sdram_clk_clk                   (<connected-to-sdram_clk_clk>),                   //            sdram_clk.clk
 		.slider_switches_export          (<connected-to-slider_switches_export>),          //      slider_switches.export
 		.system_pll_ref_clk_clk          (<connected-to-system_pll_ref_clk_clk>),          //   system_pll_ref_clk.clk
-		.system_pll_ref_reset_reset      (<connected-to-system_pll_ref_reset_reset>)       // system_pll_ref_reset.reset
+		.system_pll_ref_reset_reset      (<connected-to-system_pll_ref_reset_reset>),      // system_pll_ref_reset.reset
+		.wifi_rst_n_export               (<connected-to-wifi_rst_n_export>),               //           wifi_rst_n.export
+		.rs232_serial_sin                (<connected-to-rs232_serial_sin>),                //         rs232_serial.sin
+		.rs232_serial_sout               (<connected-to-rs232_serial_sout>),               //                     .sout
+		.rs232_serial_sout_oe            (<connected-to-rs232_serial_sout_oe>),            //                     .sout_oe
+		.rs232_modem_cts_n               (<connected-to-rs232_modem_cts_n>),               //          rs232_modem.cts_n
+		.rs232_modem_rts_n               (<connected-to-rs232_modem_rts_n>),               //                     .rts_n
+		.rs232_modem_dsr_n               (<connected-to-rs232_modem_dsr_n>),               //                     .dsr_n
+		.rs232_modem_dcd_n               (<connected-to-rs232_modem_dcd_n>),               //                     .dcd_n
+		.rs232_modem_ri_n                (<connected-to-rs232_modem_ri_n>),                //                     .ri_n
+		.rs232_modem_dtr_n               (<connected-to-rs232_modem_dtr_n>),               //                     .dtr_n
+		.rs232_modem_out1_n              (<connected-to-rs232_modem_out1_n>),              //                     .out1_n
+		.rs232_modem_out2_n              (<connected-to-rs232_modem_out2_n>)               //                     .out2_n
 	);
 

@@ -63,15 +63,6 @@ module CPEN391_Computer (
 		inout  wire        hps_io_hps_io_gpio_inst_GPIO53,  //                     .hps_io_gpio_inst_GPIO53
 		inout  wire        hps_io_hps_io_gpio_inst_GPIO54,  //                     .hps_io_gpio_inst_GPIO54
 		inout  wire        hps_io_hps_io_gpio_inst_GPIO61,  //                     .hps_io_gpio_inst_GPIO61
-		input  wire        io_acknowledge,                  //                   io.acknowledge
-		input  wire        io_irq,                          //                     .irq
-		output wire [15:0] io_address,                      //                     .address
-		output wire        io_bus_enable,                   //                     .bus_enable
-		output wire [1:0]  io_byte_enable,                  //                     .byte_enable
-		output wire        io_rw,                           //                     .rw
-		output wire [15:0] io_write_data,                   //                     .write_data
-		input  wire [15:0] io_read_data,                    //                     .read_data
-		inout  wire [15:0] lcd_export,                      //                  lcd.export
 		output wire [9:0]  leds_export,                     //                 leds.export
 		output wire [14:0] memory_mem_a,                    //               memory.mem_a
 		output wire [2:0]  memory_mem_ba,                   //                     .mem_ba
@@ -90,6 +81,17 @@ module CPEN391_Computer (
 		output wire [3:0]  memory_mem_dm,                   //                     .mem_dm
 		input  wire        memory_oct_rzqin,                //                     .oct_rzqin
 		input  wire [3:0]  pushbuttons_export,              //          pushbuttons.export
+		input  wire        rs232_modem_cts_n,               //          rs232_modem.cts_n
+		output wire        rs232_modem_rts_n,               //                     .rts_n
+		input  wire        rs232_modem_dsr_n,               //                     .dsr_n
+		input  wire        rs232_modem_dcd_n,               //                     .dcd_n
+		input  wire        rs232_modem_ri_n,                //                     .ri_n
+		output wire        rs232_modem_dtr_n,               //                     .dtr_n
+		output wire        rs232_modem_out1_n,              //                     .out1_n
+		output wire        rs232_modem_out2_n,              //                     .out2_n
+		input  wire        rs232_serial_sin,                //         rs232_serial.sin
+		output wire        rs232_serial_sout,               //                     .sout
+		output wire        rs232_serial_sout_oe,            //                     .sout_oe
 		output wire [12:0] sdram_addr,                      //                sdram.addr
 		output wire [1:0]  sdram_ba,                        //                     .ba
 		output wire        sdram_cas_n,                     //                     .cas_n
@@ -102,10 +104,11 @@ module CPEN391_Computer (
 		output wire        sdram_clk_clk,                   //            sdram_clk.clk
 		input  wire [9:0]  slider_switches_export,          //      slider_switches.export
 		input  wire        system_pll_ref_clk_clk,          //   system_pll_ref_clk.clk
-		input  wire        system_pll_ref_reset_reset       // system_pll_ref_reset.reset
+		input  wire        system_pll_ref_reset_reset,      // system_pll_ref_reset.reset
+		output wire        wifi_rst_n_export                //           wifi_rst_n.export
 	);
 
-	wire         system_pll_sys_clk_clk;                                              // System_PLL:sys_clk_clk -> [ARM_A9_HPS:f2h_axi_clk, ARM_A9_HPS:h2f_axi_clk, ARM_A9_HPS:h2f_lw_axi_clk, HEX0_1:clk, HEX2_3:clk, HEX4_5:clk, IO_Bridge:clk, Interval_Timer:clk, JTAG_To_FPGA_Bridge:clk_clk, JTAG_To_HPS_Bridge:clk_clk, JTAG_UART_for_ARM_0:clk, JTAG_UART_for_ARM_1:clk, LCD_0:clk, LEDS:clk, Onchip_SRAM:clk, PushButtons:clk, SDRAM:clk, Slider_Switches:clk, SysID:clock, aes_decrypt_0:clk, aes_encrypt_0:clk, bit_flipper_0:clock, mm_interconnect_0:System_PLL_sys_clk_clk, mm_interconnect_1:System_PLL_sys_clk_clk, rst_controller:clk, rst_controller_003:clk]
+	wire         system_pll_sys_clk_clk;                                              // System_PLL:sys_clk_clk -> [ARM_A9_HPS:f2h_axi_clk, ARM_A9_HPS:h2f_axi_clk, ARM_A9_HPS:h2f_lw_axi_clk, HEX0_1:clk, HEX2_3:clk, HEX4_5:clk, Interval_Timer:clk, JTAG_To_FPGA_Bridge:clk_clk, JTAG_To_HPS_Bridge:clk_clk, JTAG_UART_for_ARM_0:clk, JTAG_UART_for_ARM_1:clk, LEDS:clk, Onchip_SRAM:clk, PushButtons:clk, SDRAM:clk, Slider_Switches:clk, SysID:clock, a_16550_uart_0:clk, aes_decrypt_0:clk, aes_encrypt_0:clk, bit_flipper_0:clock, mm_interconnect_0:System_PLL_sys_clk_clk, mm_interconnect_1:System_PLL_sys_clk_clk, rst_controller:clk, rst_controller_003:clk, wifi_rst_n:clk]
 	wire   [1:0] arm_a9_hps_h2f_axi_master_awburst;                                   // ARM_A9_HPS:h2f_AWBURST -> mm_interconnect_0:ARM_A9_HPS_h2f_axi_master_awburst
 	wire   [3:0] arm_a9_hps_h2f_axi_master_arlen;                                     // ARM_A9_HPS:h2f_ARLEN -> mm_interconnect_0:ARM_A9_HPS_h2f_axi_master_arlen
 	wire   [7:0] arm_a9_hps_h2f_axi_master_wstrb;                                     // ARM_A9_HPS:h2f_WSTRB -> mm_interconnect_0:ARM_A9_HPS_h2f_axi_master_wstrb
@@ -202,14 +205,11 @@ module CPEN391_Computer (
 	wire         mm_interconnect_0_onchip_sram_s1_write;                              // mm_interconnect_0:Onchip_SRAM_s1_write -> Onchip_SRAM:write
 	wire  [31:0] mm_interconnect_0_onchip_sram_s1_writedata;                          // mm_interconnect_0:Onchip_SRAM_s1_writedata -> Onchip_SRAM:writedata
 	wire         mm_interconnect_0_onchip_sram_s1_clken;                              // mm_interconnect_0:Onchip_SRAM_s1_clken -> Onchip_SRAM:clken
-	wire         mm_interconnect_0_io_bridge_avalon_slave_chipselect;                 // mm_interconnect_0:IO_Bridge_avalon_slave_chipselect -> IO_Bridge:avalon_chipselect
-	wire  [15:0] mm_interconnect_0_io_bridge_avalon_slave_readdata;                   // IO_Bridge:avalon_readdata -> mm_interconnect_0:IO_Bridge_avalon_slave_readdata
-	wire         mm_interconnect_0_io_bridge_avalon_slave_waitrequest;                // IO_Bridge:avalon_waitrequest -> mm_interconnect_0:IO_Bridge_avalon_slave_waitrequest
-	wire  [14:0] mm_interconnect_0_io_bridge_avalon_slave_address;                    // mm_interconnect_0:IO_Bridge_avalon_slave_address -> IO_Bridge:avalon_address
-	wire         mm_interconnect_0_io_bridge_avalon_slave_read;                       // mm_interconnect_0:IO_Bridge_avalon_slave_read -> IO_Bridge:avalon_read
-	wire   [1:0] mm_interconnect_0_io_bridge_avalon_slave_byteenable;                 // mm_interconnect_0:IO_Bridge_avalon_slave_byteenable -> IO_Bridge:avalon_byteenable
-	wire         mm_interconnect_0_io_bridge_avalon_slave_write;                      // mm_interconnect_0:IO_Bridge_avalon_slave_write -> IO_Bridge:avalon_write
-	wire  [15:0] mm_interconnect_0_io_bridge_avalon_slave_writedata;                  // mm_interconnect_0:IO_Bridge_avalon_slave_writedata -> IO_Bridge:avalon_writedata
+	wire  [31:0] mm_interconnect_0_a_16550_uart_0_avalon_slave_readdata;              // a_16550_uart_0:readdata -> mm_interconnect_0:a_16550_uart_0_avalon_slave_readdata
+	wire   [8:0] mm_interconnect_0_a_16550_uart_0_avalon_slave_address;               // mm_interconnect_0:a_16550_uart_0_avalon_slave_address -> a_16550_uart_0:addr
+	wire         mm_interconnect_0_a_16550_uart_0_avalon_slave_read;                  // mm_interconnect_0:a_16550_uart_0_avalon_slave_read -> a_16550_uart_0:read
+	wire         mm_interconnect_0_a_16550_uart_0_avalon_slave_write;                 // mm_interconnect_0:a_16550_uart_0_avalon_slave_write -> a_16550_uart_0:write
+	wire  [31:0] mm_interconnect_0_a_16550_uart_0_avalon_slave_writedata;             // mm_interconnect_0:a_16550_uart_0_avalon_slave_writedata -> a_16550_uart_0:writedata
 	wire  [31:0] mm_interconnect_0_bit_flipper_0_avalon_slave_0_readdata;             // bit_flipper_0:dataOut -> mm_interconnect_0:bit_flipper_0_avalon_slave_0_readdata
 	wire   [1:0] mm_interconnect_0_bit_flipper_0_avalon_slave_0_address;              // mm_interconnect_0:bit_flipper_0_avalon_slave_0_address -> bit_flipper_0:addr
 	wire         mm_interconnect_0_bit_flipper_0_avalon_slave_0_read;                 // mm_interconnect_0:bit_flipper_0_avalon_slave_0_read -> bit_flipper_0:rd_en
@@ -249,11 +249,11 @@ module CPEN391_Computer (
 	wire   [2:0] mm_interconnect_0_interval_timer_s1_address;                         // mm_interconnect_0:Interval_Timer_s1_address -> Interval_Timer:address
 	wire         mm_interconnect_0_interval_timer_s1_write;                           // mm_interconnect_0:Interval_Timer_s1_write -> Interval_Timer:write_n
 	wire  [15:0] mm_interconnect_0_interval_timer_s1_writedata;                       // mm_interconnect_0:Interval_Timer_s1_writedata -> Interval_Timer:writedata
-	wire         mm_interconnect_0_lcd_0_s1_chipselect;                               // mm_interconnect_0:LCD_0_s1_chipselect -> LCD_0:chipselect
-	wire  [31:0] mm_interconnect_0_lcd_0_s1_readdata;                                 // LCD_0:readdata -> mm_interconnect_0:LCD_0_s1_readdata
-	wire   [1:0] mm_interconnect_0_lcd_0_s1_address;                                  // mm_interconnect_0:LCD_0_s1_address -> LCD_0:address
-	wire         mm_interconnect_0_lcd_0_s1_write;                                    // mm_interconnect_0:LCD_0_s1_write -> LCD_0:write_n
-	wire  [31:0] mm_interconnect_0_lcd_0_s1_writedata;                                // mm_interconnect_0:LCD_0_s1_writedata -> LCD_0:writedata
+	wire         mm_interconnect_0_wifi_rst_n_s1_chipselect;                          // mm_interconnect_0:wifi_rst_n_s1_chipselect -> wifi_rst_n:chipselect
+	wire  [31:0] mm_interconnect_0_wifi_rst_n_s1_readdata;                            // wifi_rst_n:readdata -> mm_interconnect_0:wifi_rst_n_s1_readdata
+	wire   [1:0] mm_interconnect_0_wifi_rst_n_s1_address;                             // mm_interconnect_0:wifi_rst_n_s1_address -> wifi_rst_n:address
+	wire         mm_interconnect_0_wifi_rst_n_s1_write;                               // mm_interconnect_0:wifi_rst_n_s1_write -> wifi_rst_n:write_n
+	wire  [31:0] mm_interconnect_0_wifi_rst_n_s1_writedata;                           // mm_interconnect_0:wifi_rst_n_s1_writedata -> wifi_rst_n:writedata
 	wire  [31:0] mm_interconnect_0_aes_encrypt_0_slave_readdata;                      // aes_encrypt_0:slave_readdata -> mm_interconnect_0:aes_encrypt_0_slave_readdata
 	wire         mm_interconnect_0_aes_encrypt_0_slave_waitrequest;                   // aes_encrypt_0:slave_waitrequest -> mm_interconnect_0:aes_encrypt_0_slave_waitrequest
 	wire   [3:0] mm_interconnect_0_aes_encrypt_0_slave_address;                       // mm_interconnect_0:aes_encrypt_0_slave_address -> aes_encrypt_0:slave_address
@@ -326,14 +326,14 @@ module CPEN391_Computer (
 	wire         mm_interconnect_1_arm_a9_hps_f2h_axi_slave_awvalid;                  // mm_interconnect_1:ARM_A9_HPS_f2h_axi_slave_awvalid -> ARM_A9_HPS:f2h_AWVALID
 	wire   [4:0] mm_interconnect_1_arm_a9_hps_f2h_axi_slave_aruser;                   // mm_interconnect_1:ARM_A9_HPS_f2h_axi_slave_aruser -> ARM_A9_HPS:f2h_ARUSER
 	wire         mm_interconnect_1_arm_a9_hps_f2h_axi_slave_rvalid;                   // ARM_A9_HPS:f2h_RVALID -> mm_interconnect_1:ARM_A9_HPS_f2h_axi_slave_rvalid
-	wire         irq_mapper_receiver0_irq;                                            // IO_Bridge:avalon_irq -> irq_mapper:receiver0_irq
-	wire         irq_mapper_receiver1_irq;                                            // PushButtons:irq -> irq_mapper:receiver1_irq
-	wire         irq_mapper_receiver2_irq;                                            // JTAG_UART_for_ARM_0:av_irq -> irq_mapper:receiver2_irq
-	wire         irq_mapper_receiver3_irq;                                            // Interval_Timer:irq -> irq_mapper:receiver3_irq
+	wire         irq_mapper_receiver0_irq;                                            // PushButtons:irq -> irq_mapper:receiver0_irq
+	wire         irq_mapper_receiver1_irq;                                            // JTAG_UART_for_ARM_0:av_irq -> irq_mapper:receiver1_irq
+	wire         irq_mapper_receiver2_irq;                                            // Interval_Timer:irq -> irq_mapper:receiver2_irq
+	wire         irq_mapper_receiver3_irq;                                            // a_16550_uart_0:intr -> irq_mapper:receiver3_irq
 	wire  [31:0] arm_a9_hps_f2h_irq0_irq;                                             // irq_mapper:sender_irq -> ARM_A9_HPS:f2h_irq_p0
 	wire         irq_mapper_001_receiver0_irq;                                        // JTAG_UART_for_ARM_1:av_irq -> irq_mapper_001:receiver0_irq
 	wire  [31:0] arm_a9_hps_f2h_irq1_irq;                                             // irq_mapper_001:sender_irq -> ARM_A9_HPS:f2h_irq_p1
-	wire         rst_controller_reset_out_reset;                                      // rst_controller:reset_out -> [HEX0_1:reset_n, HEX2_3:reset_n, HEX4_5:reset_n, IO_Bridge:reset, Interval_Timer:reset_n, JTAG_UART_for_ARM_0:rst_n, JTAG_UART_for_ARM_1:rst_n, LCD_0:reset_n, LEDS:reset_n, Onchip_SRAM:reset, PushButtons:reset_n, SDRAM:reset_n, Slider_Switches:reset_n, SysID:reset_n, aes_decrypt_0:rst_n, aes_encrypt_0:rst_n, bit_flipper_0:reset_n, mm_interconnect_0:JTAG_To_FPGA_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:SDRAM_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_master_translator_reset_reset_bridge_in_reset_reset, rst_translator:in_reset]
+	wire         rst_controller_reset_out_reset;                                      // rst_controller:reset_out -> [HEX0_1:reset_n, HEX2_3:reset_n, HEX4_5:reset_n, Interval_Timer:reset_n, JTAG_UART_for_ARM_0:rst_n, JTAG_UART_for_ARM_1:rst_n, LEDS:reset_n, Onchip_SRAM:reset, PushButtons:reset_n, SDRAM:reset_n, Slider_Switches:reset_n, SysID:reset_n, a_16550_uart_0:rst_n, aes_decrypt_0:rst_n, aes_encrypt_0:rst_n, bit_flipper_0:reset_n, mm_interconnect_0:JTAG_To_FPGA_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:SDRAM_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_master_translator_reset_reset_bridge_in_reset_reset, rst_translator:in_reset, wifi_rst_n:reset_n]
 	wire         rst_controller_reset_out_reset_req;                                  // rst_controller:reset_req -> [Onchip_SRAM:reset_req, rst_translator:reset_req_in]
 	wire         arm_a9_hps_h2f_reset_reset;                                          // ARM_A9_HPS:h2f_rst_n -> [rst_controller:reset_in0, rst_controller_001:reset_in0, rst_controller_002:reset_in0, rst_controller_003:reset_in0]
 	wire         system_pll_reset_source_reset;                                       // System_PLL:reset_source_reset -> [rst_controller:reset_in1, rst_controller_001:reset_in1, rst_controller_002:reset_in1]
@@ -568,28 +568,6 @@ module CPEN391_Computer (
 		.out_port   (hex4_5_export)                           // external_connection.export
 	);
 
-	CPEN391_Computer_IO_Bridge io_bridge (
-		.clk                (system_pll_sys_clk_clk),                               //                clk.clk
-		.reset              (rst_controller_reset_out_reset),                       //              reset.reset
-		.avalon_address     (mm_interconnect_0_io_bridge_avalon_slave_address),     //       avalon_slave.address
-		.avalon_byteenable  (mm_interconnect_0_io_bridge_avalon_slave_byteenable),  //                   .byteenable
-		.avalon_chipselect  (mm_interconnect_0_io_bridge_avalon_slave_chipselect),  //                   .chipselect
-		.avalon_read        (mm_interconnect_0_io_bridge_avalon_slave_read),        //                   .read
-		.avalon_write       (mm_interconnect_0_io_bridge_avalon_slave_write),       //                   .write
-		.avalon_writedata   (mm_interconnect_0_io_bridge_avalon_slave_writedata),   //                   .writedata
-		.avalon_readdata    (mm_interconnect_0_io_bridge_avalon_slave_readdata),    //                   .readdata
-		.avalon_waitrequest (mm_interconnect_0_io_bridge_avalon_slave_waitrequest), //                   .waitrequest
-		.avalon_irq         (irq_mapper_receiver0_irq),                             //          interrupt.irq
-		.acknowledge        (io_acknowledge),                                       // external_interface.export
-		.irq                (io_irq),                                               //                   .export
-		.address            (io_address),                                           //                   .export
-		.bus_enable         (io_bus_enable),                                        //                   .export
-		.byte_enable        (io_byte_enable),                                       //                   .export
-		.rw                 (io_rw),                                                //                   .export
-		.write_data         (io_write_data),                                        //                   .export
-		.read_data          (io_read_data)                                          //                   .export
-	);
-
 	CPEN391_Computer_Interval_Timer interval_timer (
 		.clk        (system_pll_sys_clk_clk),                         //   clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),                // reset.reset_n
@@ -598,7 +576,7 @@ module CPEN391_Computer (
 		.readdata   (mm_interconnect_0_interval_timer_s1_readdata),   //      .readdata
 		.chipselect (mm_interconnect_0_interval_timer_s1_chipselect), //      .chipselect
 		.write_n    (~mm_interconnect_0_interval_timer_s1_write),     //      .write_n
-		.irq        (irq_mapper_receiver3_irq)                        //   irq.irq
+		.irq        (irq_mapper_receiver2_irq)                        //   irq.irq
 	);
 
 	CPEN391_Computer_JTAG_To_FPGA_Bridge #(
@@ -647,7 +625,7 @@ module CPEN391_Computer (
 		.av_write_n     (~mm_interconnect_0_jtag_uart_for_arm_0_avalon_jtag_slave_write),      //                  .write_n
 		.av_writedata   (mm_interconnect_0_jtag_uart_for_arm_0_avalon_jtag_slave_writedata),   //                  .writedata
 		.av_waitrequest (mm_interconnect_0_jtag_uart_for_arm_0_avalon_jtag_slave_waitrequest), //                  .waitrequest
-		.av_irq         (irq_mapper_receiver2_irq)                                             //               irq.irq
+		.av_irq         (irq_mapper_receiver1_irq)                                             //               irq.irq
 	);
 
 	CPEN391_Computer_JTAG_UART_for_ARM_0 jtag_uart_for_arm_1 (
@@ -661,17 +639,6 @@ module CPEN391_Computer (
 		.av_writedata   (mm_interconnect_0_jtag_uart_for_arm_1_avalon_jtag_slave_writedata),   //                  .writedata
 		.av_waitrequest (mm_interconnect_0_jtag_uart_for_arm_1_avalon_jtag_slave_waitrequest), //                  .waitrequest
 		.av_irq         (irq_mapper_001_receiver0_irq)                                         //               irq.irq
-	);
-
-	CPEN391_Computer_LCD_0 lcd_0 (
-		.clk        (system_pll_sys_clk_clk),                //                 clk.clk
-		.reset_n    (~rst_controller_reset_out_reset),       //               reset.reset_n
-		.address    (mm_interconnect_0_lcd_0_s1_address),    //                  s1.address
-		.write_n    (~mm_interconnect_0_lcd_0_s1_write),     //                    .write_n
-		.writedata  (mm_interconnect_0_lcd_0_s1_writedata),  //                    .writedata
-		.chipselect (mm_interconnect_0_lcd_0_s1_chipselect), //                    .chipselect
-		.readdata   (mm_interconnect_0_lcd_0_s1_readdata),   //                    .readdata
-		.bidir_port (lcd_export)                             // external_connection.export
 	);
 
 	CPEN391_Computer_LEDS leds (
@@ -714,7 +681,7 @@ module CPEN391_Computer (
 		.chipselect (mm_interconnect_0_pushbuttons_s1_chipselect), //                    .chipselect
 		.readdata   (mm_interconnect_0_pushbuttons_s1_readdata),   //                    .readdata
 		.in_port    (pushbuttons_export),                          // external_connection.export
-		.irq        (irq_mapper_receiver1_irq)                     //                 irq.irq
+		.irq        (irq_mapper_receiver0_irq)                     //                 irq.irq
 	);
 
 	CPEN391_Computer_SDRAM sdram (
@@ -763,6 +730,42 @@ module CPEN391_Computer (
 		.reset_source_reset (system_pll_reset_source_reset)  // reset_source.reset
 	);
 
+	altera_16550_uart #(
+		.FAMILY         ("Cyclone V"),
+		.FIFO_MODE      (1),
+		.FIFO_DEPTH     (128),
+		.FIFO_WATERMARK (0),
+		.FIFO_HWFC      (1),
+		.FIFO_SWFC      (0),
+		.DMA_EXTRA      (0)
+	) a_16550_uart_0 (
+		.addr            (mm_interconnect_0_a_16550_uart_0_avalon_slave_address),   //  avalon_slave.address
+		.write           (mm_interconnect_0_a_16550_uart_0_avalon_slave_write),     //              .write
+		.writedata       (mm_interconnect_0_a_16550_uart_0_avalon_slave_writedata), //              .writedata
+		.read            (mm_interconnect_0_a_16550_uart_0_avalon_slave_read),      //              .read
+		.readdata        (mm_interconnect_0_a_16550_uart_0_avalon_slave_readdata),  //              .readdata
+		.clk             (system_pll_sys_clk_clk),                                  //         clock.clk
+		.rst_n           (~rst_controller_reset_out_reset),                         //    reset_sink.reset_n
+		.intr            (irq_mapper_receiver3_irq),                                //    irq_sender.irq
+		.sin             (rs232_serial_sin),                                        // RS_232_Serial.sin
+		.sout            (rs232_serial_sout),                                       //              .sout
+		.sout_oe         (rs232_serial_sout_oe),                                    //              .sout_oe
+		.cts_n           (rs232_modem_cts_n),                                       //  RS_232_Modem.cts_n
+		.rts_n           (rs232_modem_rts_n),                                       //              .rts_n
+		.dsr_n           (rs232_modem_dsr_n),                                       //              .dsr_n
+		.dcd_n           (rs232_modem_dcd_n),                                       //              .dcd_n
+		.ri_n            (rs232_modem_ri_n),                                        //              .ri_n
+		.dtr_n           (rs232_modem_dtr_n),                                       //              .dtr_n
+		.out1_n          (rs232_modem_out1_n),                                      //              .out1_n
+		.out2_n          (rs232_modem_out2_n),                                      //              .out2_n
+		.dma_tx_ack_n    (1'b1),                                                    //   (terminated)
+		.dma_rx_ack_n    (1'b1),                                                    //   (terminated)
+		.dma_tx_req_n    (),                                                        //   (terminated)
+		.dma_rx_req_n    (),                                                        //   (terminated)
+		.dma_tx_single_n (),                                                        //   (terminated)
+		.dma_rx_single_n ()                                                         //   (terminated)
+	);
+
 	aes_decrypt aes_decrypt_0 (
 		.clk               (system_pll_sys_clk_clk),                            // clock.clk
 		.slave_waitrequest (mm_interconnect_0_aes_decrypt_0_slave_waitrequest), // slave.waitrequest
@@ -793,6 +796,17 @@ module CPEN391_Computer (
 		.dataOut (mm_interconnect_0_bit_flipper_0_avalon_slave_0_readdata),  //               .readdata
 		.dataIn  (mm_interconnect_0_bit_flipper_0_avalon_slave_0_writedata), //               .writedata
 		.clock   (system_pll_sys_clk_clk)                                    //          clock.clk
+	);
+
+	CPEN391_Computer_wifi_rst_n wifi_rst_n (
+		.clk        (system_pll_sys_clk_clk),                     //                 clk.clk
+		.reset_n    (~rst_controller_reset_out_reset),            //               reset.reset_n
+		.address    (mm_interconnect_0_wifi_rst_n_s1_address),    //                  s1.address
+		.write_n    (~mm_interconnect_0_wifi_rst_n_s1_write),     //                    .write_n
+		.writedata  (mm_interconnect_0_wifi_rst_n_s1_writedata),  //                    .writedata
+		.chipselect (mm_interconnect_0_wifi_rst_n_s1_chipselect), //                    .chipselect
+		.readdata   (mm_interconnect_0_wifi_rst_n_s1_readdata),   //                    .readdata
+		.out_port   (wifi_rst_n_export)                           // external_connection.export
 	);
 
 	CPEN391_Computer_mm_interconnect_0 mm_interconnect_0 (
@@ -880,6 +894,11 @@ module CPEN391_Computer (
 		.JTAG_To_FPGA_Bridge_master_readdatavalid                              (jtag_to_fpga_bridge_master_readdatavalid),                            //                                                                .readdatavalid
 		.JTAG_To_FPGA_Bridge_master_write                                      (jtag_to_fpga_bridge_master_write),                                    //                                                                .write
 		.JTAG_To_FPGA_Bridge_master_writedata                                  (jtag_to_fpga_bridge_master_writedata),                                //                                                                .writedata
+		.a_16550_uart_0_avalon_slave_address                                   (mm_interconnect_0_a_16550_uart_0_avalon_slave_address),               //                                     a_16550_uart_0_avalon_slave.address
+		.a_16550_uart_0_avalon_slave_write                                     (mm_interconnect_0_a_16550_uart_0_avalon_slave_write),                 //                                                                .write
+		.a_16550_uart_0_avalon_slave_read                                      (mm_interconnect_0_a_16550_uart_0_avalon_slave_read),                  //                                                                .read
+		.a_16550_uart_0_avalon_slave_readdata                                  (mm_interconnect_0_a_16550_uart_0_avalon_slave_readdata),              //                                                                .readdata
+		.a_16550_uart_0_avalon_slave_writedata                                 (mm_interconnect_0_a_16550_uart_0_avalon_slave_writedata),             //                                                                .writedata
 		.aes_decrypt_0_slave_address                                           (mm_interconnect_0_aes_decrypt_0_slave_address),                       //                                             aes_decrypt_0_slave.address
 		.aes_decrypt_0_slave_write                                             (mm_interconnect_0_aes_decrypt_0_slave_write),                         //                                                                .write
 		.aes_decrypt_0_slave_read                                              (mm_interconnect_0_aes_decrypt_0_slave_read),                          //                                                                .read
@@ -917,14 +936,6 @@ module CPEN391_Computer (
 		.Interval_Timer_s1_readdata                                            (mm_interconnect_0_interval_timer_s1_readdata),                        //                                                                .readdata
 		.Interval_Timer_s1_writedata                                           (mm_interconnect_0_interval_timer_s1_writedata),                       //                                                                .writedata
 		.Interval_Timer_s1_chipselect                                          (mm_interconnect_0_interval_timer_s1_chipselect),                      //                                                                .chipselect
-		.IO_Bridge_avalon_slave_address                                        (mm_interconnect_0_io_bridge_avalon_slave_address),                    //                                          IO_Bridge_avalon_slave.address
-		.IO_Bridge_avalon_slave_write                                          (mm_interconnect_0_io_bridge_avalon_slave_write),                      //                                                                .write
-		.IO_Bridge_avalon_slave_read                                           (mm_interconnect_0_io_bridge_avalon_slave_read),                       //                                                                .read
-		.IO_Bridge_avalon_slave_readdata                                       (mm_interconnect_0_io_bridge_avalon_slave_readdata),                   //                                                                .readdata
-		.IO_Bridge_avalon_slave_writedata                                      (mm_interconnect_0_io_bridge_avalon_slave_writedata),                  //                                                                .writedata
-		.IO_Bridge_avalon_slave_byteenable                                     (mm_interconnect_0_io_bridge_avalon_slave_byteenable),                 //                                                                .byteenable
-		.IO_Bridge_avalon_slave_waitrequest                                    (mm_interconnect_0_io_bridge_avalon_slave_waitrequest),                //                                                                .waitrequest
-		.IO_Bridge_avalon_slave_chipselect                                     (mm_interconnect_0_io_bridge_avalon_slave_chipselect),                 //                                                                .chipselect
 		.JTAG_UART_for_ARM_0_avalon_jtag_slave_address                         (mm_interconnect_0_jtag_uart_for_arm_0_avalon_jtag_slave_address),     //                           JTAG_UART_for_ARM_0_avalon_jtag_slave.address
 		.JTAG_UART_for_ARM_0_avalon_jtag_slave_write                           (mm_interconnect_0_jtag_uart_for_arm_0_avalon_jtag_slave_write),       //                                                                .write
 		.JTAG_UART_for_ARM_0_avalon_jtag_slave_read                            (mm_interconnect_0_jtag_uart_for_arm_0_avalon_jtag_slave_read),        //                                                                .read
@@ -939,11 +950,6 @@ module CPEN391_Computer (
 		.JTAG_UART_for_ARM_1_avalon_jtag_slave_writedata                       (mm_interconnect_0_jtag_uart_for_arm_1_avalon_jtag_slave_writedata),   //                                                                .writedata
 		.JTAG_UART_for_ARM_1_avalon_jtag_slave_waitrequest                     (mm_interconnect_0_jtag_uart_for_arm_1_avalon_jtag_slave_waitrequest), //                                                                .waitrequest
 		.JTAG_UART_for_ARM_1_avalon_jtag_slave_chipselect                      (mm_interconnect_0_jtag_uart_for_arm_1_avalon_jtag_slave_chipselect),  //                                                                .chipselect
-		.LCD_0_s1_address                                                      (mm_interconnect_0_lcd_0_s1_address),                                  //                                                        LCD_0_s1.address
-		.LCD_0_s1_write                                                        (mm_interconnect_0_lcd_0_s1_write),                                    //                                                                .write
-		.LCD_0_s1_readdata                                                     (mm_interconnect_0_lcd_0_s1_readdata),                                 //                                                                .readdata
-		.LCD_0_s1_writedata                                                    (mm_interconnect_0_lcd_0_s1_writedata),                                //                                                                .writedata
-		.LCD_0_s1_chipselect                                                   (mm_interconnect_0_lcd_0_s1_chipselect),                               //                                                                .chipselect
 		.LEDS_s1_address                                                       (mm_interconnect_0_leds_s1_address),                                   //                                                         LEDS_s1.address
 		.LEDS_s1_write                                                         (mm_interconnect_0_leds_s1_write),                                     //                                                                .write
 		.LEDS_s1_readdata                                                      (mm_interconnect_0_leds_s1_readdata),                                  //                                                                .readdata
@@ -973,7 +979,12 @@ module CPEN391_Computer (
 		.Slider_Switches_s1_address                                            (mm_interconnect_0_slider_switches_s1_address),                        //                                              Slider_Switches_s1.address
 		.Slider_Switches_s1_readdata                                           (mm_interconnect_0_slider_switches_s1_readdata),                       //                                                                .readdata
 		.SysID_control_slave_address                                           (mm_interconnect_0_sysid_control_slave_address),                       //                                             SysID_control_slave.address
-		.SysID_control_slave_readdata                                          (mm_interconnect_0_sysid_control_slave_readdata)                       //                                                                .readdata
+		.SysID_control_slave_readdata                                          (mm_interconnect_0_sysid_control_slave_readdata),                      //                                                                .readdata
+		.wifi_rst_n_s1_address                                                 (mm_interconnect_0_wifi_rst_n_s1_address),                             //                                                   wifi_rst_n_s1.address
+		.wifi_rst_n_s1_write                                                   (mm_interconnect_0_wifi_rst_n_s1_write),                               //                                                                .write
+		.wifi_rst_n_s1_readdata                                                (mm_interconnect_0_wifi_rst_n_s1_readdata),                            //                                                                .readdata
+		.wifi_rst_n_s1_writedata                                               (mm_interconnect_0_wifi_rst_n_s1_writedata),                           //                                                                .writedata
+		.wifi_rst_n_s1_chipselect                                              (mm_interconnect_0_wifi_rst_n_s1_chipselect)                           //                                                                .chipselect
 	);
 
 	CPEN391_Computer_mm_interconnect_1 mm_interconnect_1 (

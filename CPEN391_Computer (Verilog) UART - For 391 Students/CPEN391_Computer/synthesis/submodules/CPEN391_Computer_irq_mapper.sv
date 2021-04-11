@@ -22,7 +22,7 @@
 // Parameters
 //   NUM_RCVRS        : 4
 //   SENDER_IRW_WIDTH : 32
-//   IRQ_MAP          : 0:2,1:1,2:8,3:0
+//   IRQ_MAP          : 0:1,1:8,2:0,3:3
 //
 // -------------------------------------------------------
 
@@ -54,10 +54,10 @@ module CPEN391_Computer_irq_mapper
     always @* begin
 	sender_irq = 0;
 
-        sender_irq[2] = receiver0_irq;
-        sender_irq[1] = receiver1_irq;
-        sender_irq[8] = receiver2_irq;
-        sender_irq[0] = receiver3_irq;
+        sender_irq[1] = receiver0_irq;
+        sender_irq[8] = receiver1_irq;
+        sender_irq[0] = receiver2_irq;
+        sender_irq[3] = receiver3_irq;
     end
 
 endmodule

@@ -59,15 +59,6 @@ module CPEN391_Computer (
 	hps_io_hps_io_gpio_inst_GPIO53,
 	hps_io_hps_io_gpio_inst_GPIO54,
 	hps_io_hps_io_gpio_inst_GPIO61,
-	io_acknowledge,
-	io_irq,
-	io_address,
-	io_bus_enable,
-	io_byte_enable,
-	io_rw,
-	io_write_data,
-	io_read_data,
-	lcd_export,
 	leds_export,
 	memory_mem_a,
 	memory_mem_ba,
@@ -98,7 +89,19 @@ module CPEN391_Computer (
 	sdram_clk_clk,
 	slider_switches_export,
 	system_pll_ref_clk_clk,
-	system_pll_ref_reset_reset);	
+	system_pll_ref_reset_reset,
+	wifi_rst_n_export,
+	rs232_serial_sin,
+	rs232_serial_sout,
+	rs232_serial_sout_oe,
+	rs232_modem_cts_n,
+	rs232_modem_rts_n,
+	rs232_modem_dsr_n,
+	rs232_modem_dcd_n,
+	rs232_modem_ri_n,
+	rs232_modem_dtr_n,
+	rs232_modem_out1_n,
+	rs232_modem_out2_n);	
 
 	output	[7:0]	hex0_1_export;
 	output	[7:0]	hex2_3_export;
@@ -159,15 +162,6 @@ module CPEN391_Computer (
 	inout		hps_io_hps_io_gpio_inst_GPIO53;
 	inout		hps_io_hps_io_gpio_inst_GPIO54;
 	inout		hps_io_hps_io_gpio_inst_GPIO61;
-	input		io_acknowledge;
-	input		io_irq;
-	output	[15:0]	io_address;
-	output		io_bus_enable;
-	output	[1:0]	io_byte_enable;
-	output		io_rw;
-	output	[15:0]	io_write_data;
-	input	[15:0]	io_read_data;
-	inout	[15:0]	lcd_export;
 	output	[9:0]	leds_export;
 	output	[14:0]	memory_mem_a;
 	output	[2:0]	memory_mem_ba;
@@ -199,4 +193,16 @@ module CPEN391_Computer (
 	input	[9:0]	slider_switches_export;
 	input		system_pll_ref_clk_clk;
 	input		system_pll_ref_reset_reset;
+	output		wifi_rst_n_export;
+	input		rs232_serial_sin;
+	output		rs232_serial_sout;
+	output		rs232_serial_sout_oe;
+	input		rs232_modem_cts_n;
+	output		rs232_modem_rts_n;
+	input		rs232_modem_dsr_n;
+	input		rs232_modem_dcd_n;
+	input		rs232_modem_ri_n;
+	output		rs232_modem_dtr_n;
+	output		rs232_modem_out1_n;
+	output		rs232_modem_out2_n;
 endmodule
