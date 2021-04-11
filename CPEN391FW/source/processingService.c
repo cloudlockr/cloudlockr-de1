@@ -367,7 +367,7 @@ void download(char *file_id, char *encryption_component, char *location)
     // Generate encryption key and then encrypt file data
     // int total_packets = get_file_metadata(file_id);
     int total_packets = get_file_metadata(file_id);
-    int packet_number = 0;
+    int packet_number = 1;
     int status = 0;
 
     while (total_packets >= packet_number)
@@ -376,7 +376,7 @@ void download(char *file_id, char *encryption_component, char *location)
         // get_file_blob(file_id, packet_number, encrypted_data);
     	char packet_num[sizeof(int)];
     	sprintf(packet_num, "%i", packet_number);
-    	sprintf(encrypted_data, "%s", get_blob(file_id, packet_num));
+    	sprintf(encrypted_data, "%s", get_blob(file_id, packet_num-1));
         // TODO: remove this, only temporary entire_plaintext
         for (int i = 0; i < MAX_FILEDATA_SIZE; i++)
         {
