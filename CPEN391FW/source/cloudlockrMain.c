@@ -61,6 +61,7 @@ static void controller(void)
     // Set seed as current time, used for random display HEX code
     time_t t;
     srand((unsigned)time(&t));
+    reset_hex();
 
     // Controls whether services can be called, ensures correct user control flow
     int state = 0;
@@ -106,7 +107,7 @@ static void controller(void)
 				else
 				{
 					// Master password has not been set, reject request
-					status = 0;
+					status = 9;
 				}
 				break;
 			}
@@ -208,7 +209,7 @@ static void controller(void)
         }
 
         // Pause (to prevent response message from being sent too quickly, a nice subtle bug)
-        hps_usleep(1 * 1000 * 1000); // ~0.5 second
+        hps_usleep(1 * 1000 * 2000); // ~1 second
 
         // Send the response message (if applicable)
         if (status != -1)
@@ -223,8 +224,6 @@ static void controller(void)
             free(response_data);
         }
     }
-
-    reset_hex();
 }
 
 /**
