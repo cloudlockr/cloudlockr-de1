@@ -37,25 +37,25 @@ static bool esp8266_send_command(const char *cmd)
 
     memset( buffer, 0, 1000 );
 
-    HPS_usleep( 3000 );
+//    HPS_usleep( 3000 );
 
     while (1) {
         if ( UART_gets( UART_ePORT_WIFI, buffer + length, sizeof(buffer) - length, 0 ) != NULL)
         {
-        	printf("%s\n", buffer+length);
+//        	printf("%s\n", buffer+length);
             if ( strstr(buffer + length, "OK") != NULL )
             {
-                printf( "wifi Rx: %s\n", buffer + length );
-                if (strcmp("AT+CWLAP", cmd) == 0) { printf("%s", buffer); }
+//                printf( "wifi Rx: %s\n", buffer + length );
+//                if (strcmp("AT+CWLAP", cmd) == 0) { printf("%s", buffer); }
                 return true;
             } else if (strstr(buffer + length, "ERROR") != NULL) {
-                printf( "wifi Rx: %s\n", buffer + length );
+//                printf( "wifi Rx: %s\n", buffer + length );
                 return false;
             } else if (strstr(buffer + length, "FAIL") != NULL) {
-                printf( "wifi Rx: %s\n", buffer + length );
+//                printf( "wifi Rx: %s\n", buffer + length );
                 return false;
             } else if (strstr(buffer + length, "CLOSED") != NULL) {
-                printf( "wifi Rx: %s\n", buffer + length );
+//                printf( "wifi Rx: %s\n", buffer + length );
                 return false;
             }
 
@@ -78,28 +78,28 @@ static bool esp8266_send_data( const char *data, int length, char *buffer)
 
     //HPS_usleep( 3000 );
 
-    while (1)
-    {
-        if ( UART_gets( UART_ePORT_WIFI, buffer + count, 1000 - count, 0 ) != NULL )
-        {
-            if (strstr(buffer + count, "SEND OK") != NULL)
-            {
-                printf("%s", buffer);
-                return true;
-            } else if (strstr(buffer + count, "SEND FAIL") != NULL) {
-                printf("%s", buffer);
-                return false;
-            } else if (strstr(buffer + count, "CLOSED") != NULL) {
-                printf("%s", buffer);
-                return false;
-            }
-            count += strlen(buffer + count);
-        }
+//    while (1)
+//    {
+//        if ( UART_gets( UART_ePORT_WIFI, buffer + count, 1000 - count, 0 ) != NULL )
+//        {
+//            if (strstr(buffer + count, "SEND OK") != NULL)
+//            {
+////                printf("%s", buffer);
+//                return true;
+//            } else if (strstr(buffer + count, "SEND FAIL") != NULL) {
+////                printf("%s", buffer);
+//                return false;
+//            } else if (strstr(buffer + count, "CLOSED") != NULL) {
+////                printf("%s", buffer);
+//                return false;
+//            }
+//            count += strlen(buffer + count);
+//        }
+//
+//        //HPS_usleep(10);
+//    }
 
-        //HPS_usleep(10);
-    }
-
-    return false;
+    return true;
 }
 
 char* uploadData(char* email, char* fileId, char* packetNumber, char* totalPackets, char* fileData) {
@@ -146,26 +146,27 @@ char* getFileMetadata(char* fileId) {
     char cmd_buffer[100];
     char request[1000];
     char response[1000];
+    printf("Begin file metadata calls\n");
 //    sprintf(request, "GET /file/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\nUser-Agent: terasic-rfs\r\n\r\n", fileId);
-    sprintf(request, "GET /time/ HTTP/1.1\r\nHost: demo.terasic.com\r\nUser-Agent: terasic-rfs\r\n\r\n");
+    sprintf(request, "GET /time/ HTTP/1.1\r\nHost: demo.terasic.com\r\nUser-Agent: terasic-rfs\r\n");
 //	if (initiate_tcp("cloudlockr.herokuapp.com")) {
 	if (initiate_tcp("demo.terasic.com")) {
         sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command
-        HPS_usleep(60000000);
+//        HPS_usleep(60000000);
 		if (esp8266_send_command(cmd_buffer)) {
-			HPS_usleep(60000000);
+//			HPS_usleep(60000000);
 			if (esp8266_send_data( request, strlen(request), response)) {
 				// do something with response
-				HPS_usleep(60000000);
+//				HPS_usleep(10000000);
 				while (1)
 				{
 					if ( UART_gets( UART_ePORT_WIFI, response, sizeof(response), 1 ) != NULL )
 					{
-						printf("%s", response);
+//						printf("%s", response);
 						if (strstr(response, "+IPD") != NULL)
 						{
 							int length = strlen(response);
-							printf("%s", response + length);
+//							printf("%s", response + length);
 							while (1)
 							{
 								if ( UART_gets( UART_ePORT_WIFI, response + length, sizeof(response) - length, 0) != NULL )
@@ -177,11 +178,11 @@ char* getFileMetadata(char* fileId) {
 						}
 					}
 				}
-				HPS_usleep(60000000);
-				while ( UART_gets( UART_ePORT_WIFI, response, 9, 1) != NULL )
-				{
-					printf("%s", response);
-				}
+//				while ( UART_gets( UART_ePORT_WIFI, response, 9, 1) != NULL )
+//				{
+////					printf("%s", response);
+//				}
+				printf("%s", response);
 				return "{\"status\": 1}";
 			}
 			return "{\"status\": 0}";

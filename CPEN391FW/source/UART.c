@@ -16,6 +16,7 @@
 
 #include "TypeDef.h"
 #include "UART.h"
+#include "HPS.h"
 
 /*------------------- Constants Define -------------------*/
   
@@ -218,6 +219,7 @@ int UART_TestForReceivedData( UART_ePORT ePort )
     {
         // if Wifi_LineStatusReg bit 0 is set to 1
         // return TRUE, otherwise return FALSE
+//    	printf("%.2x\n", Wifi_LineStatusReg);
         return ( Wifi_LineStatusReg & (1 << 0));
     }
     else if ( ePort == UART_ePORT_BLUETOOTH )
@@ -248,7 +250,7 @@ void UART_Flush( UART_ePORT ePort )
     }
     else if ( ePort == UART_ePORT_BLUETOOTH )
     {
-        // while bit 0 of Line Status Register == ‘1’
+        // while bit 0 of Line Status Register == ï¿½1ï¿½
         // read unwanted char out of fifo receiver buffer
 
         while ( (Bluetooth_LineStatusReg & (1 << 0)) )
@@ -282,12 +284,12 @@ char* UART_gets( UART_ePORT ePort, char* buffer, int length, int mode )
     int count = 0;
     
     // Initialize buffer with NULL.
-    memset( buffer, NULL, length );
+    memset( buffer, '\0', length );
     
     while ( count < (length-1) )
     {
-        if ( UART_TestForReceivedData( ePort ) )
-	    {
+//        if ( UART_TestForReceivedData( ePort ) )
+//	    {
 	        buffer[count] = UART_getchar( ePort );
 
             if ( mode == 0 )
@@ -313,12 +315,13 @@ char* UART_gets( UART_ePORT ePort, char* buffer, int length, int mode )
             }
 
             count++;
-	    }
-        // this affects comm a lot.
-        else
-        {
-            //break;
-        }
+//	    }
+//        // this affects comm a lot.
+//        else
+//        {
+////            count++;
+//            //break;
+//        }
     }
     
     if ( count == 0 )
