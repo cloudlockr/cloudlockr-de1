@@ -218,8 +218,7 @@ static void controller(void)
             expected_num_values = 3;
             all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
-            // TODO: status = set_wifi_config(allValues[1], allValues[2]);
-            status = 1; // TODO: remove, placeholder until above function is implemented
+            status = set_wifi_config(all_values[1], all_values[2]);
             break;
         }
         case 7:

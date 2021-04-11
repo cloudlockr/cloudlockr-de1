@@ -14,6 +14,7 @@
 #include "processingService.h"
 #include "verificationService.h"
 #include "aesHwacc.h"
+#include "WIFI.h"
 
 // TODO: remove this as it is only for testing
 unsigned char encryption_store[3][32];
@@ -285,6 +286,9 @@ char *upload(char *file_id, int packet_number, int total_packets, char *location
 
         // Upload encrypted file data to server
         // upload_data(file_id, entire_ciphertext);
+        char packet_num[sizeof(int)];
+        sprintf(packet_num, "%i", packet_number);
+        uploadData(file_id, packet_num, entire_ciphertext);
 
         // Receive the next packet of fileData to encrypt and upload
         // json_str = bluetooth_wait_for_data();
@@ -362,14 +366,17 @@ void download(char *file_id, char *encryption_component, char *location)
 
     // Generate encryption key and then encrypt file data
     // int total_packets = get_file_metadata(file_id);
-    int total_packets = 3;
-    int packet_number = 1;
+    int total_packets = getFileMetadata(file_id);
+    int packet_number = 0;
     int status = 0;
 
     while (total_packets >= packet_number)
     {
         // Get a file blob/packet and decrypt it
         // get_file_blob(file_id, packet_number, encrypted_data);
+    	char packet_num[sizeof(int)];
+    	sprintf(packet_num, "%i", packet_number);
+    	sprintf(encrypted_data, "%s", getBlob(file_id, packet_num));
         // TODO: remove this, only temporary entire_plaintext
         for (int i = 0; i < MAX_FILEDATA_SIZE; i++)
         {

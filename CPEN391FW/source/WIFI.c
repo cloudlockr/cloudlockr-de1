@@ -5,6 +5,7 @@
 #include "WIFI.h"
 #include "UART.h"
 #include "hpsService.h"
+#include "JsonParser.h"
 
 static void esp8266_dump_rx(void)
 {
@@ -95,7 +96,7 @@ static bool close_tcp()
     return success;
 }
 
-char *uploadData(char *fileId, char *packetNumber, char *fileData)
+int uploadData(char *fileId, char *packetNumber, char *fileData)
 {
     char cmd_buffer[100];
     char request[1000];
@@ -134,16 +135,19 @@ char *uploadData(char *fileId, char *packetNumber, char *fileData)
                 //     printf("%s", response);
                 // }
                 close_tcp();
-                return "{\"status\": 1}";
+                jsmntok_t *tokens = str_to_json(body);
+                char **values = get_json_values(body,tokens,1);
+                free(tokens);
+                return atoi(values[0]);
             }
             printf("Send data failed\n");
-            return "{\"status\": 0}";
+            return -1;
         }
         printf("Send command failed\n");
-        return NULL;
+        return -1;
     }
     printf("Initiate tcp failed\n");
-    return NULL;
+    return -1;
 }
 
 //char* get_wifi_networks( void ) {
@@ -195,7 +199,7 @@ int set_wifi_config(char *networkName, char *networkPassword)
     return connected;
 }
 
-char *getFileMetadata(char *fileId)
+int getFileMetadata(char *fileId)
 {
     char cmd_buffer[100];
     char request[1000];
@@ -236,16 +240,19 @@ char *getFileMetadata(char *fileId)
                 //     printf("%s", response);
                 // }
                 close_tcp();
-                return "{\"status\": 1}";
+                jsmntok_t *tokens = str_to_json(body);
+                char **values = get_json_values(body,tokens,1);
+                free(tokens);
+                return atoi(values[0]);
             }
             printf("Send data failed\n");
-            return "{\"status\": 0}";
+            return -1;
         }
         printf("Send command failed\n");
-        return NULL;
+        return -1;
     }
     printf("Initiate tcp failed\n");
-    return NULL;
+    return -1;
 }
 
 char *getBlob(char *fileId, char *blobNumber)
@@ -283,10 +290,13 @@ char *getBlob(char *fileId, char *blobNumber)
                 char *body = strstr(response, "\r\n\r\n");
                 printf("%s\n", body);
                 close_tcp();
-                return "{\"status\": 1}";
+                jsmntok_t *tokens = str_to_json(body);
+                char **values = get_json_values(body,tokens,1);
+                free(tokens);
+                return values[0];
             }
             printf("Send data failed\n");
-            return "{\"status\": 0}";
+            return NULL;
         }
         printf("Send command failed\n");
         return NULL;
