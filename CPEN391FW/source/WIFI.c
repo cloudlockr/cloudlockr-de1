@@ -101,8 +101,10 @@ int upload_data(char *fileId, char *packetNumber, char *fileData)
     char cmd_buffer[100];
     char request[1000];
     char response[1000];
+    char req_body[1000];
     printf("Begin upload data call\n");
-    sprintf(request, "POST /file/%s/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n{\"fileData\":\"%s\"}", fileId, packetNumber, fileData);
+    sprintf(req_body, "{\"fileData\":\"%s\"}", fileData);
+    sprintf(request, "POST /file/%s/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\nContent-Type: application/json\r\nContent-Length: %i\r\n\r\n%s", fileId, packetNumber, strlen(req_body), req_body);
     if (initiate_tcp("cloudlockr.herokuapp.com"))
     {
         sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command
