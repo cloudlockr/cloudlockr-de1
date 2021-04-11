@@ -7,7 +7,7 @@
 #include <time.h>
 #include <string.h>
 #include "memAddress.h"
-#include "aesHwAcc.h"
+#include "aesHwacc.h"
 #include "verificationService.h"
 #include "hexService.h"
 

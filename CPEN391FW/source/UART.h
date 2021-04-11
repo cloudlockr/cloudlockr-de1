@@ -10,6 +10,8 @@
  * UART module.
  */
 
+#ifndef UART_H_
+#define UART_H_
 /*------------------- Type Define -------------------*/
 typedef enum
 {
@@ -26,3 +28,4 @@ int UART_TestForReceivedData(UART_ePORT ePort);
 void UART_Flush(UART_ePORT ePort);
 void UART_puts(UART_ePORT ePort, char *buffer);
 char *UART_gets(UART_ePORT ePort, char *buffer, int length, int mode);
+#endif // UART_H_

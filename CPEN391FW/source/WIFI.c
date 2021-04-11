@@ -207,20 +207,43 @@ char *getBlob(char *fileId, char *blobNumber)
     char cmd_buffer[100];
     char request[1000];
     char response[1000];
-    sprintf(request, "GET /file/%s/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\nUser-Agent: terasic-rfs\r\n\r\n", fileId, blobNumber);
-    if (initiate_tcp("https://cloudlockr.herokuapp.com/"))
+    sprintf(request, "GET /file/%s/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n", fileId, blobNumber);
+    if (initiate_tcp("cloudlockr.herokuapp.com"))
     {
         sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command
         if (esp8266_send_command(cmd_buffer))
         {
             if (esp8266_send_data(request, strlen(request), response))
             {
-                // do something with response
+                while (1)
+                {
+                    if (UART_gets(UART_ePORT_WIFI, response, sizeof(response), 1) != NULL)
+                    {
+                        if (strstr(response, "+IPD") != NULL)
+                        {
+                            int length = strlen(response);
+                            while (1)
+                            {
+                                if (UART_gets(UART_ePORT_WIFI, response + length, sizeof(response) - length, 2) != NULL)
+                                {
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                char *body = strstr(response, "\r\n\r\n");
+                printf("%s\n", body);
+                close_tcp();
                 return "{\"status\": 1}";
             }
+            printf("Send data failed\n");
             return "{\"status\": 0}";
         }
+        printf("Send command failed\n");
         return NULL;
     }
+    printf("Initiate tcp failed\n");
     return NULL;
 }

@@ -281,13 +281,11 @@ int main(void)
     init();
     // controller();
     int successful = set_wifi_config("networkName", "networkPassword");
-    getFileMetadata("783cf156-aa19-4110-8484-732f1b0a1068/0");
-    // successful = set_wifi_config("GorgeousGuests", "ilmhvm555");
-    getFileMetadata("783cf156-aa19-4110-8484-732f1b0a1068/1");
-    // successful = set_wifi_config("GorgeousGuests", "ilmhvm555");
-    getFileMetadata("783cf156-aa19-4110-8484-732f1b0a1068/2");
-    // successful = set_wifi_config("GorgeousGuests", "ilmhvm555");
-    getFileMetadata("783cf156-aa19-4110-8484-732f1b0a1068/3");
+    getFileMetadata("783cf156-aa19-4110-8484-732f1b0a1068");
+    getBlob("783cf156-aa19-4110-8484-732f1b0a1068","0");
+    getBlob("783cf156-aa19-4110-8484-732f1b0a1068","1");
+    getBlob("783cf156-aa19-4110-8484-732f1b0a1068","2");
+    getBlob("783cf156-aa19-4110-8484-732f1b0a1068","3");
 
     printf(">>>>>>>>>    CloudLockr Firmware end    <<<<<<<<<\n");
     return 0;
