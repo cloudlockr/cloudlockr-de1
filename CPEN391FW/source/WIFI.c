@@ -95,15 +95,15 @@ static bool close_tcp()
     return success;
 }
 
-int upload_data(char *fileId, char *packetNumber, char *fileData)
+int upload_data(char *file_id, int blob_number, char *file_data)
 {
     char cmd_buffer[100];
-    char request[1000];
+    char req_body[2 * MAX_FILEDATA_SIZE + 20];
+    char request[2 * MAX_FILEDATA_SIZE + 150];
     char response[1000];
-    char req_body[1000];
     printf("Begin upload data call\n");
-    sprintf(req_body, "{\"fileData\":\"%s\"}", fileData);
-    sprintf(request, "POST /file/%s/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\nContent-Type: application/json\r\nContent-Length: %i\r\n\r\n%s", fileId, packetNumber, strlen(req_body), req_body);
+    sprintf(req_body, "{\"fileData\":\"%s\"}", file_data);
+    sprintf(request, "POST /file/%s/%c HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\nContent-Type: application/json; charset=UTF-8\r\nContent-Length: %i\r\n\r\n%s", file_id, blob_number + '0', strlen(req_body), req_body);
     if (initiate_tcp("cloudlockr.herokuapp.com"))
     {
         sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command
@@ -153,7 +153,7 @@ int upload_data(char *fileId, char *packetNumber, char *fileData)
 
 int set_wifi_config(char *networkName, char *networkPassword)
 {
-    char cmd[1000];
+    char cmd[200];
     int mode_set, connected;
 
     for (int i = 0; i < HANDSHAKE; i++)
@@ -179,16 +179,14 @@ int set_wifi_config(char *networkName, char *networkPassword)
     return connected;
 }
 
-int get_file_metadata(char *fileId)
+int get_file_metadata(char *file_id)
 {
     char cmd_buffer[100];
-    char request[1000];
+    char request[150];
     char response[1000];
     printf("Begin file metadata call\n");
-    sprintf(request, "GET /file/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n", fileId);
-    // sprintf(request, "GET /time/ HTTP/1.1\r\nHost: demo.terasic.com\r\nUser-Agent: terasic-rfs\r\n\r\n");
+    sprintf(request, "GET /file/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n", file_id);
     if (initiate_tcp("cloudlockr.herokuapp.com"))
-    // if (initiate_tcp("demo.terasic.com"))
     {
         sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command
         if (esp8266_send_command(cmd_buffer))
@@ -235,13 +233,13 @@ int get_file_metadata(char *fileId)
     return -1;
 }
 
-char *get_blob(char *fileId, char *blobNumber)
+char *get_blob(char *file_id, int blob_number)
 {
     char cmd_buffer[100];
-    char request[1000];
-    char response[1000];
+    char request[150];
+    char response[2 * MAX_FILEDATA_SIZE + 1000];
     printf("Begin get blob call\n");
-    sprintf(request, "GET /file/%s/%s HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n", fileId, blobNumber);
+    sprintf(request, "GET /file/%s/%c HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n", file_id, blob_number + '0');
     if (initiate_tcp("cloudlockr.herokuapp.com"))
     {
         sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command

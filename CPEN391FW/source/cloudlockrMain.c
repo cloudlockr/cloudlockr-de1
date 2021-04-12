@@ -56,7 +56,7 @@ static void controller(void)
     reset_hex();
 
     // Controls whether services can be called, ensures correct user control flow
-    int state = 0;
+    int state = 0, password_set = 0, wifi_set = 0;
 
     // Controller main loop
     while (1)
@@ -173,17 +173,20 @@ static void controller(void)
                 expected_num_values = 3;
                 all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
-                    status = set_wifi_config(all_values[1], all_values[2]);
-                    break;
-                }
-                case 7:
-                {
-                    expected_num_values = 2;
-                    all_values = get_json_values(json_str, json_tokens, expected_num_values);
+                status = set_wifi_config(all_values[1], all_values[2]);
+                wifi_set = status;
+                state = wifi_set && password_set;
+                break;
+            }
+            case 7:
+            {
+                expected_num_values = 2;
+                all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
                 set_password(all_values[1]);
                 status = 1;
-                state = 1;
+                password_set = 1;
+                state = wifi_set && password_set;
                 break;
             }
             default:
@@ -231,19 +234,6 @@ int main(void)
 
     init();
     controller();
-
-    // int successful = set_wifi_config("networkName", "networkPassword");
-    // if (!successful) {
-    // 	printf("Couldn't connect to WiFi");
-    // 	return 1;
-    // }
-    // get_file_metadata("783cf156-aa19-4110-8484-732f1b0a1068");
-    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","0");
-    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","1");
-    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","2");
-    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","3");
-    // upload_data("783cf156-aa19-4110-8484-732f1b0a1068", "4", "greatestBlob");
-    // get_blob("783cf156-aa19-4110-8484-732f1b0a1068","4");
 
     printf(">>>>>>>>>    CloudLockr Firmware end    <<<<<<<<<\n");
     return 0;

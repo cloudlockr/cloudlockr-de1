@@ -55,12 +55,32 @@ char *mock_bluetooth_wait_for_data(void)
 	}
 	else if (mock_idx == 4)
 	{
-		json_str = "{\"type\":3,\"fileId\":\"123\",\"packetNumber\":1,\"totalPackets\":3,\"location\":\"37.422|-122.084|5.285\",\"fileData\":\"1234567890abcdeffedcba0987654321\"}";
+		json_str = "{\"type\":3,\"fileId\":\"d869c9d6-1227-40ca-a3e8-bc11db68a1ab\",\"packetNumber\":1,\"totalPackets\":3,\"location\":\"37.422|-122.084|5.285\",\"fileData\":\"1234567890abcdeffedcba0987654321\"}";
 		mock_idx++;
 	}
 	else if (mock_idx == 5)
 	{
-		json_str = "{\"type\":4,\"localEncryptionComponent\":\"0102ABCD\",\"fileId\":\"123\",\"location\":\"37.422|-122.084|5.285\"}";
+		json_str = "{\"type\":3,\"fileId\":\"d869c9d6-1227-40ca-a3e8-bc11db68a1ab\",\"packetNumber\":2,\"totalPackets\":3,\"location\":\"37.422|-122.084|5.285\",\"fileData\":\"abcdef123456789001010101\"}";
+		mock_idx++;
+	}
+	else if (mock_idx == 6)
+	{
+		json_str = "{\"type\":3,\"fileId\":\"d869c9d6-1227-40ca-a3e8-bc11db68a1ab\",\"packetNumber\":3,\"totalPackets\":3,\"location\":\"37.422|-122.084|5.285\",\"fileData\":\"1234567890abcdef\"}";
+		mock_idx++;
+	}
+	else if (mock_idx == 7)
+	{
+		json_str = "{\"type\":4,\"localEncryptionComponent\":\"0102ABCD\",\"fileId\":\"d869c9d6-1227-40ca-a3e8-bc11db68a1ab\",\"location\":\"37.422|-122.084|5.285\"}";
+		mock_idx++;
+	}
+	else if (mock_idx == 8)
+	{
+		json_str = "{\"status\":1}";
+		mock_idx++;
+	}
+	else if (mock_idx == 9)
+	{
+		json_str = "{\"status\":1}";
 		mock_idx++;
 	}
 	else
