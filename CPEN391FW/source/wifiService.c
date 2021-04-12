@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdbool.h>
+#include "TypeDef.h"
 #include "constants.h"
-#include "WIFI.h"
+#include "wifiService.h"
 #include "UART.h"
 #include "hpsService.h"
 #include "JsonParser.h"

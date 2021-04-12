@@ -17,17 +17,15 @@
 #include <string.h>
 
 #include "TypeDef.h"
+#include "constants.h"
 #include "hpsService.h"
 #include "UART.h"
 #include "JsonParser.h"
 
-#define BUFFER_SIZE 500500	  // 1 mb of data (assuming 2 bytes per char) + 500 bytes of extra data allowance
-#define TIMEOUT_ITER 10000000 // Large number to represent the max number of iterations with no data arriving (~50 sec)
 static int bluetooth_count = 0;
 static char bluetooth_data[BUFFER_SIZE];
 
-/* Mocking settings */
-#define MOCK_BLUETOOTH 1
+// Mocking request index
 static int mock_idx = 0;
 
 char *mock_bluetooth_wait_for_data(void)

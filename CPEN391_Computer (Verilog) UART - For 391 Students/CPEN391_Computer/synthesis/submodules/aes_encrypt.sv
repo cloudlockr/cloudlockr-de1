@@ -22,7 +22,22 @@ module aes_encrypt(input logic clk, input logic rst_n,
     enum {START, SBOX, KEXP0, KEXP1, XOR, ROUND, SUB, SHIFT, MIX0, MIX1, DONE} state;
 
     always @(posedge clk) begin
-        if (slave_write && slave_address === 4'd4) begin
+        if (~rst_n) begin
+            state <= START;
+
+            slave_waitrequest <= 1'b1;
+
+            r_i <= 4'b0;
+            k_i <= 2'b1;
+
+            rcon[0] <= 9'b1;
+            rcon[1] <= 9'b0;
+            rcon[2] <= 9'b0;
+            rcon[3] <= 9'b0;
+
+            done <= 1'b0;
+        end
+        else if (slave_write && slave_address === 4'd4) begin
             state <= START;
 
             block[0]  = slave_writedata[7:0];

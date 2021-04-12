@@ -101,11 +101,16 @@ module CPEN391_Computer (
 		output wire        sdram_we_n,                      //                     .we_n
 		output wire        sdram_clk_clk,                   //            sdram_clk.clk
 		input  wire [9:0]  slider_switches_export,          //      slider_switches.export
+		input  wire        spi_0_MISO,                      //                spi_0.MISO
+		output wire        spi_0_MOSI,                      //                     .MOSI
+		output wire        spi_0_SCLK,                      //                     .SCLK
+		output wire        spi_0_SS_n,                      //                     .SS_n
+
 		input  wire        system_pll_ref_clk_clk,          //   system_pll_ref_clk.clk
 		input  wire        system_pll_ref_reset_reset       // system_pll_ref_reset.reset
 	);
 
-	wire         system_pll_sys_clk_clk;                                              // System_PLL:sys_clk_clk -> [ARM_A9_HPS:f2h_axi_clk, ARM_A9_HPS:h2f_axi_clk, ARM_A9_HPS:h2f_lw_axi_clk, HEX0_1:clk, HEX2_3:clk, HEX4_5:clk, IO_Bridge:clk, Interval_Timer:clk, JTAG_To_FPGA_Bridge:clk_clk, JTAG_To_HPS_Bridge:clk_clk, JTAG_UART_for_ARM_0:clk, JTAG_UART_for_ARM_1:clk, LCD_0:clk, LEDS:clk, Onchip_SRAM:clk, PushButtons:clk, SDRAM:clk, Slider_Switches:clk, SysID:clock, aes_decrypt_0:clk, aes_encrypt_0:clk, bit_flipper_0:clock, mm_interconnect_0:System_PLL_sys_clk_clk, mm_interconnect_1:System_PLL_sys_clk_clk, rst_controller:clk, rst_controller_003:clk]
+	wire         system_pll_sys_clk_clk;                                              // System_PLL:sys_clk_clk -> [ARM_A9_HPS:f2h_axi_clk, ARM_A9_HPS:h2f_axi_clk, ARM_A9_HPS:h2f_lw_axi_clk, HEX0_1:clk, HEX2_3:clk, HEX4_5:clk, IO_Bridge:clk, Interval_Timer:clk, JTAG_To_FPGA_Bridge:clk_clk, JTAG_To_HPS_Bridge:clk_clk, JTAG_UART_for_ARM_0:clk, JTAG_UART_for_ARM_1:clk, LCD_0:clk, LEDS:clk, Onchip_SRAM:clk, PushButtons:clk, SDRAM:clk, Slider_Switches:clk, SysID:clock, aes_decrypt_0:clk, aes_encrypt_0:clk, bit_flipper_0:clock, mm_interconnect_0:System_PLL_sys_clk_clk, mm_interconnect_1:System_PLL_sys_clk_clk, rst_controller:clk, rst_controller_003:clk, spi_0:clk]
 	wire   [1:0] arm_a9_hps_h2f_axi_master_awburst;                                   // ARM_A9_HPS:h2f_AWBURST -> mm_interconnect_0:ARM_A9_HPS_h2f_axi_master_awburst
 	wire   [3:0] arm_a9_hps_h2f_axi_master_arlen;                                     // ARM_A9_HPS:h2f_ARLEN -> mm_interconnect_0:ARM_A9_HPS_h2f_axi_master_arlen
 	wire   [7:0] arm_a9_hps_h2f_axi_master_wstrb;                                     // ARM_A9_HPS:h2f_WSTRB -> mm_interconnect_0:ARM_A9_HPS_h2f_axi_master_wstrb
@@ -266,6 +271,12 @@ module CPEN391_Computer (
 	wire         mm_interconnect_0_aes_decrypt_0_slave_read;                          // mm_interconnect_0:aes_decrypt_0_slave_read -> aes_decrypt_0:slave_read
 	wire         mm_interconnect_0_aes_decrypt_0_slave_write;                         // mm_interconnect_0:aes_decrypt_0_slave_write -> aes_decrypt_0:slave_write
 	wire  [31:0] mm_interconnect_0_aes_decrypt_0_slave_writedata;                     // mm_interconnect_0:aes_decrypt_0_slave_writedata -> aes_decrypt_0:slave_writedata
+	wire         mm_interconnect_0_spi_0_spi_control_port_chipselect;                 // mm_interconnect_0:spi_0_spi_control_port_chipselect -> spi_0:spi_select
+	wire  [15:0] mm_interconnect_0_spi_0_spi_control_port_readdata;                   // spi_0:data_to_cpu -> mm_interconnect_0:spi_0_spi_control_port_readdata
+	wire   [2:0] mm_interconnect_0_spi_0_spi_control_port_address;                    // mm_interconnect_0:spi_0_spi_control_port_address -> spi_0:mem_addr
+	wire         mm_interconnect_0_spi_0_spi_control_port_read;                       // mm_interconnect_0:spi_0_spi_control_port_read -> spi_0:read_n
+	wire         mm_interconnect_0_spi_0_spi_control_port_write;                      // mm_interconnect_0:spi_0_spi_control_port_write -> spi_0:write_n
+	wire  [15:0] mm_interconnect_0_spi_0_spi_control_port_writedata;                  // mm_interconnect_0:spi_0_spi_control_port_writedata -> spi_0:data_from_cpu
 	wire         mm_interconnect_0_jtag_uart_for_arm_0_avalon_jtag_slave_chipselect;  // mm_interconnect_0:JTAG_UART_for_ARM_0_avalon_jtag_slave_chipselect -> JTAG_UART_for_ARM_0:av_chipselect
 	wire  [31:0] mm_interconnect_0_jtag_uart_for_arm_0_avalon_jtag_slave_readdata;    // JTAG_UART_for_ARM_0:av_readdata -> mm_interconnect_0:JTAG_UART_for_ARM_0_avalon_jtag_slave_readdata
 	wire         mm_interconnect_0_jtag_uart_for_arm_0_avalon_jtag_slave_waitrequest; // JTAG_UART_for_ARM_0:av_waitrequest -> mm_interconnect_0:JTAG_UART_for_ARM_0_avalon_jtag_slave_waitrequest
@@ -330,10 +341,11 @@ module CPEN391_Computer (
 	wire         irq_mapper_receiver1_irq;                                            // PushButtons:irq -> irq_mapper:receiver1_irq
 	wire         irq_mapper_receiver2_irq;                                            // JTAG_UART_for_ARM_0:av_irq -> irq_mapper:receiver2_irq
 	wire         irq_mapper_receiver3_irq;                                            // Interval_Timer:irq -> irq_mapper:receiver3_irq
+	wire         irq_mapper_receiver4_irq;                                            // spi_0:irq -> irq_mapper:receiver4_irq
 	wire  [31:0] arm_a9_hps_f2h_irq0_irq;                                             // irq_mapper:sender_irq -> ARM_A9_HPS:f2h_irq_p0
 	wire         irq_mapper_001_receiver0_irq;                                        // JTAG_UART_for_ARM_1:av_irq -> irq_mapper_001:receiver0_irq
 	wire  [31:0] arm_a9_hps_f2h_irq1_irq;                                             // irq_mapper_001:sender_irq -> ARM_A9_HPS:f2h_irq_p1
-	wire         rst_controller_reset_out_reset;                                      // rst_controller:reset_out -> [HEX0_1:reset_n, HEX2_3:reset_n, HEX4_5:reset_n, IO_Bridge:reset, Interval_Timer:reset_n, JTAG_UART_for_ARM_0:rst_n, JTAG_UART_for_ARM_1:rst_n, LCD_0:reset_n, LEDS:reset_n, Onchip_SRAM:reset, PushButtons:reset_n, SDRAM:reset_n, Slider_Switches:reset_n, SysID:reset_n, aes_decrypt_0:rst_n, aes_encrypt_0:rst_n, bit_flipper_0:reset_n, mm_interconnect_0:JTAG_To_FPGA_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:SDRAM_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_master_translator_reset_reset_bridge_in_reset_reset, rst_translator:in_reset]
+	wire         rst_controller_reset_out_reset;                                      // rst_controller:reset_out -> [HEX0_1:reset_n, HEX2_3:reset_n, HEX4_5:reset_n, IO_Bridge:reset, Interval_Timer:reset_n, JTAG_UART_for_ARM_0:rst_n, JTAG_UART_for_ARM_1:rst_n, LCD_0:reset_n, LEDS:reset_n, Onchip_SRAM:reset, PushButtons:reset_n, SDRAM:reset_n, Slider_Switches:reset_n, SysID:reset_n, aes_decrypt_0:rst_n, aes_encrypt_0:rst_n, bit_flipper_0:reset_n, mm_interconnect_0:JTAG_To_FPGA_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:SDRAM_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_master_translator_reset_reset_bridge_in_reset_reset, rst_translator:in_reset, spi_0:reset_n]
 	wire         rst_controller_reset_out_reset_req;                                  // rst_controller:reset_req -> [Onchip_SRAM:reset_req, rst_translator:reset_req_in]
 	wire         arm_a9_hps_h2f_reset_reset;                                          // ARM_A9_HPS:h2f_rst_n -> [rst_controller:reset_in0, rst_controller_001:reset_in0, rst_controller_002:reset_in0, rst_controller_003:reset_in0]
 	wire         system_pll_reset_source_reset;                                       // System_PLL:reset_source_reset -> [rst_controller:reset_in1, rst_controller_001:reset_in1, rst_controller_002:reset_in1]
@@ -795,6 +807,22 @@ module CPEN391_Computer (
 		.clock   (system_pll_sys_clk_clk)                                    //          clock.clk
 	);
 
+	CPEN391_Computer_spi_0 spi_0 (
+		.clk           (system_pll_sys_clk_clk),                              //              clk.clk
+		.reset_n       (~rst_controller_reset_out_reset),                     //            reset.reset_n
+		.data_from_cpu (mm_interconnect_0_spi_0_spi_control_port_writedata),  // spi_control_port.writedata
+		.data_to_cpu   (mm_interconnect_0_spi_0_spi_control_port_readdata),   //                 .readdata
+		.mem_addr      (mm_interconnect_0_spi_0_spi_control_port_address),    //                 .address
+		.read_n        (~mm_interconnect_0_spi_0_spi_control_port_read),      //                 .read_n
+		.spi_select    (mm_interconnect_0_spi_0_spi_control_port_chipselect), //                 .chipselect
+		.write_n       (~mm_interconnect_0_spi_0_spi_control_port_write),     //                 .write_n
+		.irq           (irq_mapper_receiver4_irq),                            //              irq.irq
+		.MISO          (spi_0_MISO),                                                    //         external.export
+		.MOSI          (spi_0_MOSI),                                                    //                 .export
+		.SCLK          (spi_0_SCLK),                                                    //                 .export
+		.SS_n          (spi_0_SS_n)                                                     //                 .export
+	);
+
 	CPEN391_Computer_mm_interconnect_0 mm_interconnect_0 (
 		.ARM_A9_HPS_h2f_axi_master_awid                                        (arm_a9_hps_h2f_axi_master_awid),                                      //                                       ARM_A9_HPS_h2f_axi_master.awid
 		.ARM_A9_HPS_h2f_axi_master_awaddr                                      (arm_a9_hps_h2f_axi_master_awaddr),                                    //                                                                .awaddr
@@ -972,6 +1000,12 @@ module CPEN391_Computer (
 		.SDRAM_s1_chipselect                                                   (mm_interconnect_0_sdram_s1_chipselect),                               //                                                                .chipselect
 		.Slider_Switches_s1_address                                            (mm_interconnect_0_slider_switches_s1_address),                        //                                              Slider_Switches_s1.address
 		.Slider_Switches_s1_readdata                                           (mm_interconnect_0_slider_switches_s1_readdata),                       //                                                                .readdata
+		.spi_0_spi_control_port_address                                        (mm_interconnect_0_spi_0_spi_control_port_address),                    //                                          spi_0_spi_control_port.address
+		.spi_0_spi_control_port_write                                          (mm_interconnect_0_spi_0_spi_control_port_write),                      //                                                                .write
+		.spi_0_spi_control_port_read                                           (mm_interconnect_0_spi_0_spi_control_port_read),                       //                                                                .read
+		.spi_0_spi_control_port_readdata                                       (mm_interconnect_0_spi_0_spi_control_port_readdata),                   //                                                                .readdata
+		.spi_0_spi_control_port_writedata                                      (mm_interconnect_0_spi_0_spi_control_port_writedata),                  //                                                                .writedata
+		.spi_0_spi_control_port_chipselect                                     (mm_interconnect_0_spi_0_spi_control_port_chipselect),                 //                                                                .chipselect
 		.SysID_control_slave_address                                           (mm_interconnect_0_sysid_control_slave_address),                       //                                             SysID_control_slave.address
 		.SysID_control_slave_readdata                                          (mm_interconnect_0_sysid_control_slave_readdata)                       //                                                                .readdata
 	);
@@ -1036,6 +1070,7 @@ module CPEN391_Computer (
 		.receiver1_irq (irq_mapper_receiver1_irq), // receiver1.irq
 		.receiver2_irq (irq_mapper_receiver2_irq), // receiver2.irq
 		.receiver3_irq (irq_mapper_receiver3_irq), // receiver3.irq
+		.receiver4_irq (irq_mapper_receiver4_irq), // receiver4.irq
 		.sender_irq    (arm_a9_hps_f2h_irq0_irq)   //    sender.irq
 	);
 

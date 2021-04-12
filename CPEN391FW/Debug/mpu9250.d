@@ -1,0 +1,11 @@
+source/mpu9250.o: ../source/mpu9250.c
+source/mpu9250.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stdio.h
+source/mpu9250.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/string.h
+source/mpu9250.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stdlib.h
+source/mpu9250.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/TypeDef.h
+source/mpu9250.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/hpsService.h
+source/mpu9250.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/altera_avalon_spi.h
+source/mpu9250.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stddef.h
+source/mpu9250.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/alt_types.h
+source/mpu9250.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/mpu9250.h
+source/mpu9250.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/constants.h

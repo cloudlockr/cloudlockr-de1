@@ -9,12 +9,14 @@
 #include <string.h>
 #include "constants.h"
 #include "memAddress.h"
+#include "TypeDef.h"
 #include "JsonParser.h"
 #include "bluetoothService.h"
 #include "processingService.h"
 #include "verificationService.h"
 #include "aesHwacc.h"
-#include "WIFI.h"
+#include "wifiService.h"
+#include "mpu9250.h"
 
 /**
  * Hash function to generate a unique unsigned character for master password through some arithmetic
@@ -57,11 +59,12 @@ void generate_key(char *location, unsigned char key[])
     key[1] = (unsigned char)rand() % 256;
     key[2] = (unsigned char)rand() % 256;
     key[3] = (unsigned char)rand() % 256;
-    // REMOVE THIS LATER
+#if MOCK_BLUETOOTH
     key[0] = 0x01;
     key[1] = 0x02;
     key[2] = 0xab;
     key[3] = 0xcd;
+#endif
 
     // 32 bit DE1 master password
     char master_pw[32];
@@ -93,11 +96,12 @@ void generate_key(char *location, unsigned char key[])
     *LEDS = switches;
     key[11] = switches;
 
-    // Don't know how NESW and angular velocity will be like yet, so leave empty
-    key[12] = 0;
-    key[13] = 0;
-    key[14] = 0;
-    key[15] = 0;
+    // Magnetometer values
+    uint32_t sensor_values = getSensorKey();
+    key[12] = (unsigned char)(sensor_values >> 24);
+    key[13] = (unsigned char)(sensor_values >> 16);
+    key[14] = (unsigned char)(sensor_values >> 8);
+    key[15] = (unsigned char)sensor_values;
 }
 
 /**
@@ -150,11 +154,12 @@ void regenerate_key(char *encryption_component, char *location, unsigned char ke
     *LEDS = switches;
     key[11] = switches;
 
-    // Don't know how NESW and angular velocity will be like yet, so leave empty
-    key[12] = 0;
-    key[13] = 0;
-    key[14] = 0;
-    key[15] = 0;
+    // Magnetometer values
+    uint32_t sensor_values = getSensorKey();
+    key[12] = (unsigned char)(sensor_values >> 24);
+    key[13] = (unsigned char)(sensor_values >> 16);
+    key[14] = (unsigned char)(sensor_values >> 8);
+    key[15] = (unsigned char)sensor_values;
 }
 
 /**
@@ -302,8 +307,7 @@ char *upload(char *file_id, int packet_number, int total_packets, char *location
     }
 
     // Forming the response message which contains the success status and part of the encryption key
-    char *response_data = (char *)malloc(sizeof(char) * 52);
-    strcpy(response_data, "{\"status\":1,\"localEncryptionComponent\":\"");
+    char *response_data = (char *)malloc(sizeof(char) * 100);
 
     char encryption_component[9];
     for (int i = 0; i < 4; i++)
@@ -311,7 +315,7 @@ char *upload(char *file_id, int packet_number, int total_packets, char *location
         // Converting key from ascii to hex and then copying to encryption_component
         sprintf((char *)(encryption_component + (i * 2)), "%02X", key[i]);
     }
-    sprintf(response_data, "{\"status\":1,\"localEncryptionComponent\":\"%s\"}", encryption_component);
+    sprintf(response_data, "{\"status\":1,\"localEncryptionComponent\":\"%s\"}\v\n", encryption_component);
     printf("%s\n", response_data);
 
     return response_data;
@@ -352,7 +356,7 @@ void download(char *file_id, char *encryption_component, char *location)
         entire_plaintext[MAX_FILEDATA_SIZE] = '\0';
 
         // Form response data and send to user
-        sprintf(response_data, "{\"packetNumber\":%c,\"totalPackets\":%c,\"fileData\":\"%s\"}", packet_number + '0', total_packets + '0', entire_plaintext);
+        sprintf(response_data, "{\"packetNumber\":%c,\"totalPackets\":%c,\"fileData\":\"%s\"}\v\n", packet_number + '0', total_packets + '0', entire_plaintext);
 
         bluetooth_send_message(response_data);
         printf("%s\n", response_data);

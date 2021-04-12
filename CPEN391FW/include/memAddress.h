@@ -40,7 +40,6 @@
 #define Bluetooth_DivisorLatchLSB (*(volatile unsigned char *)(0xFF210220))
 #define Bluetooth_DivisorLatchMSB (*(volatile unsigned char *)(0xFF210222))
 
-/* C391main.c */
 #define SWITCHES (volatile unsigned *)(0xFF200000)
 #define PUSHBUTTONS (volatile unsigned *)(0xFF200010)
 
@@ -48,6 +47,9 @@
 #define HEX0_1 (volatile unsigned *)(0xFF200030)
 #define HEX2_3 (volatile unsigned *)(0xFF200040)
 #define HEX4_5 (volatile unsigned *)(0xFF200050)
+
+#define GPIO1_DR (volatile uint32 *)(0xFF709000)
+#define GPIO1_DDR (volatile uint32 *)(0xFF709004)
 
 /* aesHwAcc.c */
 #define AES_ENCRYPT_ADDR (volatile unsigned *)0xFF203000
