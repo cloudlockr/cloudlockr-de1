@@ -307,8 +307,7 @@ char *upload(char *file_id, int packet_number, int total_packets, char *location
     }
 
     // Forming the response message which contains the success status and part of the encryption key
-    char *response_data = (char *)malloc(sizeof(char) * 52);
-    strcpy(response_data, "{\"status\":1,\"localEncryptionComponent\":\"");
+    char *response_data = (char *)malloc(sizeof(char) * 100);
 
     char encryption_component[9];
     for (int i = 0; i < 4; i++)
@@ -316,7 +315,7 @@ char *upload(char *file_id, int packet_number, int total_packets, char *location
         // Converting key from ascii to hex and then copying to encryption_component
         sprintf((char *)(encryption_component + (i * 2)), "%02X", key[i]);
     }
-    sprintf(response_data, "{\"status\":1,\"localEncryptionComponent\":\"%s\"}", encryption_component);
+    sprintf(response_data, "{\"status\":1,\"localEncryptionComponent\":\"%s\"}\v\n", encryption_component);
     printf("%s\n", response_data);
 
     return response_data;
@@ -357,7 +356,7 @@ void download(char *file_id, char *encryption_component, char *location)
         entire_plaintext[MAX_FILEDATA_SIZE] = '\0';
 
         // Form response data and send to user
-        sprintf(response_data, "{\"packetNumber\":%c,\"totalPackets\":%c,\"fileData\":\"%s\"}", packet_number + '0', total_packets + '0', entire_plaintext);
+        sprintf(response_data, "{\"packetNumber\":%c,\"totalPackets\":%c,\"fileData\":\"%s\"}\v\n", packet_number + '0', total_packets + '0', entire_plaintext);
 
         bluetooth_send_message(response_data);
         printf("%s\n", response_data);
