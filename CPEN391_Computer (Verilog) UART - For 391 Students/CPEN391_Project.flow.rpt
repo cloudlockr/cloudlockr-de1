@@ -1,5 +1,5 @@
 Flow report for CPEN391_Project
-Sun Apr 11 15:59:36 2021
+Mon Apr 12 12:48:01 2021
 Quartus Prime Version 16.1.0 Build 196 10/24/2016 SJ Lite Edition
 
 
@@ -41,25 +41,25 @@ agreement for further details.
 +-------------------------------------------------------------------------------+
 ; Flow Summary                                                                  ;
 +---------------------------------+---------------------------------------------+
-; Flow Status                     ; Successful - Sun Apr 11 15:57:30 2021       ;
+; Flow Status                     ; Successful - Mon Apr 12 12:48:00 2021       ;
 ; Quartus Prime Version           ; 16.1.0 Build 196 10/24/2016 SJ Lite Edition ;
 ; Revision Name                   ; CPEN391_Project                             ;
 ; Top-level Entity Name           ; MyComputer_Verilog                          ;
 ; Family                          ; Cyclone V                                   ;
 ; Device                          ; 5CSEMA5F31C6                                ;
 ; Timing Models                   ; Final                                       ;
-; Logic utilization (in ALMs)     ; 12,148 / 32,070 ( 38 % )                    ;
-; Total registers                 ; 11923                                       ;
-; Total pins                      ; 338 / 457 ( 74 % )                          ;
+; Logic utilization (in ALMs)     ; N/A                                         ;
+; Total registers                 ; 11041                                       ;
+; Total pins                      ; 338                                         ;
 ; Total virtual pins              ; 0                                           ;
-; Total block memory bits         ; 37,184 / 4,065,280 ( < 1 % )                ;
-; Total DSP Blocks                ; 0 / 87 ( 0 % )                              ;
+; Total block memory bits         ; 37,184                                      ;
+; Total DSP Blocks                ; 0                                           ;
 ; Total HSSI RX PCSs              ; 0                                           ;
 ; Total HSSI PMA RX Deserializers ; 0                                           ;
 ; Total HSSI TX PCSs              ; 0                                           ;
 ; Total HSSI PMA TX Serializers   ; 0                                           ;
-; Total PLLs                      ; 1 / 6 ( 17 % )                              ;
-; Total DLLs                      ; 1 / 4 ( 25 % )                              ;
+; Total PLLs                      ; 1                                           ;
+; Total DLLs                      ; 1                                           ;
 +---------------------------------+---------------------------------------------+
 
 
@@ -68,7 +68,7 @@ agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 04/11/2021 15:39:31 ;
+; Start date & time ; 04/12/2021 12:39:39 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; CPEN391_Project     ;
 +-------------------+---------------------+
@@ -79,7 +79,7 @@ agreement for further details.
 +-------------------------------------+--------------------------------------------------------------------------------+-----------------+-------------------------------------------+------------+
 ; Assignment Name                     ; Value                                                                          ; Default Value   ; Entity Name                               ; Section Id ;
 +-------------------------------------+--------------------------------------------------------------------------------+-----------------+-------------------------------------------+------------+
-; COMPILER_SIGNATURE_ID               ; 1095498907841.161818076419468                                                  ; --              ; --                                        ; --         ;
+; COMPILER_SIGNATURE_ID               ; 1095498907841.161825637111684                                                  ; --              ; --                                        ; --         ;
 ; HPS_ISW_FILE                        ; CPEN391_Computer/synthesis/submodules/sequencer/alt_types.pre.h                ; --              ; CPEN391_Computer_ARM_A9_HPS_hps_io_border ; --         ;
 ; HPS_ISW_FILE                        ; CPEN391_Computer/synthesis/submodules/sequencer/emif.pre.xml                   ; --              ; CPEN391_Computer_ARM_A9_HPS_hps_io_border ; --         ;
 ; HPS_ISW_FILE                        ; CPEN391_Computer/synthesis/submodules/sequencer/sdram_io.pre.h                 ; --              ; CPEN391_Computer_ARM_A9_HPS_hps_io_border ; --         ;
@@ -96,8 +96,6 @@ agreement for further details.
 ; HPS_PARTITION                       ; On                                                                             ; --              ; CPEN391_Computer_ARM_A9_HPS_hps_io_border ; --         ;
 ; MAX_CORE_JUNCTION_TEMP              ; 85                                                                             ; --              ; --                                        ; --         ;
 ; MIN_CORE_JUNCTION_TEMP              ; 0                                                                              ; --              ; --                                        ; --         ;
-; MISC_FILE                           ; VGA_CLOCK_GEN.cmp                                                              ; --              ; --                                        ; --         ;
-; MISC_FILE                           ; VGA_CLOCK_GEN_sim/VGA_CLOCK_GEN.vho                                            ; --              ; --                                        ; --         ;
 ; MISC_FILE                           ; CPEN391_Computer/synthesis/../CPEN391_Computer.cmp                             ; --              ; --                                        ; --         ;
 ; MISC_FILE                           ; CPEN391_Computer/synthesis/../../C                                             ; --              ; --                                        ; --         ;
 ; MISC_FILE                           ; CPEN391_Computer/synthesis/CPEN391_Computer_ARM_A9_HPS_hps.svd                 ; --              ; --                                        ; --         ;
@@ -124,45 +122,34 @@ agreement for further details.
 ; SLD_FILE                            ; CPEN391_Computer/synthesis/CPEN391_Computer.debuginfo                          ; --              ; --                                        ; --         ;
 ; SLD_INFO                            ; QSYS_NAME CPEN391_Computer HAS_SOPCINFO 1 GENERATION_ID 1618179365             ; --              ; CPEN391_Computer                          ; --         ;
 ; SOPCINFO_FILE                       ; CPEN391_Computer/synthesis/../../CPEN391_Computer.sopcinfo                     ; --              ; --                                        ; --         ;
-; SPD_FILE                            ; VGA_CLOCK_GEN.spd                                                              ; --              ; --                                        ; --         ;
-; SYNTHESIS_ONLY_QIP                  ; On                                                                             ; --              ; --                                        ; --         ;
 ; SYNTHESIS_ONLY_QIP                  ; On                                                                             ; --              ; --                                        ; --         ;
 ; TOP_LEVEL_ENTITY                    ; MyComputer_Verilog                                                             ; CPEN391_Project ; --                                        ; --         ;
 +-------------------------------------+--------------------------------------------------------------------------------+-----------------+-------------------------------------------+------------+
 
 
-+-------------------------------------------------------------------------------------------------------------------------------+
-; Flow Elapsed Time                                                                                                             ;
-+---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
-+---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis      ; 00:02:40     ; 1.3                     ; 5399 MB             ; 00:03:49                           ;
-; Fitter                    ; 00:10:59     ; 1.1                     ; 7562 MB             ; 00:18:57                           ;
-; Assembler                 ; 00:00:30     ; 1.0                     ; 5043 MB             ; 00:00:29                           ;
-; TimeQuest Timing Analyzer ; 00:02:04     ; 1.4                     ; 6016 MB             ; 00:02:43                           ;
-; Total                     ; 00:16:13     ; --                      ; --                  ; 00:25:58                           ;
-+---------------------------+--------------+-------------------------+---------------------+------------------------------------+
++--------------------------------------------------------------------------------------------------------------------------+
+; Flow Elapsed Time                                                                                                        ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Analysis & Synthesis ; 00:04:20     ; 1.3                     ; 5448 MB             ; 00:04:56                           ;
+; Total                ; 00:04:20     ; --                      ; --                  ; 00:04:56                           ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
-+-----------------------------------------------------------------------------------------+
-; Flow OS Summary                                                                         ;
-+---------------------------+------------------+------------+------------+----------------+
-; Module Name               ; Machine Hostname ; OS Name    ; OS Version ; Processor type ;
-+---------------------------+------------------+------------+------------+----------------+
-; Analysis & Synthesis      ; DESKTOP-01VKD56  ; Windows 10 ; 10.0       ; x86_64         ;
-; Fitter                    ; DESKTOP-01VKD56  ; Windows 10 ; 10.0       ; x86_64         ;
-; Assembler                 ; DESKTOP-01VKD56  ; Windows 10 ; 10.0       ; x86_64         ;
-; TimeQuest Timing Analyzer ; DESKTOP-01VKD56  ; Windows 10 ; 10.0       ; x86_64         ;
-+---------------------------+------------------+------------+------------+----------------+
++------------------------------------------------------------------------------------+
+; Flow OS Summary                                                                    ;
++----------------------+------------------+------------+------------+----------------+
+; Module Name          ; Machine Hostname ; OS Name    ; OS Version ; Processor type ;
++----------------------+------------------+------------+------------+----------------+
+; Analysis & Synthesis ; DESKTOP-01VKD56  ; Windows 10 ; 10.0       ; x86_64         ;
++----------------------+------------------+------------+------------+----------------+
 
 
 ------------
 ; Flow Log ;
 ------------
 quartus_map --read_settings_files=on --write_settings_files=off CPEN391_Project -c CPEN391_Project
-quartus_fit --read_settings_files=off --write_settings_files=off CPEN391_Project -c CPEN391_Project
-quartus_asm --read_settings_files=off --write_settings_files=off CPEN391_Project -c CPEN391_Project
-quartus_sta CPEN391_Project -c CPEN391_Project
 
 
 
