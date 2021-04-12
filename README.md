@@ -17,16 +17,21 @@ This repo contains the Firmware for Cloudlockr. This codebase includes C code fo
 For testing the gyroscope sensor, run the function MPU9250_CheckStationary() 
 in cloudlockr-de1/CPEN391FW/source/mpu9250.c. This test will pass if the RFS Daughter Card is stationary 
 or very close to being stationary. 
+
 Similarly, for testing the magnetometer sensor, run the function MPU9250_CheckMagnetDirection(), 
 which is also in cloudlockr-de1/CPEN391FW/source/mpu9250.c. This test will pass if the RFS Daughter Card is 
 oriented towards the general Northern direction, which is used for passing a 32-bit value to AES encryption/decryption. 
+
 These two sensor tests are run by default by getSensorKey(), which is used for AES encryption/decryption. 
 Test results are printed in the Eclipse console. 
  
 ## Directory Structure
 /AES: Verilog+Python code for hardware accelerated AES encryption/decryption and verification.
+
 /CPEN391FW: Includes C code for UART interfacing of RFS board with DE1. 
+
 /CPEN391_Computer (Verilog) UART - For 391 Students: The main Quartus project folder for programming the DE1-SoC Board.
+
 /json-parsing: Contains JSON module for for handling Bluetooth and Wi-fi messages. 
 
 
