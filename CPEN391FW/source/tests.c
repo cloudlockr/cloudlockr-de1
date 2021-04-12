@@ -12,9 +12,9 @@
 #include "verificationService.h"
 #include "JsonParser.h"
 #include "hexService.h"
-#include "BluetoothService.h"
-#include "WifiService.h"
-#include "ProcessingService.h"
+#include "bluetoothService.h"
+#include "wifiService.h"
+#include "processingService.h"
 
 /**
  * Test 0 for whether encryption and decryption modules work as expected.
