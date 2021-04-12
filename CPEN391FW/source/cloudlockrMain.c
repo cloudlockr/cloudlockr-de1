@@ -10,39 +10,138 @@
 /* Application common headers */
 #include "TypeDef.h"
 #include "memAddress.h"
+#include "constants.h"
 
 /* Application module headers */
 #include "UART.h"
-#include "WIFI.h"
+#include "wifiService.h"
 #include "bluetoothService.h"
 #include "JsonParser.h"
 #include "hexService.h"
 #include "hpsService.h"
 #include "processingService.h"
 #include "verificationService.h"
+#include "mpu9250.h"
 
-/*------------------- Local Function Prototype -------------------*/
+// Local functions
 static void init(void);
 static void controller(void);
 
-/*------------------- FUNCTIONS DELCARATIONS TO BE IMPLEMENTED IN OTHER FILES (TODO: REMOVE ONCE COMPLETED) -------------------*/
+// Global variables
+static uint32 main_u32TimeFlags = 0;
+static uint32 main_freeCount = 0;
 
-// char* upload_data(char* email, char* fileId, char* packetNumber, char* totalPackets, char* fileData);
-// void download_data(char* localEncrpytionComponent, char* email, char* fileId);
-// char* get_wifi_networks( void );
-// int set_wifi_config(char* networkName, char* networkPassword);
-// int set_device_password(char* password);
+void main_UpdateTimeFlag(void)
+{
+    static uint32 Count_ms = 0;
 
-/*-------------------------------------------------------------------------------------------------*/
+    if (hps_elapsed_us(main_freeCount, 1000))
+    {
+        main_freeCount = *PtimerCount;
+        Count_ms++;
+        main_u32TimeFlags |= TIME_FLAG_1MS;
+
+        // Update flags
+        if ((Count_ms % 2) == 0)
+        {
+            main_u32TimeFlags |= TIME_FLAG_2MS;
+        }
+
+        if ((Count_ms % 3) == 0)
+        {
+            main_u32TimeFlags |= TIME_FLAG_3MS;
+        }
+
+        if ((Count_ms % 4) == 0)
+        {
+            main_u32TimeFlags |= TIME_FLAG_4MS;
+        }
+
+        if ((Count_ms % 5) == 0)
+        {
+            main_u32TimeFlags |= TIME_FLAG_5MS;
+        }
+
+        if ((Count_ms % 10) == 0)
+        {
+            main_u32TimeFlags |= TIME_FLAG_10MS;
+        }
+
+        if ((Count_ms % 20) == 0)
+        {
+            main_u32TimeFlags |= TIME_FLAG_20MS;
+        }
+
+        if ((Count_ms % 50) == 0)
+        {
+            main_u32TimeFlags |= TIME_FLAG_50MS;
+        }
+
+        if ((Count_ms % 100) == 0)
+        {
+            main_u32TimeFlags |= TIME_FLAG_100MS;
+        }
+
+        if ((Count_ms % 200) == 0)
+        {
+            main_u32TimeFlags |= TIME_FLAG_200MS;
+        }
+
+        if ((Count_ms % 300) == 0)
+        {
+            main_u32TimeFlags |= TIME_FLAG_300MS;
+        }
+
+        if ((Count_ms % 400) == 0)
+        {
+            main_u32TimeFlags |= TIME_FLAG_400MS;
+        }
+
+        if ((Count_ms % 500) == 0)
+        {
+            main_u32TimeFlags |= TIME_FLAG_500MS;
+        }
+
+        if ((Count_ms % 1000) == 0)
+        {
+            main_u32TimeFlags |= TIME_FLAG_1SEC;
+        }
+    }
+}
 
 /**
  * Initialize all firmware modules
  */
 static void init(void)
 {
+    hps_init();
+
     // Initialize UART ports.
     UART_Init(UART_ePORT_WIFI);
     UART_Init(UART_ePORT_BLUETOOTH);
+
+    if (MPU9250_Begin())
+    {
+        printf("MPU9250_Begin: success\n");
+    }
+    else
+    {
+        printf("MPU9250_Begin: fail\n");
+    }
+
+    if (MPU9250_EnableDrdyInt())
+    {
+        printf("EnableDrdyInt: success\n");
+    }
+    else
+    {
+        printf("EnableDrdyInt: fail\n");
+    }
+
+    // Set seed as current time, used for random display HEX code
+    time_t t;
+    srand((unsigned)time(&t));
+    reset_hex();
 }
 
 /**
@@ -50,11 +149,6 @@ static void init(void)
  */
 static void controller(void)
 {
-    // Set seed as current time, used for random display HEX code
-    time_t t;
-    srand((unsigned)time(&t));
-    reset_hex();
-
     // Controls whether services can be called, ensures correct user control flow
     int state = 0, password_set = 0, wifi_set = 0;
 
@@ -64,6 +158,13 @@ static void controller(void)
         // Wait for a request message to be received
         char *json_str = bluetooth_wait_for_data();
         jsmntok_t *json_tokens = str_to_json(json_str);
+
+        main_UpdateTimeFlag();
+        // Blink user green LED at 2Hz.
+        if (main_u32TimeFlags & TIME_FLAG_500MS)
+        {
+            hps_toggle_ledg();
+        }
 
         // Check for JSON parsing errors
         if (json_tokens == NULL)
@@ -220,6 +321,9 @@ static void controller(void)
             bluetooth_send_message(response_data);
             free(response_data);
         }
+
+        // Clear time flags  at the end of each iteration.
+        main_u32TimeFlags = 0;
     }
 }
 

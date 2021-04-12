@@ -4,6 +4,7 @@ source/processingService.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bi
 source/processingService.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/string.h
 source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/constants.h
 source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/memAddress.h
+source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/TypeDef.h
 source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/JsonParser.h
 source/processingService.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stddef.h
 source/processingService.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stdint.h
@@ -11,4 +12,5 @@ source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391F
 source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/processingService.h
 source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/verificationService.h
 source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/aesHwacc.h
-source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/WIFI.h
+source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/wifiService.h
+source/processingService.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/mpu9250.h

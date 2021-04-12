@@ -1,4 +1,4 @@
-/*
+/**
  * This module contains function declarations for verificationService.c
  */
 

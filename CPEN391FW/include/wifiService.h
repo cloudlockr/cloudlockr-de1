@@ -1,13 +1,5 @@
-/*
- * WIFI.h
- *
- *  Created on: Mar 12, 2021
- *      Author: Jason Bai
- */
-
-/*
- * Description
- * This module implement wifi related functionalities.
+/**
+ * This module contains function declarations for wifiService.c
  */
 
 #ifndef WIFI_H_

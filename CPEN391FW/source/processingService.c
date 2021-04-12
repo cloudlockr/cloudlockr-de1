@@ -9,12 +9,14 @@
 #include <string.h>
 #include "constants.h"
 #include "memAddress.h"
+#include "TypeDef.h"
 #include "JsonParser.h"
 #include "bluetoothService.h"
 #include "processingService.h"
 #include "verificationService.h"
 #include "aesHwacc.h"
-#include "WIFI.h"
+#include "wifiService.h"
+#include "mpu9250.h"
 
 /**
  * Hash function to generate a unique unsigned character for master password through some arithmetic
@@ -57,11 +59,12 @@ void generate_key(char *location, unsigned char key[])
     key[1] = (unsigned char)rand() % 256;
     key[2] = (unsigned char)rand() % 256;
     key[3] = (unsigned char)rand() % 256;
-    // REMOVE THIS LATER
+#if MOCK_BLUETOOTH
     key[0] = 0x01;
     key[1] = 0x02;
     key[2] = 0xab;
     key[3] = 0xcd;
+#endif
 
     // 32 bit DE1 master password
     char master_pw[32];
@@ -93,11 +96,12 @@ void generate_key(char *location, unsigned char key[])
     *LEDS = switches;
     key[11] = switches;
 
-    // Don't know how NESW and angular velocity will be like yet, so leave empty
-    key[12] = 0;
-    key[13] = 0;
-    key[14] = 0;
-    key[15] = 0;
+    // Magnetometer values
+    uint32_t sensor_values = getSensorKey();
+    key[12] = (unsigned char)(sensor_values >> 24);
+    key[13] = (unsigned char)(sensor_values >> 16);
+    key[14] = (unsigned char)(sensor_values >> 8);
+    key[15] = (unsigned char)sensor_values;
 }
 
 /**
@@ -150,11 +154,12 @@ void regenerate_key(char *encryption_component, char *location, unsigned char ke
     *LEDS = switches;
     key[11] = switches;
 
-    // Don't know how NESW and angular velocity will be like yet, so leave empty
-    key[12] = 0;
-    key[13] = 0;
-    key[14] = 0;
-    key[15] = 0;
+    // Magnetometer values
+    uint32_t sensor_values = getSensorKey();
+    key[12] = (unsigned char)(sensor_values >> 24);
+    key[13] = (unsigned char)(sensor_values >> 16);
+    key[14] = (unsigned char)(sensor_values >> 8);
+    key[15] = (unsigned char)sensor_values;
 }
 
 /**
