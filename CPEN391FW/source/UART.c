@@ -37,7 +37,7 @@
 // programming
 
 /**************************************************************************
-** Subroutine to initialise the UART Port by writing some data
+** Subroutine to initialize the UART Port by writing some data
 ** to the internal registers.
 ** Call this function at the start of the program before you attempt
 ** to read or write to data via the RS232 port
