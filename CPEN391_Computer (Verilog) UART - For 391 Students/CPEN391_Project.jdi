@@ -195,7 +195,7 @@
     </sld_info>
     <sld_info hpath="CPEN391_Computer:u0" name="u0">
       <assignment_values>
-        <assignment_value text="QSYS_NAME CPEN391_Computer HAS_SOPCINFO 1 GENERATION_ID 1618182670"/>
+        <assignment_value text="QSYS_NAME CPEN391_Computer HAS_SOPCINFO 1 GENERATION_ID 1618197719"/>
       </assignment_values>
       <parameters/>
     </sld_info>

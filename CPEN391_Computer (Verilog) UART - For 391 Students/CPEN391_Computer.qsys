@@ -343,6 +343,11 @@
          value = "21";
          type = "int";
       }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
+      }
    }
 }
 ]]></parameter>

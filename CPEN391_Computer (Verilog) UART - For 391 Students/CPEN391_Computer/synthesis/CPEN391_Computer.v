@@ -105,7 +105,7 @@ module CPEN391_Computer (
 		output wire        spi_0_MOSI,                      //                     .MOSI
 		output wire        spi_0_SCLK,                      //                     .SCLK
 		output wire        spi_0_SS_n,                      //                     .SS_n
-		
+
 		input  wire        system_pll_ref_clk_clk,          //   system_pll_ref_clk.clk
 		input  wire        system_pll_ref_reset_reset       // system_pll_ref_reset.reset
 	);
@@ -817,10 +817,10 @@ module CPEN391_Computer (
 		.spi_select    (mm_interconnect_0_spi_0_spi_control_port_chipselect), //                 .chipselect
 		.write_n       (~mm_interconnect_0_spi_0_spi_control_port_write),     //                 .write_n
 		.irq           (irq_mapper_receiver4_irq),                            //              irq.irq
-		.MISO          (spi_0_MISO),                                          //         external.export
-		.MOSI          (spi_0_MOSI),                                          //                 .export
-		.SCLK          (spi_0_SCLK),                                          //                 .export
-		.SS_n          (spi_0_SS_n)                                           //                 .export
+		.MISO          (spi_0_MISO),                                                    //         external.export
+		.MOSI          (spi_0_MOSI),                                                    //                 .export
+		.SCLK          (spi_0_SCLK),                                                    //                 .export
+		.SS_n          (spi_0_SS_n)                                                     //                 .export
 	);
 
 	CPEN391_Computer_mm_interconnect_0 mm_interconnect_0 (
