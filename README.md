@@ -28,11 +28,9 @@ Test results are printed in the Eclipse console.
 ## Directory Structure
 /AES: Verilog+Python code for hardware accelerated AES encryption/decryption and verification.
 
-/CPEN391FW: Includes C code for UART interfacing of RFS board with DE1. 
+/CPEN391FW: Includes C code for UART interfacing of RFS board with DE1, and JSON module for handling Bluetooth and Wi-fi messages. 
 
 /CPEN391_Computer (Verilog) UART - For 391 Students: The main Quartus project folder for programming the DE1-SoC Board.
-
-/json-parsing: Contains JSON module for for handling Bluetooth and Wi-fi messages. 
 
 
 ## How to run DE1 Firmware
