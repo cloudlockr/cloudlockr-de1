@@ -9,7 +9,9 @@
 #include "memAddress.h"
 #include "aesHwacc.h"
 #include "verificationService.h"
+#include "JsonParser.h"
 #include "hexService.h"
+#include "Wifi.h"
 
 /**
  * Test 0 for whether encryption and decryption modules work as expected.
@@ -286,14 +288,454 @@ void hex_test()
     generate_display_hex_code();
 }
 
+
+/**
+ * Integration tests for each message type.
+ */
+/**
+ * Message type 1, generateDisplayHexCode()
+ */
+void message1_test1() {
+    generate_display_hex_code();
+    printf("Check if HEX has generated new numbers to pass message 1 test 1\n");
+}
+
+/**
+ * Message type 2, verify()
+ * password and hex correct = true
+ */
+void message2_test1() {
+	set_password("sending rending lending blending");
+	*HEX_ADDR = (unsigned)0x123ABC;
+    int success = verify("sending rending lending blending", "123ABC");
+    if (success)
+    {
+    	printf("Passed message 2 test 1\n");
+    }
+    else
+    {
+    	printf("Failed message 2 test 1\n");
+    }
+}
+
+/**
+ * Message type 2, verify()
+ * password wrong and hex correct = fail
+ */
+void message2_test2() {
+	set_password("sending lending blending");
+	*HEX_ADDR = (unsigned)0xABC123;
+    int success = verify("sending rending lending blending", "ABC123");
+    if (!success)
+    {
+    	printf("Passed message 2 test 2\n");
+    }
+    else
+    {
+    	printf("Failed message 2 test 2\n");
+    }
+}
+
+/**
+ * Message type 2, verify()
+ * password correct and hex wrong = fail
+ */
+void message2_test3() {
+	set_password("rending lending blending");
+	*HEX_ADDR = (unsigned)0x123ABC;
+    int success = verify("rending lending blending", "AB12BC");
+    if (!success)
+    {
+    	printf("Passed message 2 test 3\n");
+    }
+    else
+    {
+    	printf("Failed message 2 test 3\n");
+    }
+}
+
+/**
+ * Message type 2, verify()
+ * password and hex correct = pass
+ */
+void message2_test4() {
+	set_password("rending lending blending");
+	*HEX_ADDR = (unsigned)0xAB12BC;
+    int success = verify("rending lending blending", "AB12BC");
+    if (success)
+    {
+    	printf("Passed message 2 test 4\n");
+    }
+    else
+    {
+    	printf("Failed message 2 test 4\n");
+    }
+}
+
+/**
+ * Message type 2, verify()
+ * password and hex wrong = fail
+ */
+void message2_test5() {
+	set_password("rending blending");
+	*HEX_ADDR = (unsigned)0xEF01234;
+    int success = verify("rending lending blending", "AB12BC");
+    if (!success)
+    {
+    	printf("Passed message 2 test 5\n");
+    }
+    else
+    {
+    	printf("Failed message 2 test 5\n");
+    }
+}
+
+/**
+ * Message type 2, verify()
+ * password and hex correct = pass
+ * with json str
+ */
+void message2_test6() {
+	set_password("1234567890abc");
+	*HEX_ADDR = (unsigned)0xABCDEF;
+	char *json_str = "{\"type\":2,\"password\":\"1234567890abc\",\"hex\":\"ABCDEF\"}";
+    jsmntok_t *json_tokens = str_to_json(json_str);
+
+	// Check for JSON parsing errors
+	if (json_tokens == NULL)
+	{
+    	printf("Failed message 2 test 6\n");
+    	return;
+	}
+
+	int expected_num_values = 3;
+    char **all_values;
+    all_values = get_json_values(json_str, json_tokens, expected_num_values);
+    int success = verify(all_values[1], all_values[2]);
+    if (success)
+    {
+    	printf("Passed message 2 test 6\n");
+    }
+    else
+    {
+    	printf("Failed message 2 test 6\n");
+    }
+}
+
+/**
+ * Message type 2, verify()
+ * password wrong and hex correct = fail
+ * with json str
+ */
+void message2_test7() {
+	set_password("mosh1prove5zsd");
+	*HEX_ADDR = (unsigned)0xABCDEF;
+	char *json_str = "{\"type\":2,\"password\":\"1234567890abc\",\"hex\":\"ABCDEF\"}";
+    jsmntok_t *json_tokens = str_to_json(json_str);
+
+	// Check for JSON parsing errors
+	if (json_tokens == NULL)
+	{
+    	printf("Failed message 2 test 7\n");
+    	return;
+	}
+
+	int expected_num_values = 3;
+    char **all_values;
+    all_values = get_json_values(json_str, json_tokens, expected_num_values);
+    int success = verify(all_values[1], all_values[2]);
+    if (!success)
+    {
+    	printf("Passed message 2 test 7\n");
+    }
+    else
+    {
+    	printf("Failed message 2 test 7\n");
+    }
+}
+
+/**
+ * Message type 2, verify()
+ * password correct and hex wrong = fail
+ * with json str
+ */
+void message2_test8() {
+	set_password("1234567890abc");
+	*HEX_ADDR = (unsigned)0x012345;
+	char *json_str = "{\"type\":2,\"password\":\"1234567890abc\",\"hex\":\"ABCDEF\"}";
+    jsmntok_t *json_tokens = str_to_json(json_str);
+
+	// Check for JSON parsing errors
+	if (json_tokens == NULL)
+	{
+    	printf("Failed message 2 test 8\n");
+    	return;
+	}
+
+	int expected_num_values = 3;
+    char **all_values;
+    all_values = get_json_values(json_str, json_tokens, expected_num_values);
+    int success = verify(all_values[1], all_values[2]);
+    if (!success)
+    {
+    	printf("Passed message 2 test 8\n");
+    }
+    else
+    {
+    	printf("Failed message 2 test 8\n");
+    }
+}
+
+/**
+ * Message type 2, verify()
+ * password and hex wrong = fail
+ * with json str
+ */
+void message2_test9() {
+	set_password("jsonnnon1");
+	*HEX_ADDR = (unsigned)0x987654;
+	char *json_str = "{\"type\":2,\"password\":\"1234567890abc\",\"hex\":\"ABCDEF\"}";
+    jsmntok_t *json_tokens = str_to_json(json_str);
+
+	// Check for JSON parsing errors
+	if (json_tokens == NULL)
+	{
+    	printf("Failed message 2 test 9\n");
+    	return;
+	}
+
+	int expected_num_values = 3;
+    char **all_values;
+    all_values = get_json_values(json_str, json_tokens, expected_num_values);
+    int success = verify(all_values[1], all_values[2]);
+    if (!success)
+    {
+    	printf("Passed message 2 test 9\n");
+    }
+    else
+    {
+    	printf("Failed message 2 test 9\n");
+    }
+}
+
+/**
+ * Message type 3, upload()
+ * tests a good json
+ * need to mock wifi still, todo!!!
+ */
+void message3_test1() {
+
+	char *json_str = "{\"type\":3,\"fileId\":\"d869c9d6-1227-40ca-a3e8-bc11db68a1ab\",\"packetNumber\":1,\"totalPackets\":3,\"location\":\"37.422|-122.084|5.285\",\"fileData\":\"1234567890abcdeffedcba0987654321\"}";
+	jsmntok_t *json_tokens = str_to_json(json_str);
+
+	// Check for JSON parsing errors
+	if (json_tokens == NULL)
+	{
+    	printf("Failed message 3 test 1\n");
+    	return;
+	}
+
+    int expected_num_values = 6;
+    char **all_values;
+    all_values = get_json_values(json_str, json_tokens, expected_num_values);
+    int packet_number = (int)strtol(all_values[2], NULL, 10);
+    int total_packets = (int)strtol(all_values[3], NULL, 10);
+    char *response_data = (char *)upload(all_values[1], packet_number, total_packets, all_values[4], all_values[5]); //TODO mock wifi here
+    int success = 1;
+    if (success)
+    {
+    	printf("Passed message 3 test 1\n");
+    }
+    else
+    {
+    	printf("Failed message 3 test 1\n");
+    }
+}
+
+/**
+ * Message type 4, download()
+ * also need to mock wifi talk with bob
+ */
+void message4_test1() {
+
+	char *json_str = "{\"type\":4,\"localEncryptionComponent\":\"0102ABCD\",\"fileId\":\"d869c9d6-1227-40ca-a3e8-bc11db68a1ab\",\"location\":\"37.422|-122.084|5.285\"}";
+	jsmntok_t *json_tokens = str_to_json(json_str);
+
+	// Check for JSON parsing errors
+	if (json_tokens == NULL)
+	{
+    	printf("Failed message 4 test 1\n");
+    	return;
+	}
+
+	int expected_num_values = 4;
+	char **all_values;
+	all_values = get_json_values(json_str, json_tokens, expected_num_values);
+	download(all_values[2], all_values[1], all_values[3]);
+    int success = 1;
+    if (!success)
+    {
+    	printf("Passed message 4 test 1\n");
+    }
+    else
+    {
+    	printf("Failed message 4 test 1\n");
+    }
+}
+
+/**
+ * Message type 6, set_wifi_config()
+ * name password correct = pass
+ * also need to mock wifi talk with bob
+ */
+void message6_test1() {
+
+	char *json_str = "{\"type\":6,\"networkName\":\"networkName\",\"networkPassword\":\"networkPassword\"}";
+	jsmntok_t *json_tokens = str_to_json(json_str);
+
+	// Check for JSON parsing errors
+	if (json_tokens == NULL)
+	{
+    	printf("Failed message 6 test 1\n");
+    	return;
+	}
+
+	int expected_num_values = 4;
+	char **all_values;
+	all_values = get_json_values(json_str, json_tokens, expected_num_values);
+
+    int success = set_wifi_config(all_values[1], all_values[2]);
+    if (success)
+    {
+    	printf("Passed message 6 test 1\n");
+    }
+    else
+    {
+    	printf("Failed message 6 test 1\n");
+    }
+}
+
+/**
+ * Message type 6, set_wifi_config()
+ * name wrong password correct = fail
+ * also need to mock wifi talk with bob
+ */
+void message6_test2() {
+
+	char *json_str = "{\"type\":6,\"networkName\":\"networkWrongName\",\"networkPassword\":\"networkPassword\"}";
+	jsmntok_t *json_tokens = str_to_json(json_str);
+
+	// Check for JSON parsing errors
+	if (json_tokens == NULL)
+	{
+    	printf("Failed message 6 test 2\n");
+    	return;
+	}
+
+
+	int expected_num_values = 4;
+	char **all_values;
+	all_values = get_json_values(json_str, json_tokens, expected_num_values);
+
+    int success = set_wifi_config(all_values[1], all_values[2]);
+    if (!success)
+    {
+    	printf("Passed message 6 test 2\n");
+    }
+    else
+    {
+    	printf("Failed message 6 test 2\n");
+    }
+}
+
+/**
+ * Message type 6, set_wifi_config()
+ * name wrong password correct = fail
+ * also need to mock wifi talk with bob
+ */
+void message6_test3() {
+
+	char *json_str = "{\"type\":6,\"networkName\":\"networkName\",\"networkPassword\":\"networkWrongPassword\"}";
+	jsmntok_t *json_tokens = str_to_json(json_str);
+
+	// Check for JSON parsing errors
+	if (json_tokens == NULL)
+	{
+    	printf("Passed message 6 test 3\n");
+    	return;
+	}
+
+	int expected_num_values = 4;
+	char **all_values;
+	all_values = get_json_values(json_str, json_tokens, expected_num_values);
+
+    int success = set_wifi_config(all_values[1], all_values[2]);
+    if (!success)
+    {
+    	printf("Passed message 6 test 3\n");
+    }
+    else
+    {
+    	printf("Failed message 6 test 3\n");
+    }
+}
+
+/**
+ * Message type 6, set_wifi_config()
+ * name wrong password correct = fail
+ * also need to mock wifi talk with bob
+ */
+void message6_test4() {
+
+	char *json_str = "{\"type\":6,\"networkName\":\"networkWrongName\",\"networkPassword\":\"networkWrongPassword\"}";
+	jsmntok_t *json_tokens = str_to_json(json_str);
+
+	// Check for JSON parsing errors
+	if (json_tokens == NULL)
+	{
+    	printf("Passed message 6 test 4\n");
+    	return;
+	}
+
+	int expected_num_values = 4;
+	char **all_values;all_values = get_json_values(json_str, json_tokens, expected_num_values);
+
+    int success = set_wifi_config(all_values[1], all_values[2]);
+    if (!success)
+    {
+    	printf("Passed message 6 test 4\n");
+    }
+    else
+    {
+    	printf("Failed message 6 test 4\n");
+    }
+}
+
 /**
  * Uncomment the following main function and comment out the cloudlockrMain.c main function
  * to run the tests
  */
-// int main()
-// {
-//     aes_test0();
-//     aes_test1();
-//     password_test();
-//     hex_test();
-// }
+ int main()
+ {
+     aes_test0();
+     aes_test1();
+     password_test();
+     //hex_test();
+     message1_test1();
+
+     message2_test1();
+     message2_test2();
+     message2_test3();
+     message2_test4();
+     message2_test5();
+     message2_test6();
+     message2_test7();
+     message2_test8();
+     message2_test9();
+
+     //message3_test1();
+
+     //message4_test1();
+
+     //message6_test1();
+ }
