@@ -26,7 +26,7 @@ static int bluetooth_count = 0;
 static char bluetooth_data[BUFFER_SIZE];
 
 // Mocking request index
-static int mock_idx = 0;
+int mock_idx = 0;
 
 char *mock_bluetooth_wait_for_data(void)
 {

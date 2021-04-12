@@ -6,12 +6,15 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+#include "constants.h"
 #include "memAddress.h"
 #include "aesHwacc.h"
 #include "verificationService.h"
 #include "JsonParser.h"
 #include "hexService.h"
-#include "wifiService.h"
+#include "BluetoothService.h"
+#include "WifiService.h"
+#include "ProcessingService.h"
 
 /**
  * Test 0 for whether encryption and decryption modules work as expected.
@@ -518,10 +521,54 @@ void message2_test9() {
     }
 }
 
+
+/**
+ * Message type 3 and 4, upload() and download
+ * please change to your wifi name and password to test.
+ */
+void message34_test1() {
+	// Change Me!
+	set_wifi_config("networkWrongName", "I4a3Tes90Eap3enN7es");
+
+	extern int mock_idx;
+	mock_idx = 4;
+	char *json_str = bluetooth_wait_for_data();
+	jsmntok_t *json_tokens = str_to_json(json_str);
+
+	// Check for JSON parsing errors
+	if (json_tokens == NULL)
+	{
+		printf("Failed message 3-4 test 1\n");
+		return;
+	}
+
+	int expected_num_values = 6;
+	char **all_values;
+	all_values = get_json_values(json_str, json_tokens, expected_num_values);
+	int packet_number = (int)strtol(all_values[2], NULL, 10);
+	int total_packets = (int)strtol(all_values[3], NULL, 10);
+	char *response_data = upload(all_values[1], packet_number, total_packets, all_values[4], all_values[5]);
+
+	json_str = bluetooth_wait_for_data();
+	json_tokens = str_to_json(json_str);
+
+	// Check for JSON parsing errors
+	if (json_tokens == NULL)
+	{
+		printf("Failed message 3, 4 test 1\n");
+		return;
+	}
+
+	expected_num_values = 4;
+	all_values = get_json_values(json_str, json_tokens, expected_num_values);
+	download(all_values[2], all_values[1], all_values[3]);
+
+}
+
 /**
  * Message type 3, upload()
  * tests a good json
- * need to mock wifi still, todo!!!
+ *
  */
 void message3_test1() {
 
@@ -540,7 +587,7 @@ void message3_test1() {
     all_values = get_json_values(json_str, json_tokens, expected_num_values);
     int packet_number = (int)strtol(all_values[2], NULL, 10);
     int total_packets = (int)strtol(all_values[3], NULL, 10);
-    char *response_data = (char *)upload(all_values[1], packet_number, total_packets, all_values[4], all_values[5]); //TODO mock wifi here
+    char *response_data = upload(all_values[1], packet_number, total_packets, all_values[4], all_values[5]); //TODO mock wifi here
     int success = 1;
     if (success)
     {
@@ -554,7 +601,7 @@ void message3_test1() {
 
 /**
  * Message type 4, download()
- * also need to mock wifi talk with bob
+ *
  */
 void message4_test1() {
 
@@ -586,7 +633,7 @@ void message4_test1() {
 /**
  * Message type 6, set_wifi_config()
  * name password correct = pass
- * also need to mock wifi talk with bob
+ *
  */
 void message6_test1() {
 
@@ -618,7 +665,7 @@ void message6_test1() {
 /**
  * Message type 6, set_wifi_config()
  * name wrong password correct = fail
- * also need to mock wifi talk with bob
+ *
  */
 void message6_test2() {
 
@@ -651,7 +698,7 @@ void message6_test2() {
 /**
  * Message type 6, set_wifi_config()
  * name wrong password correct = fail
- * also need to mock wifi talk with bob
+ *
  */
 void message6_test3() {
 
@@ -661,7 +708,7 @@ void message6_test3() {
 	// Check for JSON parsing errors
 	if (json_tokens == NULL)
 	{
-    	printf("Passed message 6 test 3\n");
+    	printf("Failed message 6 test 3\n");
     	return;
 	}
 
@@ -683,7 +730,7 @@ void message6_test3() {
 /**
  * Message type 6, set_wifi_config()
  * name wrong password correct = fail
- * also need to mock wifi talk with bob
+ *
  */
 void message6_test4() {
 
@@ -693,12 +740,13 @@ void message6_test4() {
 	// Check for JSON parsing errors
 	if (json_tokens == NULL)
 	{
-    	printf("Passed message 6 test 4\n");
+    	printf("Failed message 6 test 4\n");
     	return;
 	}
 
 	int expected_num_values = 4;
-	char **all_values;all_values = get_json_values(json_str, json_tokens, expected_num_values);
+	char **all_values;
+	all_values = get_json_values(json_str, json_tokens, expected_num_values);
 
     int success = set_wifi_config(all_values[1], all_values[2]);
     if (!success)
@@ -708,6 +756,48 @@ void message6_test4() {
     else
     {
     	printf("Failed message 6 test 4\n");
+    }
+}
+
+/**
+ * Message type 7, set_password()
+ * check if value goes to memory
+ *
+ */
+void message7_test1() {
+
+	char *json_str = "{\"type\":7,\"password\":\"1234567890abc\"}";
+	jsmntok_t *json_tokens = str_to_json(json_str);
+
+	// Check for JSON parsing errors
+	if (json_tokens == NULL)
+	{
+    	printf("Failed message 7 test 1\n");
+    	return;
+	}
+
+	int expected_num_values = 2;
+	char **all_values;
+    all_values = get_json_values(json_str, json_tokens, expected_num_values);
+
+    set_password(all_values[1]);
+
+    int success = 1;
+    char *cmp_str = "1234567890abc";
+    for (int i = 0; i < MAX_PASSWORD_LENGTH; i++) {
+    	if (*(MASTER_PW_ADDR + i) != *(cmp_str)) {
+    		success = 0;
+    		break;
+    	}
+    	if (*(MASTER_PW_ADDR + i) == '\0') break;
+    }
+    if (!success)
+    {
+    	printf("Passed message 7 test 1\n");
+    }
+    else
+    {
+    	printf("Failed message 7 test 1\n");
     }
 }
 
@@ -733,9 +823,5 @@ void message6_test4() {
 //      message2_test8();
 //      message2_test9();
 
-//      //message3_test1();
-
-//      //message4_test1();
-
-//      //message6_test1();
+//      message7_test1();
 //  }
