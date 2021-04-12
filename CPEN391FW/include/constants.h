@@ -9,8 +9,7 @@
 #define MAX_PASSWORD_LENGTH 32
 
 // Max size for filedata sent from bluetooth
-// #define MAX_FILEDATA_SIZE 0x00100000 // One megabyte
-#define MAX_FILEDATA_SIZE 0x0020 // 32 bytes
+#define MAX_FILEDATA_SIZE 0x0200 // 512 bytes
 
 // Bluetooth constants
 #define BUFFER_SIZE 500500	  // 1 mb of data (assuming 2 bytes per char) + 500 bytes of extra data allowance

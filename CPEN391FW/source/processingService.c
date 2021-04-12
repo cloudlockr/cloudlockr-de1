@@ -359,7 +359,7 @@ void download(char *file_id, char *encryption_component, char *location)
         sprintf(response_data, "{\"packetNumber\":%c,\"totalPackets\":%c,\"fileData\":\"%s\"}\v\n", packet_number + '0', total_packets + '0', entire_plaintext);
 
         bluetooth_send_message(response_data);
-        printf("%s\n", response_data);
+        // printf("%s\n", response_data);
 
         // Wait for user to be ready to receive another response
         while (!status && total_packets > packet_number)
