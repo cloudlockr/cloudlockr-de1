@@ -24,6 +24,30 @@
 #include "WIFI.h"
 #include "Bluetooth.h"
 #include "JsonParser.h"
+#include "MPU9250.h"
+
+/*------------------- Constants Define ---------------------------------------*/
+
+#define TIME_FLAG_1MS   0x0001
+#define TIME_FLAG_2MS   0x0002
+#define TIME_FLAG_3MS   0x0004
+#define TIME_FLAG_4MS   0x0008
+#define TIME_FLAG_5MS   0x0010
+#define TIME_FLAG_10MS  0x0020
+#define TIME_FLAG_20MS  0x0040
+#define TIME_FLAG_50MS  0x0080
+#define TIME_FLAG_100MS 0x0100
+#define TIME_FLAG_200MS 0x0210
+#define TIME_FLAG_300MS 0x0410
+#define TIME_FLAG_400MS 0x0810
+#define TIME_FLAG_500MS 0x1000
+#define TIME_FLAG_1SEC  0x2000
+
+/*------------------- Local Variables ----------------------------------------*/
+static uint32 main_u32TimeFlags = 0;
+static uint32 main_freeCount = 0;
+
+
 
 /*------------------- Local Function Prototype -------------------*/
 static void init( void );
@@ -50,6 +74,8 @@ static void controller( void );
 ***************************************************************************/
 static void init( void )
 {
+	HPS_Init();
+
     // Initialize UART ports.
     UART_Init( UART_ePORT_WIFI );
     UART_Init( UART_ePORT_BLUETOOTH );
@@ -61,7 +87,104 @@ static void init( void )
         // We need a sleep function.
     //    HPS_usleep(3 * 1000 * 1000); // 3 seconds
     //}
+    
+    if ( MPU9250_Begin() )
+    {
+        printf( "MPU9250_Begin: success\n" );
+    }
+    else
+    {
+        printf( "MPU9250_Begin: fail\n" );
+    }
+    
+    if ( MPU9250_EnableDrdyInt() )
+    {
+        printf( "EnableDrdyInt: success\n" );
+    }
+    else
+    {
+        printf( "EnableDrdyInt: fail\n" );
+    }
 
+}
+
+void main_UpdateTimeFlag( void )
+{
+    static uint32 Count_ms  = 0;
+    
+    if ( HPS_ElapsedUs( main_freeCount, 1000 ) )
+    {
+	    main_freeCount = *PtimerCount;
+        Count_ms++;
+        main_u32TimeFlags |= TIME_FLAG_1MS;
+    
+        // Update flags    
+        if ( ( Count_ms % 2 ) == 0 )
+        {   
+            main_u32TimeFlags |= TIME_FLAG_2MS;
+        }
+    
+        if ( ( Count_ms % 3 ) == 0 )
+        {   
+            main_u32TimeFlags |= TIME_FLAG_3MS;
+        }
+    
+        if ( ( Count_ms % 4 ) == 0 )
+        {   
+            main_u32TimeFlags |= TIME_FLAG_4MS;
+        }
+    
+        if ( ( Count_ms % 5 ) == 0 )
+        {   
+            main_u32TimeFlags |= TIME_FLAG_5MS;
+        }
+    
+        if ( ( Count_ms % 10 ) == 0 )
+        {   
+            main_u32TimeFlags |= TIME_FLAG_10MS;
+        }
+    
+        if ( ( Count_ms % 20 ) == 0 )
+        {   
+            main_u32TimeFlags |= TIME_FLAG_20MS;
+        }
+    
+        if ( ( Count_ms % 50 ) == 0 )
+        {   
+            main_u32TimeFlags |= TIME_FLAG_50MS;
+        }
+    
+        if ( ( Count_ms % 100 ) == 0 )
+        {   
+            main_u32TimeFlags |= TIME_FLAG_100MS;
+        }
+    
+        if ( ( Count_ms % 200 ) == 0 )
+        {   
+            main_u32TimeFlags |= TIME_FLAG_200MS;
+        }
+    
+        if ( ( Count_ms % 300 ) == 0 )
+        {   
+            main_u32TimeFlags |= TIME_FLAG_300MS;
+        }
+    
+        if ( ( Count_ms % 400 ) == 0 )
+        {   
+            main_u32TimeFlags |= TIME_FLAG_400MS;
+        }
+    
+    
+        if ( ( Count_ms % 500 ) == 0 )
+        {   
+            main_u32TimeFlags |= TIME_FLAG_500MS;
+        }
+    
+        if ( ( Count_ms % 1000 ) == 0 )
+        {   
+            main_u32TimeFlags |= TIME_FLAG_1SEC;
+        }
+    }
 }
 
 static void controller( void )
@@ -71,7 +194,31 @@ static void controller( void )
 		// Wait for a request message to be received
 		char* jsonString = bluetooth_wait_for_data();
 		jsmntok_t* jsonTokens = str_to_json(jsonString);
+		static int flag = 0;
+    
+		main_UpdateTimeFlag();
+    
+		// Blink user green LED at 2Hz.
+		if ( main_u32TimeFlags & TIME_FLAG_500MS )
+		{
+			HPS_ToggleLedG();
+		}
 
+		// For sensor testing only - remove after verification.
+#if 0
+		//-----------------------------
+		if ( main_u32TimeFlags & TIME_FLAG_1SEC )
+		{
+			flag++;
+			if ( flag >= 2 )
+			{
+				getSensorKey();
+				flag = 0;
+			}
+		}
+		//=====================================
+#endif
+    
 		// Check for JSON parsing errors
 		if ( jsonTokens == NULL )
 		{
@@ -177,6 +324,9 @@ static void controller( void )
 			// Send full char message
 			bluetooth_send_message(responseData);
 		}
+    
+    // Clear time flags  at the end of each iteration.
+    main_u32TimeFlags = 0;
 	}
 }
 
