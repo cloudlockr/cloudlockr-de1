@@ -1,27 +1,59 @@
+/**
+ * This module implements the AES encryption algorithm.
+ * The master writes the key and plaintext through memory-mapped addresses,
+ * the address details are as follows:
+ *    word 0: First 32 bits of key, [7:0] is the lowest 8 bits, [15:8] is the second lowest 8 bits, etc.
+ *    word 1: Second 32 bits of key
+ *    word 2: Third 32 bits of key
+ *    word 3: Fourth 32 bits of key
+ *    
+ *    word 4: First 32 bits of plaintext
+ *    word 5: Second 32 bits of plaintext
+ *    word 6: Third 32 bits of plaintext
+ *    word 7: Fourth 32 bits of plaintext
+ *    
+ *    word 8: Start AES encryption module with key expansion
+ *    word 9: Start AES encryption module without key expansion
+ * 
+ * Since each encryption only encrypts 128 bits, and we are usually encrypting files containing more
+ * than 128 bits, we will need to start the AES module several times. However, we only need to 
+ * perform key expansion once, as the same file is encrypted using the same key. Therefore, there are
+ * 2 options to start the module with. Writing to word 8 starts the module with key expansion, and this
+ * should only occur once per file to encrypt. Writing to word 9 starts the module with no key expansion,
+ * and this should occur for all file blocks after the first one 
+ */
+
 module aes_encrypt(input logic clk, input logic rst_n,
-               // slave (CPU-facing)
+               // outputs and inputs to and from master (most likely the HPS ARM processor)
                output logic slave_waitrequest,
                input logic [3:0] slave_address,
                input logic slave_read, output logic [31:0] slave_readdata,
                input logic slave_write, input logic [31:0] slave_writedata);
 
     // use 1D array for key, cipher block, and sbox
-    // all of the arrays have to be read in from memory
     logic [7:0] sbox [0:255];
     logic [7:0] key [0:175];
     logic [7:0] block [0:15];
+
+    // round constant for AES key schedule
     logic [8:0] rcon [0:3];
+
+    // helper blocks for computing ROUND function
     logic [7:0] copy_block [0:15];
     logic [7:0] mult2_block [0:15];
 
+    // output blocks for CPU to read from
     logic [31:0] block0, block1, block2, block3;
+    // index for round function count
     logic [3:0] r_i;
+    // index for key expansion
     logic [1:0] k_i;
     logic done;
 
     enum {START, SBOX, KEXP0, KEXP1, XOR, ROUND, SUB, SHIFT, MIX0, MIX1, DONE} state;
 
     always @(posedge clk) begin
+        // Wait for reset
         if (~rst_n) begin
             state <= START;
 
@@ -37,6 +69,7 @@ module aes_encrypt(input logic clk, input logic rst_n,
 
             done <= 1'b0;
         end
+        // Or wait for CPU to write to word4
         else if (slave_write && slave_address === 4'd4) begin
             state <= START;
 
@@ -132,10 +165,12 @@ module aes_encrypt(input logic clk, input logic rst_n,
                         end
 
                         else if (slave_address === 4'd8) begin
+                            // perform key expansion
                             state <= SBOX;
                             slave_waitrequest <= 1'b1;
                         end
                         else if (slave_address === 4'd9) begin
+                            // skip key expansion and go straight to encryption
                             state <= XOR;
                             slave_waitrequest <= 1'b1;
                         end
@@ -164,6 +199,7 @@ module aes_encrypt(input logic clk, input logic rst_n,
                     sbox[240:255] <= '{8'h8c, 8'ha1, 8'h89, 8'h0d, 8'hbf, 8'he6, 8'h42, 8'h68, 8'h41, 8'h99, 8'h2d, 8'h0f, 8'hb0, 8'h54, 8'hbb, 8'h16};
                 end
 
+                // state 0 to perform key expansion
                 KEXP0: begin
                     if (r_i === 4'd10) begin
                         state <= XOR;
@@ -178,6 +214,7 @@ module aes_encrypt(input logic clk, input logic rst_n,
                     end
                 end
 
+                // state 1 to perform key expansion
                 KEXP1: begin
                     key[((r_i+1)<<4)+k_i+0] <= key[(r_i<<4)+k_i+0] ^ key[((r_i+1)<<4)+k_i-1];
                     key[((r_i+1)<<4)+k_i+4] <= key[(r_i<<4)+k_i+4] ^ key[((r_i+1)<<4)+k_i+3];
@@ -199,6 +236,7 @@ module aes_encrypt(input logic clk, input logic rst_n,
                     end
                 end
 
+                // state for round function (basically a for loop)
                 ROUND: begin
                     if (r_i === 4'd10) begin
                         state <= DONE;
@@ -215,6 +253,7 @@ module aes_encrypt(input logic clk, input logic rst_n,
                     end
                 end
 
+                // state for byte substitution with SBOX
                 SUB: begin
                     // hopefully synthesizable for loop
                     for (int i = 0; i < 16; i++) begin
@@ -223,6 +262,7 @@ module aes_encrypt(input logic clk, input logic rst_n,
                     state <= SHIFT;
                 end
 
+                // state for row shifting
                 SHIFT: begin
                     block[4'd4] <= block[4'd5];
                     block[4'd5] <= block[4'd6];
@@ -239,6 +279,7 @@ module aes_encrypt(input logic clk, input logic rst_n,
                     state <= MIX0;
                 end
 
+                // state 0 for column mixing
                 MIX0: begin
                     if (r_i === 4'd10) begin
                         state <= XOR;
@@ -257,6 +298,7 @@ module aes_encrypt(input logic clk, input logic rst_n,
                     end
                 end
 
+                // state 1 for column mixing
                 MIX1: begin
                     for (int i = 0; i < 4; i++) begin
                         block[i] <= mult2_block[i] ^ mult2_block[4+i] ^ copy_block[4+i] ^ copy_block[8+i] ^ copy_block[12+i];
@@ -267,6 +309,7 @@ module aes_encrypt(input logic clk, input logic rst_n,
                     state <= XOR;
                 end
 
+                // state for XOR each bit of cipherblock and key together
                 XOR: begin
                     for (int i = 0; i < 16; i++) begin
                         block[i] <= block[i] ^ key[i + (r_i << 4) + 0];
@@ -283,7 +326,7 @@ module aes_encrypt(input logic clk, input logic rst_n,
         end
     end
 
-    // Reading
+    // Outputting data when CPU reads
     always @(*) begin
         slave_readdata <= 0;
         if (slave_read) begin

@@ -21,6 +21,7 @@ module tb_aes_encrypt();
         slave_read = 1'b0;
         slave_write = 1'b0;
 
+        // RUN aes.py BEFORE RUNNING THE TESTBENCH
         @(posedge clk);
         $readmemh("./mem_content0.memh", mem_content);
         $readmemh("./ref_content0.memh", ref_content);
