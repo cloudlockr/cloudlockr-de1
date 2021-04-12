@@ -1,8 +1,36 @@
 # cloudlockr-de1
 
-Firmware for Cloudlockr. Includes C code for UART interfacing of RFS board with DE1, and Verilog+Python code for hardware accelerated AES encryption/decryption and verification
+This repo contains the Firmware for Cloudlockr. This codebase includes C code for UART interfacing of RFS board with DE1, and Verilog+Python code for hardware accelerated AES encryption/decryption and verification. The main Quartus project folder for programming the DE1-SoC Board is also found here.  
 
-# How to run DE1 Firmware
+## Main Technologies
+
+- C (Bluetooth, Wi-fi, Sensors, AES encryption/decryption)
+- Python (AES encryption/decryption)
+- Verilog (AES encryption/decryption, DE1-SoC programming)
+- Quartus (DE1-SoC programming)
+- DE1-SoC Board (physical hardware)
+- RFS Daughter Card (physical hardware)
+- Eclipse (running embedded software)
+
+## Tests
+
+For testing the gyroscope sensor, run the function MPU9250_CheckStationary() 
+in cloudlockr-de1/CPEN391FW/source/mpu9250.c. This test will pass if the RFS Daughter Card is stationary 
+or very close to being stationary. 
+Similarly, for testing the magnetometer sensor, run the function MPU9250_CheckMagnetDirection(), 
+which is also in cloudlockr-de1/CPEN391FW/source/mpu9250.c. This test will pass if the RFS Daughter Card is 
+oriented towards the general Northern direction, which is used for passing a 32-bit value to AES encryption/decryption. 
+These two sensor tests are run by default by getSensorKey(), which is used for AES encryption/decryption. 
+Test results are printed in the Eclipse console. 
+ 
+## Directory Structure
+/AES: Verilog+Python code for hardware accelerated AES encryption/decryption and verification.
+/CPEN391FW: Includes C code for UART interfacing of RFS board with DE1. 
+/CPEN391_Computer (Verilog) UART - For 391 Students: The main Quartus project folder for programming the DE1-SoC Board.
+/json-parsing: Contains JSON module for for handling Bluetooth and Wi-fi messages. 
+
+
+## How to run DE1 Firmware
 
 1. Open Quartus Project, use Programmer to load .sof onto DE1
 2. Use OpenConnect to connect to UBC ECE license. 
@@ -24,17 +52,3 @@ notes:
 - wifi network and password needs to be set in WIFI_Init function in WIFI.c
 - EDS = Altera Embedded Command Shell
 
-# How to use sample SPP app
-
-First, go to SPP\app\src\main\java\com\example\spp\MainActivity.java 
-to change:
-
-private static String address
-
-to whatever the MAC address of your own RFS Daughter Card's Bluetooth HC-05 module is. 
-
-Use the "Bluetooth Pair" app from the Android play store to connect to the RFS when everything is connected and powered on. 
-Bluetooth and Location services MUST be on. 
-Press "Start Bluetooth Scan" to search nearby devices for HC-05 on the RFS, and the password to enter is "1234", which is the default for HC-05. 
-
-When everything is set up, running this app on your own Android phone will send the string "Hello, Jason the great!!!\n"
