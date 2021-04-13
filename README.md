@@ -24,6 +24,8 @@ oriented towards the general Northern direction, which is used for passing a 32-
 
 These two sensor tests are run by default by getSensorKey(), which is used for AES encryption/decryption. 
 Test results are printed in the Eclipse console. 
+
+tests.c also contains AES and HEX tests, and several tests for some controller messages. Simply uncomment the main function at the end and comment out the main function in cloudlockrMain.c to verify that those functions have the correct result.
  
 ## Directory Structure
 /AES: Verilog+Python code for hardware accelerated AES encryption/decryption and verification.
