@@ -804,24 +804,24 @@ void message7_test1() {
 /**
  * Uncomment the following main function and comment out the cloudlockrMain.c main function
  * to run the tests
- *//*
- int main()
- {
-     aes_test0();
-     aes_test1();
-     password_test();
-     //hex_test();
-     message1_test1();
+ */
+//  int main()
+//  {
+//      aes_test0();
+//      aes_test1();
+//      password_test();
+//      //hex_test();
+//      message1_test1();
 
-     message2_test1();
-     message2_test2();
-     message2_test3();
-     message2_test4();
-     message2_test5();
-     message2_test6();
-     message2_test7();
-     message2_test8();
-     message2_test9();
+//      message2_test1();
+//      message2_test2();
+//      message2_test3();
+//      message2_test4();
+//      message2_test5();
+//      message2_test6();
+//      message2_test7();
+//      message2_test8();
+//      message2_test9();
 
-     message7_test1();
- }*/
+//      message7_test1();
+//  }

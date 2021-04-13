@@ -81,6 +81,36 @@ char *mock_bluetooth_wait_for_data(void)
 		json_str = "{\"status\":1}";
 		mock_idx++;
 	}
+	else if (mock_idx == 10)
+	{
+		json_str = "{\"type\":3,\"fileId\":\"783cf156-aa19-4110-8484-732f1b0a1068\",\"packetNumber\":1,\"totalPackets\":3,\"location\":\"37.422|-122.084|5.285\",\"fileData\":\"testing hello wowowow\"}";
+		mock_idx++;
+	}
+	else if (mock_idx == 11)
+	{
+		json_str = "{\"type\":3,\"fileId\":\"783cf156-aa19-4110-8484-732f1b0a1068\",\"packetNumber\":2,\"totalPackets\":3,\"location\":\"37.422|-122.084|5.285\",\"fileData\":\"how you doin' =)\"}";
+		mock_idx++;
+	}
+	else if (mock_idx == 12)
+	{
+		json_str = "{\"type\":3,\"fileId\":\"783cf156-aa19-4110-8484-732f1b0a1068\",\"packetNumber\":3,\"totalPackets\":3,\"location\":\"37.422|-122.084|5.285\",\"fileData\":\"120eujef98erfp949w8fyw\"}";
+		mock_idx++;
+	}
+	else if (mock_idx == 13)
+	{
+		json_str = "{\"type\":4,\"localEncryptionComponent\":\"0102ABCD\",\"fileId\":\"783cf156-aa19-4110-8484-732f1b0a1068\",\"location\":\"37.422|-122.084|5.285\"}";
+		mock_idx++;
+	}
+	else if (mock_idx == 14)
+	{
+		json_str = "{\"status\":1}";
+		mock_idx++;
+	}
+	else if (mock_idx == 15)
+	{
+		json_str = "{\"status\":1}";
+		mock_idx++;
+	}
 	else
 	{
 		printf(">>>>>>>>>    CloudLockr Firmware end    <<<<<<<<<\n");

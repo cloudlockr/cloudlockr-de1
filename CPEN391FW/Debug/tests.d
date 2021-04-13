@@ -6,4 +6,8 @@ source/tests.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include
 source/tests.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/memAddress.h
 source/tests.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/aesHwacc.h
 source/tests.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/verificationService.h
+source/tests.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/JsonParser.h
+source/tests.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stddef.h
+source/tests.o: C:/altera/15.0/embedded/ds-5/sw/ARMCompiler5.05u1/bin/../include/stdint.h
 source/tests.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/hexService.h
+source/tests.o: C:/Users/danie/Documents/school/cpen391/AES/CPEN391FW/include/wifiService.h

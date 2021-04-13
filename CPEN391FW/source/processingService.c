@@ -279,12 +279,12 @@ char *upload(char *file_id, int packet_number, int total_packets, char *location
             free_json_values_array(all_values, num_fields);
         }
 
-        // Notify user that we are ready to receive another packet of fileData
-        bluetooth_send_status(1);
-
         // Upload encrypted file data to server
         // TODO: error handling for failed upload
         upload_data(file_id, packet_number - 1, entire_ciphertext);
+
+        // Notify user that we are ready to receive another packet of fileData
+        bluetooth_send_status(1);
 
         // Receive the next packet of fileData to encrypt and upload
         json_str = bluetooth_wait_for_data();
@@ -359,7 +359,7 @@ void download(char *file_id, char *encryption_component, char *location)
         sprintf(response_data, "{\"packetNumber\":%c,\"totalPackets\":%c,\"fileData\":\"%s\"}\v\n", packet_number + '0', total_packets + '0', entire_plaintext);
 
         bluetooth_send_message(response_data);
-        printf("%s\n", response_data);
+        // printf("%s\n", response_data);
 
         // Wait for user to be ready to receive another response
         while (!status && total_packets > packet_number)

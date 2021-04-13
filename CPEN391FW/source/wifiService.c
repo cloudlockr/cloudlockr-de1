@@ -98,15 +98,17 @@ static bool close_tcp()
 int upload_data(char *file_id, int blob_number, char *file_data)
 {
     char cmd_buffer[100];
+    char blob_number_buf[30];
+    sprintf(blob_number_buf, "%d", blob_number);
     char req_body[2 * MAX_FILEDATA_SIZE + 20];
-    char request[2 * MAX_FILEDATA_SIZE + 150];
+    char request[2 * MAX_FILEDATA_SIZE + 300];
     char response[1000];
     printf("Begin upload data call\n");
     sprintf(req_body, "{\"fileData\":\"%s\"}", file_data);
-    sprintf(request, "POST /file/%s/%d HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\nContent-Type: application/json; charset=UTF-8\r\nContent-Length: %i\r\n\r\n%s", file_id, blob_number, strlen(req_body), req_body);
+    sprintf(request, "POST /file/%s/%d HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\nContent-Type: application/json; charset=UTF-8\r\nContent-Length: %i\r\n\r\n%s", file_id, blob_number_buf, strlen(req_body), req_body);
     if (initiate_tcp("cloudlockr.herokuapp.com"))
     {
-        sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command
+        sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of POST command
         if (esp8266_send_command(cmd_buffer))
         {
             if (esp8266_send_data(request, strlen(request), response))
@@ -131,10 +133,6 @@ int upload_data(char *file_id, int blob_number, char *file_data)
                 }
                 char *body = strstr(response, "\r\n\r\n");
                 printf("%s\n", body);
-                // while (UART_gets(UART_ePORT_WIFI, response, 9, 1) != NULL)
-                // {
-                //     printf("%s", response);
-                // }
                 close_tcp();
                 jsmntok_t *tokens = str_to_json(body);
                 char **values = get_json_values(body, tokens, 1);
@@ -215,11 +213,6 @@ int get_file_metadata(char *file_id)
                     }
                 }
                 char *body = strstr(response, "\r\n\r\n");
-                printf("%s\n", body);
-                // while (UART_gets(UART_ePORT_WIFI, response, 9, 1) != NULL)
-                // {
-                //     printf("%s", response);
-                // }
                 close_tcp();
                 jsmntok_t *tokens = str_to_json(body);
                 char **values = get_json_values(body, tokens, 1);
@@ -239,10 +232,12 @@ int get_file_metadata(char *file_id)
 char *get_blob(char *file_id, int blob_number)
 {
     char cmd_buffer[100];
+    char blob_number_buf[30];
+    sprintf(blob_number_buf, "%d", blob_number);
     char request[150];
     char response[2 * MAX_FILEDATA_SIZE + 1000];
     printf("Begin get blob call\n");
-    sprintf(request, "GET /file/%s/%d HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n", file_id, blob_number);
+    sprintf(request, "GET /file/%s/%d HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n", file_id, blob_number_buf);
     if (initiate_tcp("cloudlockr.herokuapp.com"))
     {
         sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command
@@ -269,7 +264,6 @@ char *get_blob(char *file_id, int blob_number)
                     }
                 }
                 char *body = strstr(response, "\r\n\r\n");
-                printf("%s\n", body);
                 close_tcp();
                 jsmntok_t *tokens = str_to_json(body);
                 char **values = get_json_values(body, tokens, 1);
