@@ -16,6 +16,10 @@ volatile uint32 *Ptimer = (uint32 *)0xFFFEC600;
 volatile uint32 *PtimerCount = (uint32 *)0xFFFEC604;
 static int buttonsOld = 0;
 
+/**
+ * Initialize HPS modules. 
+ * 
+ */
 void hps_init(void)
 {
     // LEDG on.
@@ -31,6 +35,10 @@ void hps_init(void)
     buttonsOld = *PUSHBUTTONS;
 }
 
+/**
+ * Process the use of the switches, LEDS, and HEX display.
+ * 
+ */
 void hps_process(void)
 {
     int switches;
@@ -85,6 +93,7 @@ void hps_toggle_ledg(void)
 
 /**
  * Delay for amount of time given by time interval time_us in ms.
+ * Uses accurate private timer (ARM core 0).
  *
  * Params:
  *  time_us     Time interval in ms.
@@ -101,7 +110,8 @@ void hps_ms_delay(unsigned int time_ms)
 
 /**
  * Delay for amount of time given by time interval time_us in us.
- *
+ * Uses accurate private timer (ARM core 0).
+ * 
  * Params:
  *  time_us     Time interval in us.
  */
