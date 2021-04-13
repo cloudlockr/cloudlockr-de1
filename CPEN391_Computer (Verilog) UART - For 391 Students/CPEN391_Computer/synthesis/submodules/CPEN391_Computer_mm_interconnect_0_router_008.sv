@@ -1,13 +1,13 @@
-// (C) 2001-2015 Altera Corporation. All rights reserved.
-// Your use of Altera Corporation's design tools, logic functions and other 
+// (C) 2001-2016 Intel Corporation. All rights reserved.
+// Your use of Intel Corporation's design tools, logic functions and other 
 // software and tools, and its AMPP partner logic functions, and any output 
 // files any of the foregoing (including device programming or simulation 
 // files), and any associated documentation or information are expressly subject 
-// to the terms and conditions of the Altera Program License Subscription 
-// Agreement, Altera MegaCore Function License Agreement, or other applicable 
+// to the terms and conditions of the Intel Program License Subscription 
+// Agreement, Intel MegaCore Function License Agreement, or other applicable 
 // license agreement, including, without limitation, that your use is for the 
-// sole purpose of programming logic devices manufactured by Altera and sold by 
-// Altera or its authorized distributors.  Please refer to the applicable 
+// sole purpose of programming logic devices manufactured by Intel and sold by 
+// Intel or its authorized distributors.  Please refer to the applicable 
 // agreement for further details.
 
 
@@ -24,9 +24,9 @@
 // agreement for further details.
 
 
-// $Id: //acds/rel/15.0/ip/merlin/altera_merlin_router/altera_merlin_router.sv.terp#1 $
+// $Id: //acds/rel/16.1/ip/merlin/altera_merlin_router/altera_merlin_router.sv.terp#1 $
 // $Revision: #1 $
-// $Date: 2015/02/08 $
+// $Date: 2016/08/07 $
 // $Author: swbranch $
 
 // -------------------------------------------------------
@@ -49,21 +49,21 @@ module CPEN391_Computer_mm_interconnect_0_router_008_default_decode
                DEFAULT_RD_CHANNEL = -1,
                DEFAULT_DESTID = 2 
    )
-  (output [108 - 104 : 0] default_destination_id,
-   output [18-1 : 0] default_wr_channel,
-   output [18-1 : 0] default_rd_channel,
-   output [18-1 : 0] default_src_channel
+  (output [106 - 103 : 0] default_destination_id,
+   output [15-1 : 0] default_wr_channel,
+   output [15-1 : 0] default_rd_channel,
+   output [15-1 : 0] default_src_channel
   );
 
   assign default_destination_id = 
-    DEFAULT_DESTID[108 - 104 : 0];
+    DEFAULT_DESTID[106 - 103 : 0];
 
   generate
     if (DEFAULT_CHANNEL == -1) begin : no_default_channel_assignment
       assign default_src_channel = '0;
     end
     else begin : default_channel_assignment
-      assign default_src_channel = 18'b1 << DEFAULT_CHANNEL;
+      assign default_src_channel = 15'b1 << DEFAULT_CHANNEL;
     end
   endgenerate
 
@@ -73,8 +73,8 @@ module CPEN391_Computer_mm_interconnect_0_router_008_default_decode
       assign default_rd_channel = '0;
     end
     else begin : default_rw_channel_assignment
-      assign default_wr_channel = 18'b1 << DEFAULT_WR_CHANNEL;
-      assign default_rd_channel = 18'b1 << DEFAULT_RD_CHANNEL;
+      assign default_wr_channel = 15'b1 << DEFAULT_WR_CHANNEL;
+      assign default_rd_channel = 15'b1 << DEFAULT_RD_CHANNEL;
     end
   endgenerate
 
@@ -93,7 +93,7 @@ module CPEN391_Computer_mm_interconnect_0_router_008
     // Command Sink (Input)
     // -------------------
     input                       sink_valid,
-    input  [133-1 : 0]    sink_data,
+    input  [131-1 : 0]    sink_data,
     input                       sink_startofpacket,
     input                       sink_endofpacket,
     output                      sink_ready,
@@ -102,8 +102,8 @@ module CPEN391_Computer_mm_interconnect_0_router_008
     // Command Source (Output)
     // -------------------
     output                          src_valid,
-    output reg [133-1    : 0] src_data,
-    output reg [18-1 : 0] src_channel,
+    output reg [131-1    : 0] src_data,
+    output reg [15-1 : 0] src_channel,
     output                          src_startofpacket,
     output                          src_endofpacket,
     input                           src_ready
@@ -114,12 +114,12 @@ module CPEN391_Computer_mm_interconnect_0_router_008
     // -------------------------------------------------------
     localparam PKT_ADDR_H = 67;
     localparam PKT_ADDR_L = 36;
-    localparam PKT_DEST_ID_H = 108;
-    localparam PKT_DEST_ID_L = 104;
-    localparam PKT_PROTECTION_H = 123;
-    localparam PKT_PROTECTION_L = 121;
-    localparam ST_DATA_W = 133;
-    localparam ST_CHANNEL_W = 18;
+    localparam PKT_DEST_ID_H = 106;
+    localparam PKT_DEST_ID_L = 103;
+    localparam PKT_PROTECTION_H = 121;
+    localparam PKT_PROTECTION_L = 119;
+    localparam ST_DATA_W = 131;
+    localparam ST_CHANNEL_W = 15;
     localparam DECODER_TYPE = 1;
 
     localparam PKT_TRANS_WRITE = 70;
@@ -158,7 +158,7 @@ module CPEN391_Computer_mm_interconnect_0_router_008
     assign src_valid         = sink_valid;
     assign src_startofpacket = sink_startofpacket;
     assign src_endofpacket   = sink_endofpacket;
-    wire [18-1 : 0] default_src_channel;
+    wire [15-1 : 0] default_src_channel;
 
 
 
@@ -192,15 +192,15 @@ module CPEN391_Computer_mm_interconnect_0_router_008
 
 
         if (destid == 2 ) begin
-            src_channel = 18'b001;
+            src_channel = 15'b001;
         end
 
         if (destid == 1  && write_transaction) begin
-            src_channel = 18'b010;
+            src_channel = 15'b010;
         end
 
         if (destid == 1  && read_transaction) begin
-            src_channel = 18'b100;
+            src_channel = 15'b100;
         end
 
 

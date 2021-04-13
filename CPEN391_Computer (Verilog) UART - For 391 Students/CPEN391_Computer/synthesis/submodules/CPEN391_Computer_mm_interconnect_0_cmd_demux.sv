@@ -1,19 +1,19 @@
-// (C) 2001-2015 Altera Corporation. All rights reserved.
-// Your use of Altera Corporation's design tools, logic functions and other 
+// (C) 2001-2016 Intel Corporation. All rights reserved.
+// Your use of Intel Corporation's design tools, logic functions and other 
 // software and tools, and its AMPP partner logic functions, and any output 
 // files any of the foregoing (including device programming or simulation 
 // files), and any associated documentation or information are expressly subject 
-// to the terms and conditions of the Altera Program License Subscription 
-// Agreement, Altera MegaCore Function License Agreement, or other applicable 
+// to the terms and conditions of the Intel Program License Subscription 
+// Agreement, Intel MegaCore Function License Agreement, or other applicable 
 // license agreement, including, without limitation, that your use is for the 
-// sole purpose of programming logic devices manufactured by Altera and sold by 
-// Altera or its authorized distributors.  Please refer to the applicable 
+// sole purpose of programming logic devices manufactured by Intel and sold by 
+// Intel or its authorized distributors.  Please refer to the applicable 
 // agreement for further details.
 
 
-// $Id: //acds/rel/15.0/ip/merlin/altera_merlin_demultiplexer/altera_merlin_demultiplexer.sv.terp#1 $
+// $Id: //acds/rel/16.1/ip/merlin/altera_merlin_demultiplexer/altera_merlin_demultiplexer.sv.terp#1 $
 // $Revision: #1 $
-// $Date: 2015/02/08 $
+// $Date: 2016/08/07 $
 // $Author: swbranch $
 
 // -------------------------------------
@@ -28,10 +28,10 @@
 // ------------------------------------------
 // Generation parameters:
 //   output_name:         CPEN391_Computer_mm_interconnect_0_cmd_demux
-//   ST_DATA_W:           169
-//   ST_CHANNEL_W:        18
+//   ST_DATA_W:           167
+//   ST_CHANNEL_W:        15
 //   NUM_OUTPUTS:         2
-//   VALID_WIDTH:         18
+//   VALID_WIDTH:         15
 // ------------------------------------------
 
 //------------------------------------------
@@ -45,9 +45,9 @@ module CPEN391_Computer_mm_interconnect_0_cmd_demux
     // -------------------
     // Sink
     // -------------------
-    input  [18-1      : 0]   sink_valid,
-    input  [169-1    : 0]   sink_data, // ST_DATA_W=169
-    input  [18-1 : 0]   sink_channel, // ST_CHANNEL_W=18
+    input  [15-1      : 0]   sink_valid,
+    input  [167-1    : 0]   sink_data, // ST_DATA_W=167
+    input  [15-1 : 0]   sink_channel, // ST_CHANNEL_W=15
     input                         sink_startofpacket,
     input                         sink_endofpacket,
     output                        sink_ready,
@@ -56,15 +56,15 @@ module CPEN391_Computer_mm_interconnect_0_cmd_demux
     // Sources 
     // -------------------
     output reg                      src0_valid,
-    output reg [169-1    : 0] src0_data, // ST_DATA_W=169
-    output reg [18-1 : 0] src0_channel, // ST_CHANNEL_W=18
+    output reg [167-1    : 0] src0_data, // ST_DATA_W=167
+    output reg [15-1 : 0] src0_channel, // ST_CHANNEL_W=15
     output reg                      src0_startofpacket,
     output reg                      src0_endofpacket,
     input                           src0_ready,
 
     output reg                      src1_valid,
-    output reg [169-1    : 0] src1_data, // ST_DATA_W=169
-    output reg [18-1 : 0] src1_channel, // ST_CHANNEL_W=18
+    output reg [167-1    : 0] src1_data, // ST_DATA_W=167
+    output reg [15-1 : 0] src1_channel, // ST_CHANNEL_W=15
     output reg                      src1_startofpacket,
     output reg                      src1_endofpacket,
     input                           src1_ready,
@@ -109,8 +109,7 @@ module CPEN391_Computer_mm_interconnect_0_cmd_demux
     assign ready_vector[0] = src0_ready;
     assign ready_vector[1] = src1_ready;
 
-    assign sink_ready = |(sink_channel & {{16{1'b0}},{ready_vector[NUM_OUTPUTS - 1 : 0]}});
+    assign sink_ready = |(sink_channel & {{13{1'b0}},{ready_vector[NUM_OUTPUTS - 1 : 0]}});
 
 endmodule
-
 

@@ -66,7 +66,6 @@
 		.io_rw                           (<connected-to-io_rw>),                           //                     .rw
 		.io_write_data                   (<connected-to-io_write_data>),                   //                     .write_data
 		.io_read_data                    (<connected-to-io_read_data>),                    //                     .read_data
-		.lcd_export                      (<connected-to-lcd_export>),                      //                  lcd.export
 		.leds_export                     (<connected-to-leds_export>),                     //                 leds.export
 		.memory_mem_a                    (<connected-to-memory_mem_a>),                    //               memory.mem_a
 		.memory_mem_ba                   (<connected-to-memory_mem_ba>),                   //                     .mem_ba
@@ -97,6 +96,10 @@
 		.sdram_clk_clk                   (<connected-to-sdram_clk_clk>),                   //            sdram_clk.clk
 		.slider_switches_export          (<connected-to-slider_switches_export>),          //      slider_switches.export
 		.system_pll_ref_clk_clk          (<connected-to-system_pll_ref_clk_clk>),          //   system_pll_ref_clk.clk
-		.system_pll_ref_reset_reset      (<connected-to-system_pll_ref_reset_reset>)       // system_pll_ref_reset.reset
+		.system_pll_ref_reset_reset      (<connected-to-system_pll_ref_reset_reset>),      // system_pll_ref_reset.reset
+		.spi_0_MISO                      (<connected-to-spi_0_MISO>),                      //                spi_0.MISO
+		.spi_0_MOSI                      (<connected-to-spi_0_MOSI>),                      //                     .MOSI
+		.spi_0_SCLK                      (<connected-to-spi_0_SCLK>),                      //                     .SCLK
+		.spi_0_SS_n                      (<connected-to-spi_0_SS_n>)                       //                     .SS_n
 	);
 

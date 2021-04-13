@@ -1,22 +1,22 @@
- -- Copyright (C) 1991-2015 Altera Corporation. All rights reserved.
- -- Your use of Altera Corporation's design tools, logic functions 
+ -- Copyright (C) 2016  Intel Corporation. All rights reserved.
+ -- Your use of Intel Corporation's design tools, logic functions 
  -- and other software and tools, and its AMPP partner logic 
  -- functions, and any output files from any of the foregoing 
  -- (including device programming or simulation files), and any 
  -- associated documentation or information are expressly subject 
- -- to the terms and conditions of the Altera Program License 
- -- Subscription Agreement, the Altera Quartus II License Agreement,
- -- the Altera MegaCore Function License Agreement, or other 
+ -- to the terms and conditions of the Intel Program License 
+ -- Subscription Agreement, the Intel Quartus Prime License Agreement,
+ -- the Intel MegaCore Function License Agreement, or other 
  -- applicable license agreement, including, without limitation, 
  -- that your use is for the sole purpose of programming logic 
- -- devices manufactured by Altera and sold by Altera or its 
+ -- devices manufactured by Intel and sold by Intel or its 
  -- authorized distributors.  Please refer to the applicable 
  -- agreement for further details.
  -- 
- -- This is a Quartus II output file. It is for reporting purposes only, and is
- -- not intended for use as a Quartus II input file. This file cannot be used
- -- to make Quartus II pin assignments - for instructions on how to make pin
- -- assignments, please see Quartus II help.
+ -- This is a Quartus Prime output file. It is for reporting purposes only, and is
+ -- not intended for use as a Quartus Prime input file. This file cannot be used
+ -- to make Quartus Prime pin assignments - for instructions on how to make pin
+ -- assignments, please see Quartus Prime help.
  ---------------------------------------------------------------------------------
 
 
@@ -40,6 +40,7 @@
  --                  Bank 7C:  3.3V
  --                  Bank 7D:  3.3V
  --                  Bank 8A:  3.3V
+ --                  Bank 9A:  Dedicated configuration pins only, no VCCIO required.
  -- RREF          : External reference resistor for the quad, MUST be connected to
  --                 GND via a 2k Ohm resistor.
  -- GND           : Dedicated ground pin. Dedicated GND pins MUST be connected to GND.
@@ -73,7 +74,7 @@
  -- Pin directions (input, output or bidir) are based on device operating in user mode.
  ---------------------------------------------------------------------------------
 
-Quartus II 64-Bit Version 15.0.0 Build 145 04/22/2015 SJ Web Edition
+Quartus Prime Version 16.1.0 Build 196 10/24/2016 SJ Lite Edition
 CHIP  "CPEN391_Project"  ASSIGNED TO AN: 5CSEMA5F31C6
 
 Pin Name/Usage               : Location  : Dir.   : I/O Standard      : Voltage : I/O Bank  : User Assignment
@@ -153,9 +154,9 @@ VCCIO3B                      : AB14      : power  :                   : 3.3V    
 DRAM_ADDR[4]                 : AB15      : output : 3.3-V LVTTL       :         : 3B        : Y              
 VCC_AUX                      : AB16      : power  :                   : 2.5V    :           :                
 GPIO_1[0]                    : AB17      : bidir  : 3.3-V LVTTL       :         : 4A        : Y              
-VCCPD3B4A                    : AB18      : power  :                   : 3.3V    :           :                
+VCCPD3B4A                    : AB18      : power  :                   : 3.3V    : 3B, 4A    :                
 GND                          : AB19      : gnd    :                   :         :           :                
-VCCPD3B4A                    : AB20      : power  :                   : 3.3V    :           :                
+VCCPD3B4A                    : AB20      : power  :                   : 3.3V    : 3B, 4A    :                
 GPIO_1[2]                    : AB21      : bidir  : 3.3-V LVTTL       :         : 4A        : Y              
 HEX3[6]                      : AB22      : output : 3.3-V LVTTL       :         : 5A        : Y              
 HEX2[0]                      : AB23      : output : 3.3-V LVTTL       :         : 5A        : Y              
@@ -178,13 +179,13 @@ SW[7]                        : AC9       : input  : 3.3-V LVTTL       :         
 VCCPD3A                      : AC10      : power  :                   : 3.3V    : 3A        :                
 VCCIO3A                      : AC11      : power  :                   : 3.3V    : 3A        :                
 SW[1]                        : AC12      : input  : 3.3-V LVTTL       :         : 3A        : Y              
-VCCPD3B4A                    : AC13      : power  :                   : 3.3V    :           :                
+VCCPD3B4A                    : AC13      : power  :                   : 3.3V    : 3B, 4A    :                
 DRAM_ADDR[5]                 : AC14      : output : 3.3-V LVTTL       :         : 3B        : Y              
-VCCPD3B4A                    : AC15      : power  :                   : 3.3V    :           :                
+VCCPD3B4A                    : AC15      : power  :                   : 3.3V    : 3B, 4A    :                
 GND                          : AC16      : gnd    :                   :         :           :                
-VCCPD3B4A                    : AC17      : power  :                   : 3.3V    :           :                
+VCCPD3B4A                    : AC17      : power  :                   : 3.3V    : 3B, 4A    :                
 GPIO_0[0]                    : AC18      : bidir  : 3.3-V LVTTL       :         : 4A        : Y              
-VCCPD3B4A                    : AC19      : power  :                   : 3.3V    :           :                
+VCCPD3B4A                    : AC19      : power  :                   : 3.3V    : 3B, 4A    :                
 GPIO_0[19]                   : AC20      : bidir  : 3.3-V LVTTL       :         : 4A        : Y              
 VCCIO4A                      : AC21      : power  :                   : 3.3V    : 4A        :                
 GPIO_1[35]                   : AC22      : bidir  : 3.3-V LVTTL       :         : 4A        : Y              
@@ -211,7 +212,7 @@ SW[5]                        : AD12      : input  : 3.3-V LVTTL       :         
 VCCIO3B                      : AD13      : power  :                   : 3.3V    : 3B        :                
 DRAM_ADDR[6]                 : AD14      : output : 3.3-V LVTTL       :         : 3B        : Y              
 DNU                          : AD15      :        :                   :         :           :                
-VCCPD3B4A                    : AD16      : power  :                   : 3.3V    :           :                
+VCCPD3B4A                    : AD16      : power  :                   : 3.3V    : 3B, 4A    :                
 GPIO_0[2]                    : AD17      : bidir  : 3.3-V LVTTL       :         : 4A        : Y              
 VCCIO4A                      : AD18      : power  :                   : 3.3V    : 4A        :                
 GPIO_0[24]                   : AD19      : bidir  : 3.3-V LVTTL       :         : 4A        : Y              
@@ -246,7 +247,7 @@ GPIO_0[18]                   : AE17      : bidir  : 3.3-V LVTTL       :         
 GPIO_0[26]                   : AE18      : bidir  : 3.3-V LVTTL       :         : 4A        : Y              
 GPIO_0[27]                   : AE19      : bidir  : 3.3-V LVTTL       :         : 4A        : Y              
 GND                          : AE20      : gnd    :                   :         :           :                
-VCCPD3B4A                    : AE21      : power  :                   : 3.3V    :           :                
+VCCPD3B4A                    : AE21      : power  :                   : 3.3V    : 3B, 4A    :                
 GPIO_1[32]                   : AE22      : bidir  : 3.3-V LVTTL       :         : 4A        : Y              
 GPIO_1[5]                    : AE23      : bidir  : 3.3-V LVTTL       :         : 4A        : Y              
 GPIO_1[6]                    : AE24      : bidir  : 3.3-V LVTTL       :         : 4A        : Y              
@@ -515,7 +516,7 @@ RESERVED_INPUT_WITH_WEAK_PULLUP : E18       :        :                   :      
 HPS_FLASH_DATA[3]            : E19       : bidir  : 3.3-V LVTTL       :         : 7B        : Y              
 VCCIO7B_HPS                  : E20       : power  :                   : 3.3V    : 7B        :                
 HPS_ENET_MDIO                : E21       : bidir  : 3.3-V LVTTL       :         : 7B        : Y              
-VREFB7A7B7C7DN0_HPS          : E22       : power  :                   :         :           :                
+VREFB7A7B7C7DN0_HPS          : E22       : power  :                   :         : 7A, 7B, 7C, 7D :                
 HPS_I2C1_SCLK                : E23       : bidir  : 3.3-V LVTTL       :         : 7A        : Y              
 HPS_SPIM_MISO                : E24       : input  : 3.3-V LVTTL       :         : 7A        : Y              
 GND                          : E25       : gnd    :                   :         :           :                
@@ -724,7 +725,7 @@ HPS_USB_DATA[7]              : M17       : bidir  : 3.3-V LVTTL       :         
 GND                          : M18       : gnd    :                   :         :           :                
 HPS_DDR3_DQS_N[0]            : M19       : bidir  : Differential 1.5-V SSTL Class I :         : 6A        : N              
 GND                          : M20       : gnd    :                   :         :           :                
-VCCPD6A6B_HPS                : M21       : power  :                   : 2.5V    :           :                
+VCCPD6A6B_HPS                : M21       : power  :                   : 2.5V    : 6A, 6B    :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : M22       :        :                   :         : 6A        :                
 HPS_DDR3_CK_P                : M23       : output : Differential 1.5-V SSTL Class I :         : 6A        : N              
 VCCIO6A_HPS                  : M24       : power  :                   : 1.5V    : 6A        :                
@@ -755,7 +756,7 @@ HPS_DDR3_DQS_P[0]            : N18       : bidir  : Differential 1.5-V SSTL Clas
 GND                          : N19       : gnd    :                   :         :           :                
 VCC_HPS                      : N20       : power  :                   : 1.1V    :           :                
 VCCIO6A_HPS                  : N21       : power  :                   : 1.5V    : 6A        :                
-VCCPD6A6B_HPS                : N22       : power  :                   : 2.5V    :           :                
+VCCPD6A6B_HPS                : N22       : power  :                   : 2.5V    : 6A, 6B    :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : N23       :        :                   :         : 6A        :                
 HPS_DDR3_DQS_N[1]            : N24       : bidir  : Differential 1.5-V SSTL Class I :         : 6A        : N              
 HPS_DDR3_DQS_P[1]            : N25       : bidir  : Differential 1.5-V SSTL Class I :         : 6A        : N              
@@ -784,7 +785,7 @@ VCC_HPS                      : P17       : power  :                   : 1.1V    
 GND                          : P18       : gnd    :                   :         :           :                
 VCC_HPS                      : P19       : power  :                   : 1.1V    :           :                
 GND                          : P20       : gnd    :                   :         :           :                
-VCCPD6A6B_HPS                : P21       : power  :                   : 2.5V    :           :                
+VCCPD6A6B_HPS                : P21       : power  :                   : 2.5V    : 6A, 6B    :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : P22       :        :                   :         : 6B        :                
 VCCIO6B_HPS                  : P23       : power  :                   : 1.5V    : 6B        :                
 HPS_DDR3_DQ[24]              : P24       : bidir  : SSTL-15 Class I   :         : 6B        : N              
@@ -813,10 +814,10 @@ VCC_HPS                      : R16       : power  :                   : 1.1V    
 GND                          : R17       : gnd    :                   :         :           :                
 HPS_DDR3_DQS_N[2]            : R18       : bidir  : Differential 1.5-V SSTL Class I :         : 6B        : N              
 HPS_DDR3_DQS_P[2]            : R19       : bidir  : Differential 1.5-V SSTL Class I :         : 6B        : N              
-VCCPD6A6B_HPS                : R20       : power  :                   : 2.5V    :           :                
+VCCPD6A6B_HPS                : R20       : power  :                   : 2.5V    : 6A, 6B    :                
 HPS_DDR3_DQS_N[3]            : R21       : bidir  : Differential 1.5-V SSTL Class I :         : 6B        : N              
 HPS_DDR3_DQS_P[3]            : R22       : bidir  : Differential 1.5-V SSTL Class I :         : 6B        : N              
-VCCPD6A6B_HPS                : R23       : power  :                   : 2.5V    :           :                
+VCCPD6A6B_HPS                : R23       : power  :                   : 2.5V    : 6A, 6B    :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : R24       :        :                   :         : 6B        :                
 VCCIO6B_HPS                  : R25       : power  :                   : 1.5V    : 6B        :                
 HPS_DDR3_DQ[29]              : R26       : bidir  : SSTL-15 Class I   :         : 6B        : N              
