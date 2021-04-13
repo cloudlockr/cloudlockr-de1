@@ -27,7 +27,6 @@ bool MPU9250_ConfigSrd( const uint8 srd );
 bool MPU9250_ConfigAccelRange( const uint8 range );
 bool MPU9250_ConfigGyroRange( const uint8 range );
 bool MPU9250_ConfigDlpf(const uint8 dlpf);
-//void MPU9250_DrdyCallback( uint8 int_pin, void (*function)() );
 bool MPU9250_Read( void );
 
 //void  MPU9250_ApplyRotation( const Eigen::Matrix3f &c );
