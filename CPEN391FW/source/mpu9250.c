@@ -68,6 +68,10 @@ static bool Mpu9250_ReadAk8963Registers(uint8 reg, uint8 count, uint8 *data);
 
 /*------------------- Global Function ----------------------------------------*/
 
+/**
+ * Initializes sensor communication and configures the 
+ * default sensor ranges, sampling rates, and low pass filter settings.
+ */
 bool MPU9250_Begin( void )
 {
     /* Select clock source to gyro */
@@ -179,6 +183,9 @@ bool MPU9250_Begin( void )
     return true;
 }
 
+/**
+ * Enables the data ready interrupt.
+ */
 bool MPU9250_EnableDrdyInt( void )
 {
   if ( !Mpu9250_WriteRegister(INT_PIN_CFG_, INT_PULSE_50US_)) {
@@ -190,7 +197,9 @@ bool MPU9250_EnableDrdyInt( void )
   return true;
 }
 
-
+/**
+ * Disables the data ready interrupt.
+ */
 bool MPU9250_DisableDrdyInt( void )
 {
   if ( !Mpu9250_WriteRegister(INT_ENABLE_, INT_DISABLE_)) {
@@ -199,7 +208,9 @@ bool MPU9250_DisableDrdyInt( void )
   return true;
 }
 
-
+/**
+ * Set range for Accelerometer data. 
+ */
 bool MPU9250_ConfigAccelRange( uint8 range )
 {
   uint8 requested_range;
@@ -243,7 +254,9 @@ bool MPU9250_ConfigAccelRange( uint8 range )
   return true;
 }
 
-
+/**
+ * Set range for Gyroscope data. 
+ */
 bool MPU9250_ConfigGyroRange( uint8  range)
 {
   uint8 requested_range;
@@ -287,7 +300,9 @@ bool MPU9250_ConfigGyroRange( uint8  range)
   return true;
 }
 
-
+/**
+ * Sets the sensor sample rate divider.
+ */
 bool MPU9250_ConfigSrd(const uint8 srd)
 {
     /* Changing the SRD to allow us to set the magnetometer successfully */
@@ -351,6 +366,10 @@ bool MPU9250_ConfigSrd(const uint8 srd)
     return true;
 }
 
+/**
+ * Sets the cutoff frequency of the digital low pass filter for 
+ * the accelerometer, gyro, and temperature sensor.
+ */
 bool MPU9250_ConfigDlpf(const uint8 dlpf)
 {
     uint8 requested_dlpf;
@@ -404,10 +423,9 @@ bool MPU9250_ConfigDlpf(const uint8 dlpf)
     return true;
 }
 
-void MPU9250_DrdyCallback( uint8 int_pin, void (*function)() )
-{
-}
-
+/**
+ * Read data from the sensors and store into the appropriate buffers. 
+ */
 bool MPU9250_Read( void )
 {
     /* Read the data registers */
@@ -440,6 +458,9 @@ bool MPU9250_Read( void )
     return true;
 }
 
+/**
+ * Test: Check if the RFS Daughter is stationary. 
+ */
 int MPU9250_CheckStationary( void )
 {
     if ( abs((int) gyro_counts[0]) <= 200 && abs((int) gyro_counts[1]) <= 100 && abs((int) gyro_counts[2]) <= 200)
@@ -475,7 +496,13 @@ int MPU9250_CheckStationary( void )
 
 }
 
-
+/**
+ * Checks the RFS Daughter Card's orientation, and generates a 32-bit value
+ * for use in AES encryption/decryption. 
+ * 
+ * Also includes test for checking the RFS Daughter Card's relative orientation 
+ * to the Northern Direction, based on the Earth's terrestrial magnetic field. 
+ */
 uint32 MPU9250_CheckMagnetDirection( void )
 {
 	printf("Raw magnetometer values: %d %d %d =====> ", (int) mag_counts[0], (int) mag_counts[1], (int) mag_counts[2] );
@@ -546,6 +573,10 @@ uint32 MPU9250_CheckMagnetDirection( void )
 	return key;
 }
 
+/**
+ * Simplified function for AES encryption/decryption to call
+ * to get 32-bit key based on sensor data. 
+ */
 uint32 getSensorKey(void)
 {
 	// read sensor values
@@ -565,6 +596,9 @@ float MPU9250_die_temperature_c( void )    { return die_temperature_c_; }
 
 /*------------------- Local Function -----------------------------------------*/
 
+/**
+ * Write data to AK8963 register(magnetometer). 
+ */
 static bool Mpu9250_WriteAk8963Register( uint8 reg, uint8 data )
 {
     uint8 ret_val;
@@ -599,6 +633,9 @@ static bool Mpu9250_WriteAk8963Register( uint8 reg, uint8 data )
     }
 }
 
+/**
+ * Read data from AK8963 register(magnetometer). 
+ */
 static bool Mpu9250_ReadAk8963Registers( uint8 reg, uint8 count, uint8 *data )
 {
   if ( !Mpu9250_WriteRegister(I2C_SLV0_ADDR_, AK8963_I2C_ADDR_ | I2C_READ_FLAG_) )
@@ -619,6 +656,9 @@ static bool Mpu9250_ReadAk8963Registers( uint8 reg, uint8 count, uint8 *data )
   return Mpu9250_ReadRegisters( EXT_SENS_DATA_00_, count, data );
 }
 
+/**
+ * Write data to MPU register(gyroscope). 
+ */
 static bool Mpu9250_WriteRegister( uint8 reg, uint8 data )
 {
     uint8 ret_val = 0;
@@ -644,6 +684,9 @@ static bool Mpu9250_WriteRegister( uint8 reg, uint8 data )
    
 }
 
+/**
+ * Read data from MPU register(gyroscope). 
+ */
 static bool Mpu9250_ReadRegisters( uint8 reg, uint8 count, uint8 *data )
 {
     uint8 cmd;
