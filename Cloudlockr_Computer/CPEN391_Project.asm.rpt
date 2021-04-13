@@ -1,5 +1,5 @@
 Assembler report for CPEN391_Project
-Mon Apr 12 17:20:06 2021
+Mon Apr 12 20:19:09 2021
 Quartus Prime Version 16.1.0 Build 196 10/24/2016 SJ Lite Edition
 
 
@@ -39,7 +39,7 @@ agreement for further details.
 +---------------------------------------------------------------+
 ; Assembler Summary                                             ;
 +-----------------------+---------------------------------------+
-; Assembler Status      ; Successful - Mon Apr 12 17:20:06 2021 ;
+; Assembler Status      ; Successful - Mon Apr 12 20:19:09 2021 ;
 ; Revision Name         ; CPEN391_Project                       ;
 ; Top-level Entity Name ; MyComputer_Verilog                    ;
 ; Family                ; Cyclone V                             ;
@@ -79,8 +79,8 @@ agreement for further details.
 ; Option         ; Setting                                                                                                                            ;
 +----------------+------------------------------------------------------------------------------------------------------------------------------------+
 ; Device         ; 5CSEMA5F31C6                                                                                                                       ;
-; JTAG usercode  ; 0x02B7ED04                                                                                                                         ;
-; Checksum       ; 0x02B7ED04                                                                                                                         ;
+; JTAG usercode  ; 0x02B3784B                                                                                                                         ;
+; Checksum       ; 0x02B3784B                                                                                                                         ;
 +----------------+------------------------------------------------------------------------------------------------------------------------------------+
 
 
@@ -90,15 +90,15 @@ agreement for further details.
 Info: *******************************************************************
 Info: Running Quartus Prime Assembler
     Info: Version 16.1.0 Build 196 10/24/2016 SJ Lite Edition
-    Info: Processing started: Mon Apr 12 17:19:33 2021
+    Info: Processing started: Mon Apr 12 20:18:38 2021
 Info: Command: quartus_asm --read_settings_files=off --write_settings_files=off CPEN391_Project -c CPEN391_Project
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (115030): Assembler is generating device programming files
 Info (11878): Hard Processor Subsystem configuration has not changed and a Preloader software update is not required
 Info: Quartus Prime Assembler was successful. 0 errors, 1 warning
-    Info: Peak virtual memory: 5058 megabytes
-    Info: Processing ended: Mon Apr 12 17:20:06 2021
-    Info: Elapsed time: 00:00:33
-    Info: Total CPU time (on all processors): 00:00:31
+    Info: Peak virtual memory: 5057 megabytes
+    Info: Processing ended: Mon Apr 12 20:19:09 2021
+    Info: Elapsed time: 00:00:31
+    Info: Total CPU time (on all processors): 00:00:29
 
 

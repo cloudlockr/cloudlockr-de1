@@ -95,11 +95,11 @@
 		.sdram_we_n                      (<connected-to-sdram_we_n>),                      //                     .we_n
 		.sdram_clk_clk                   (<connected-to-sdram_clk_clk>),                   //            sdram_clk.clk
 		.slider_switches_export          (<connected-to-slider_switches_export>),          //      slider_switches.export
-		.system_pll_ref_clk_clk          (<connected-to-system_pll_ref_clk_clk>),          //   system_pll_ref_clk.clk
-		.system_pll_ref_reset_reset      (<connected-to-system_pll_ref_reset_reset>),      // system_pll_ref_reset.reset
 		.spi_0_MISO                      (<connected-to-spi_0_MISO>),                      //                spi_0.MISO
 		.spi_0_MOSI                      (<connected-to-spi_0_MOSI>),                      //                     .MOSI
 		.spi_0_SCLK                      (<connected-to-spi_0_SCLK>),                      //                     .SCLK
-		.spi_0_SS_n                      (<connected-to-spi_0_SS_n>)                       //                     .SS_n
+		.spi_0_SS_n                      (<connected-to-spi_0_SS_n>),                      //                     .SS_n
+		.system_pll_ref_clk_clk          (<connected-to-system_pll_ref_clk_clk>),          //   system_pll_ref_clk.clk
+		.system_pll_ref_reset_reset      (<connected-to-system_pll_ref_reset_reset>)       // system_pll_ref_reset.reset
 	);
 

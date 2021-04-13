@@ -982,18 +982,9 @@ set_global_assignment -name VHDL_FILE UART_16550_Files/gh_uart_16550.vhd
 set_global_assignment -name VHDL_FILE UART_16550_Files/gh_uart_16550_wb_wrapper.vhd
 set_global_assignment -name SDC_FILE CPEN391_Soc.sdc
 set_global_assignment -name VHDL_FILE HexTo7SegmentDisplay.vhd
-set_global_assignment -name VHDL_FILE ColourPallette_2PortRam.vhd
-set_global_assignment -name VHDL_FILE VideoRamFrameBuffer.vhd
-set_global_assignment -name BDF_FILE Graphics_and_Video_Controller.bdf
-set_global_assignment -name BDF_FILE GraphicsFrameBufferMemory.bdf
-set_global_assignment -name QIP_FILE VGA_CLOCK_GEN.qip
-set_global_assignment -name SIP_FILE VGA_CLOCK_GEN.sip
 set_global_assignment -name BDF_FILE GPIO_Port_Connections.bdf
 set_global_assignment -name VHDL_FILE TriStateOutput.vhd
-set_global_assignment -name VERILOG_FILE GraphicsController_Verilog.v
-set_global_assignment -name VERILOG_FILE GraphicsLCD_Controller_verilog.v
 set_global_assignment -name VERILOG_FILE RamAddressMapper_Verilog.v
-set_global_assignment -name VERILOG_FILE VGADataMux_Verilog.v
 set_global_assignment -name QIP_FILE CPEN391_Computer/synthesis/CPEN391_Computer.qip
 set_global_assignment -name VERILOG_FILE CPEN391_Computer/synthesis/CPEN391_Computer.v -library CPEN391_Computer
 set_global_assignment -name VERILOG_FILE MyComputer_Verilog.v
