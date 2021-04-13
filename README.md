@@ -38,17 +38,14 @@ Test results are printed in the Eclipse console.
 1. Open Quartus Project, use Programmer to load .sof onto DE1
 2. Use OpenConnect to connect to UBC ECE license. 
 3. Run "eclipse &" from EDS command shell as administrator.
-
-4. Download preloader by running command below in SoC EDS 15.0 Command Shell:
+4. Check that the scatter file for the project is correct, as the path is not relative to the workspace or project.
+5. Download preloader by running command below in SoC EDS 15.0 Command Shell:
 C:/Altera/15.0/quartus/bin64/quartus_hps --cable="DE-SoC [USB-1]" -o GDBSERVER --gdbport0=3335 --preloader=C:/Altera/15.0/University_Program/Monitor_Program/arm_tools/u-boot-spl.srec --preloaderaddr=0xffff1398
-
-5. When "Starting GDB Server." shows up, press Ctrl-C to let DS5 start GDB server by itself.
-
-6. In order for Wi-fi to work (currently), before running the C code in DS5, use a jumper wire to touch the Wifi reset signal on the RFS to Ground. 
-This means touching pin 2 to pin 12 which are the 1st and 6th metals pins from the top, when looking at the back of the RFS(with ribbon cable connector on right side).
-
-7. In DS5, Build Project, then do Debug As->Debug Configurations, select CPEN391_Config and press Debug.
-8. Press "Run" (green arrow button).
+(If you are using SoC EDS 19.1, use --preloader=C:/intelFPGA_lite/19.1/University_Program/Monitor_Program/arm_tools/u-boot-spl.de1-soc.srec --preloaderaddr=0xffff13a0)
+6. When "Starting GDB Server." shows up, press Ctrl-C to let DS5 start GDB server by itself.
+7. In order to reset the Wi-fi component before running the C code in DS5, press down on KEY 0 on the DE1.
+8. In DS5, Build Project, then do Debug As->Debug Configurations, select CPEN391_Config (as created in the tutorial) and press Debug.
+9. Press "Run" (green arrow button).
 
 notes: 
 - above preloader command can be run before starting eclipse in instruction 3.
