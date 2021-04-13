@@ -31,6 +31,10 @@ static void controller(void);
 static uint32_t main_u32TimeFlags = 0;
 static uint32_t main_freeCount = 0;
 
+/**
+ * Keep track of how much time has elapsed, 
+ * for periodically calling functions in the controller
+ */
 void main_UpdateTimeFlag(void)
 {
     static uint32_t Count_ms = 0;
