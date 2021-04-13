@@ -369,6 +369,8 @@ module MyComputer_Verilog (
 								
 		// this is wifi_en
 		assign GPIO_1[10] = 1'b1;
+		// this is wifi_rst_n
+		assign GPIO_1[1] = KEY[0];
 
 		// process to generate an acknowledge for the IO Bridge 1 clock cycle after bridge IO BUS ENABLE and then remove it 
 		always@(posedge CLOCK_50)
