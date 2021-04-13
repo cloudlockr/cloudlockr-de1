@@ -30,7 +30,7 @@ Test results are printed in the Eclipse console.
 
 /CPEN391FW: Includes C code for UART interfacing of RFS board with DE1, and JSON module for handling Bluetooth and Wi-fi messages. 
 
-/CPEN391_Computer (Verilog) UART - For 391 Students: The main Quartus project folder for programming the DE1-SoC Board.
+/Cloudlockr_Computer: The main Quartus project folder for programming the DE1-SoC Board.
 
 
 ## How to run DE1 Firmware
