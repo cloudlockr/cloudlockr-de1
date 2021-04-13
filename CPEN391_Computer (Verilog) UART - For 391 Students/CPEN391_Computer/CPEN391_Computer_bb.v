@@ -96,12 +96,12 @@ module CPEN391_Computer (
 	sdram_we_n,
 	sdram_clk_clk,
 	slider_switches_export,
-	system_pll_ref_clk_clk,
-	system_pll_ref_reset_reset,
 	spi_0_MISO,
 	spi_0_MOSI,
 	spi_0_SCLK,
-	spi_0_SS_n);	
+	spi_0_SS_n,
+	system_pll_ref_clk_clk,
+	system_pll_ref_reset_reset);	
 
 	output	[7:0]	hex0_1_export;
 	output	[7:0]	hex2_3_export;
@@ -199,10 +199,10 @@ module CPEN391_Computer (
 	output		sdram_we_n;
 	output		sdram_clk_clk;
 	input	[9:0]	slider_switches_export;
-	input		system_pll_ref_clk_clk;
-	input		system_pll_ref_reset_reset;
 	input		spi_0_MISO;
 	output		spi_0_MOSI;
 	output		spi_0_SCLK;
 	output		spi_0_SS_n;
+	input		system_pll_ref_clk_clk;
+	input		system_pll_ref_reset_reset;
 endmodule

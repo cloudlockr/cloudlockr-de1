@@ -308,7 +308,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "1";
+         value = "0";
          type = "boolean";
       }
    }
