@@ -12,9 +12,9 @@
 #define MAX_FILEDATA_SIZE 0x0200 // 512 bytes
 
 // Bluetooth constants
-#define BUFFER_SIZE 500500	  // 1 mb of data (assuming 2 bytes per char) + 500 bytes of extra data allowance
+#define BUFFER_SIZE 2048	  // 512 bytes of file data + 1536 bytes of extra data allowance
 #define TIMEOUT_ITER 10000000 // Large number to represent the max number of iterations with no data arriving (~50 sec)
-#define MOCK_BLUETOOTH 1
+#define MOCK_BLUETOOTH 0
 
 // Number of times to attempt connecting to router
 #define HANDSHAKE 5
