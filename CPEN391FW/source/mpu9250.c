@@ -16,6 +16,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <typeDef.h>
+#include "memAddress.h"
 
 #include "hpsService.h"
 
@@ -25,8 +26,6 @@
 
 /*------------------- Constants Define ---------------------------------------*/
 
-// Base address of SPI0 registers
-#define SPI0_BASE       0xFF202060
 
 #define SLAVE_CHICP_MPU9250     0
 

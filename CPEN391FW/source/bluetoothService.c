@@ -27,7 +27,10 @@ static char bluetooth_data[BUFFER_SIZE];
 
 // Mocking request index
 int mock_idx = 0;
-
+/*
+ * Mock messages for testing purposes
+ * This lets us separate the phone for testing
+ * */
 char *mock_bluetooth_wait_for_data(void)
 {
 	char *json_str = NULL;

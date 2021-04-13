@@ -226,6 +226,9 @@ void UART_Flush(UART_ePORT ePort)
     }
 }
 
+/*
+ * Put multiple chars
+ * */
 void UART_puts(UART_ePORT ePort, char *buffer)
 {
     char *ptr;
@@ -244,7 +247,10 @@ void UART_puts(UART_ePORT ePort, char *buffer)
     }
 }
 
-// mode: way of termination
+/*
+ * Get multiple chars
+ * mode: way of termination
+ * */
 char *UART_gets(UART_ePORT ePort, char *buffer, int length, int mode)
 {
     int count = 0;

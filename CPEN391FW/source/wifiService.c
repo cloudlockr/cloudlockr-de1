@@ -8,6 +8,9 @@
 #include "hpsService.h"
 #include "jsonParser.h"
 
+/*
+ * Flushes the WiFi UART
+ * */
 static void esp8266_dump_rx(void)
 {
     char ch;
@@ -28,6 +31,10 @@ static void esp8266_dump_rx(void)
     UART_Flush(UART_ePORT_WIFI);
 }
 
+/*
+ * Sends AT commands
+ * cmd is the string for the command
+ * */
 static bool esp8266_send_command(const char *cmd)
 {
     int length = 0;
@@ -69,6 +76,10 @@ static bool esp8266_send_command(const char *cmd)
     return false;
 }
 
+/*
+ * Sends data
+ * buffer to add carriage return
+ * */
 static bool esp8266_send_data(const char *data, int length, char *buffer)
 {
     // Send command to WIFI UART port.
@@ -78,6 +89,9 @@ static bool esp8266_send_data(const char *data, int length, char *buffer)
     return true;
 }
 
+/*
+ * Sends AT command for TCP connection to domain
+ * */
 static bool initiate_tcp(char *domain)
 {
     bool success;
@@ -87,6 +101,9 @@ static bool initiate_tcp(char *domain)
     return success;
 }
 
+/*
+ * Sends AT command to close TCP connection
+ * */
 static bool close_tcp()
 {
     bool success;
@@ -95,6 +112,10 @@ static bool close_tcp()
     return success;
 }
 
+
+/*
+ * Uploads contents in file_data to the file specified by file_id and the blob specified by blob_number
+ * */
 int upload_data(char *file_id, int blob_number, char *file_data)
 {
     char cmd_buffer[100];
@@ -147,6 +168,9 @@ int upload_data(char *file_id, int blob_number, char *file_data)
     return -1;
 }
 
+/*
+ * Authenticates the DE1 into the specified WiFi access point
+ * */
 int set_wifi_config(char *networkName, char *networkPassword)
 {
     char cmd[200];
@@ -176,7 +200,7 @@ int set_wifi_config(char *networkName, char *networkPassword)
 }
 
 /*
- * Gets number of blobs
+ * Gets number of blobs for specified file_id
  * */
 int get_file_metadata(char *file_id)
 {
@@ -227,6 +251,9 @@ int get_file_metadata(char *file_id)
     return -1;
 }
 
+/*
+ * Gets blob for specified file_id and blob_number
+ * */
 char *get_blob(char *file_id, int blob_number)
 {
     char cmd_buffer[100];

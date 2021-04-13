@@ -24,9 +24,6 @@
 #define Wifi_DivisorLatchLSB (*(volatile unsigned char *)(0xFF210200))
 #define Wifi_DivisorLatchMSB (*(volatile unsigned char *)(0xFF210202))
 
-// TODO:
-// create similar defines for other port(s) (lie Bluetooth )
-// match verilog defined addrs in SerialIODecoder.v file for earlier in 1.3
 #define Bluetooth_ReceiverFifo (*(volatile unsigned char *)(0xFF210220))
 #define Bluetooth_TransmitterFifo (*(volatile unsigned char *)(0xFF210220))
 #define Bluetooth_InterruptEnableReg (*(volatile unsigned char *)(0xFF210222))
@@ -55,4 +52,7 @@
 #define AES_ENCRYPT_ADDR (volatile unsigned *)0xFF203000
 #define AES_DECRYPT_ADDR (volatile unsigned *)0xFF204000
 
+/* mpu9250.c */
+// Base address of SPI0 registers
+#define SPI0_BASE       0xFF202060
 #endif /* SOURCE_MEMADDRESS_H_ */

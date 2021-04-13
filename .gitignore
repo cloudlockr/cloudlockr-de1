@@ -5,3 +5,4 @@ venv
 __pycache__
 *.memh
 CPEN391FW/Debug
+CPEN391FW/.settings
