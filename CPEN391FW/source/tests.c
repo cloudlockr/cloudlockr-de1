@@ -10,11 +10,11 @@
 #include "memAddress.h"
 #include "aesHwacc.h"
 #include "verificationService.h"
-#include "JsonParser.h"
+#include "jsonParser.h"
 #include "hexService.h"
-#include "BluetoothService.h"
-#include "WifiService.h"
-#include "ProcessingService.h"
+#include "bluetoothService.h"
+#include "wifiService.h"
+#include "processingService.h"
 
 /**
  * Test 0 for whether encryption and decryption modules work as expected.
@@ -804,7 +804,7 @@ void message7_test1() {
 /**
  * Uncomment the following main function and comment out the cloudlockrMain.c main function
  * to run the tests
- */
+ *//*
  int main()
  {
      aes_test0();
@@ -824,4 +824,4 @@ void message7_test1() {
      message2_test9();
 
      message7_test1();
- }
+ }*/

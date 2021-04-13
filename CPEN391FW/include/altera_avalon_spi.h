@@ -31,9 +31,9 @@
 *                                                                             *
 ******************************************************************************/
 #include <stddef.h>
+#include <typeDef.h>
 
 #include "alt_types.h"
-#include "TypeDef.h"
 
 #ifdef __cplusplus
 extern "C"

@@ -3,7 +3,7 @@
  */
 
 #include <stdio.h>
-#include "TypeDef.h"
+#include <typeDef.h>
 #include "memAddress.h"
 #include "hpsService.h"
 

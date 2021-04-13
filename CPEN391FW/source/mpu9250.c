@@ -15,8 +15,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <typeDef.h>
 
-#include "TypeDef.h"
 #include "hpsService.h"
 
 #include "altera_avalon_spi.h"

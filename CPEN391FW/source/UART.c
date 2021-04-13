@@ -13,8 +13,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <typeDef.h>
 
-#include "TypeDef.h"
 #include "memAddress.h"
 #include "UART.h"
 #include "hpsService.h"

@@ -17,7 +17,6 @@ typedef enum
 {
     UART_ePORT_WIFI = 0,
     UART_ePORT_BLUETOOTH,
-    UART_ePORT_TOUCH_SCREEN,
 } UART_ePORT;
 
 /*------------------- Function Prototype -------------------*/

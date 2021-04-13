@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "TypeDef.h"
+#include <typeDef.h>
 #include "constants.h"
 #include "wifiService.h"
 #include "UART.h"
 #include "hpsService.h"
-#include "JsonParser.h"
+#include "jsonParser.h"
 
 static void esp8266_dump_rx(void)
 {
@@ -103,7 +103,7 @@ int upload_data(char *file_id, int blob_number, char *file_data)
     char response[1000];
     printf("Begin upload data call\n");
     sprintf(req_body, "{\"fileData\":\"%s\"}", file_data);
-    sprintf(request, "POST /file/%s/%c HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\nContent-Type: application/json; charset=UTF-8\r\nContent-Length: %i\r\n\r\n%s", file_id, blob_number + '0', strlen(req_body), req_body);
+    sprintf(request, "POST /file/%s/%d HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\nContent-Type: application/json; charset=UTF-8\r\nContent-Length: %i\r\n\r\n%s", file_id, blob_number, strlen(req_body), req_body);
     if (initiate_tcp("cloudlockr.herokuapp.com"))
     {
         sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command
@@ -179,6 +179,9 @@ int set_wifi_config(char *networkName, char *networkPassword)
     return connected;
 }
 
+/*
+ * Gets number of blobs
+ * */
 int get_file_metadata(char *file_id)
 {
     char cmd_buffer[100];
@@ -239,7 +242,7 @@ char *get_blob(char *file_id, int blob_number)
     char request[150];
     char response[2 * MAX_FILEDATA_SIZE + 1000];
     printf("Begin get blob call\n");
-    sprintf(request, "GET /file/%s/%c HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n", file_id, blob_number + '0');
+    sprintf(request, "GET /file/%s/%d HTTP/1.1\r\nHost: cloudlockr.herokuapp.com\r\n\r\n", file_id, blob_number);
     if (initiate_tcp("cloudlockr.herokuapp.com"))
     {
         sprintf(cmd_buffer, "AT+CIPSEND=%d", strlen(request)); // specify length of GET command

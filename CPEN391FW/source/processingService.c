@@ -7,10 +7,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <typeDef.h>
 #include "constants.h"
 #include "memAddress.h"
-#include "TypeDef.h"
-#include "JsonParser.h"
+#include "jsonParser.h"
 #include "bluetoothService.h"
 #include "processingService.h"
 #include "verificationService.h"

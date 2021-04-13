@@ -6,9 +6,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <typeDef.h>
 
 /* Application common headers */
-#include "TypeDef.h"
 #include "memAddress.h"
 #include "constants.h"
 
@@ -16,7 +16,7 @@
 #include "UART.h"
 #include "wifiService.h"
 #include "bluetoothService.h"
-#include "JsonParser.h"
+#include "jsonParser.h"
 #include "hexService.h"
 #include "hpsService.h"
 #include "processingService.h"
@@ -28,12 +28,12 @@ static void init(void);
 static void controller(void);
 
 // Global variables
-static uint32 main_u32TimeFlags = 0;
-static uint32 main_freeCount = 0;
+static uint32_t main_u32TimeFlags = 0;
+static uint32_t main_freeCount = 0;
 
 void main_UpdateTimeFlag(void)
 {
-    static uint32 Count_ms = 0;
+    static uint32_t Count_ms = 0;
 
     if (hps_elapsed_us(main_freeCount, 1000))
     {
@@ -337,7 +337,20 @@ int main(void)
     printf(">>>>>>>>>    CloudLockr Firmware start    <<<<<<<<<\n");
 
     init();
-    controller();
+    //controller();
+
+    int successful = set_wifi_config("SierraMadre", "91127314Evancio");
+    if (!successful) {
+    	printf("Couldn't connect to WiFi");
+    	return 1;
+    }
+    get_file_metadata("783cf156-aa19-4110-8484-732f1b0a1068");
+    get_blob("783cf156-aa19-4110-8484-732f1b0a1068",0);
+    get_blob("783cf156-aa19-4110-8484-732f1b0a1068",1);
+    get_blob("783cf156-aa19-4110-8484-732f1b0a1068",2);
+    get_blob("783cf156-aa19-4110-8484-732f1b0a1068",3);
+    upload_data("783cf156-aa19-4110-8484-732f1b0a1068", 4, "greatestBlob");
+    get_blob("783cf156-aa19-4110-8484-732f1b0a1068",4);
 
     printf(">>>>>>>>>    CloudLockr Firmware end    <<<<<<<<<\n");
     return 0;

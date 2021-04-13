@@ -15,12 +15,12 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <typeDef.h>
 
-#include "TypeDef.h"
 #include "constants.h"
 #include "hpsService.h"
 #include "UART.h"
-#include "JsonParser.h"
+#include "jsonParser.h"
 
 static int bluetooth_count = 0;
 static char bluetooth_data[BUFFER_SIZE];
