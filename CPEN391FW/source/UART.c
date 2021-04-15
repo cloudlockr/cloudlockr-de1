@@ -30,12 +30,6 @@
 // something like this:
 // RS232_FifoControlReg = 0x55 ;
 
-// TODO:
-// Use DS5 Software environment to:
-// write the following functions in 'C' to drive the simple RS232 port
-// HINT: consult vhdl_16550_uart_2_2.pdf from Canvas for details of
-// programming
-
 /**************************************************************************
 ** Subroutine to initialize the UART Port by writing some data
 ** to the internal registers.

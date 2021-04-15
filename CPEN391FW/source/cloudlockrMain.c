@@ -218,9 +218,6 @@ static void controller(void)
 
                     status = verify(all_values[1], all_values[2]);
 
-                    // TODO: remove this
-                    status = 1;
-
                     if (status)
                     {
                         state = 3;

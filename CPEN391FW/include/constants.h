@@ -10,7 +10,7 @@
 
 // Max size for filedata sent from bluetooth
 
-#define MAX_FILEDATA_SIZE 0x400 // One kilobyte!
+#define MAX_FILEDATA_SIZE 0x200 // half kilobyte
 
 // Bluetooth constants
 #define BUFFER_SIZE 2048	  // 512 bytes of file data + 1536 bytes of extra data allowance

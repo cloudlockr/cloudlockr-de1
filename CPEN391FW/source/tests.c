@@ -587,7 +587,7 @@ void message3_test1() {
     all_values = get_json_values(json_str, json_tokens, expected_num_values);
     int packet_number = (int)strtol(all_values[2], NULL, 10);
     int total_packets = (int)strtol(all_values[3], NULL, 10);
-    char *response_data = upload(all_values[1], packet_number, total_packets, all_values[4], all_values[5]); //TODO mock wifi here
+    char *response_data = upload(all_values[1], packet_number, total_packets, all_values[4], all_values[5]);
     int success = 1;
     if (success)
     {

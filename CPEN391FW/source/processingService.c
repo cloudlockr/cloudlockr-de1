@@ -280,7 +280,6 @@ char *upload(char *file_id, int packet_number, int total_packets, char *location
         }
 
         // Upload encrypted file data to server
-        // TODO: error handling for failed upload
         upload_data(file_id, packet_number - 1, entire_ciphertext);
 
         // Notify user that we are ready to receive another packet of fileData
